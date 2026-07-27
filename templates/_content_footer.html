@@ -1,18 +1,18 @@
-<footer class="unified-footer">
+<footer class="unified-footer" id="footer">
     <div class="unified-footer-inner">
         <div class="unified-footer-brand">
-            <a href="{{ url_for('index') }}">Datara</a>
-            <p>{{ ui.footer_text }}</p>
+            <a href="{{ url_for('index') }}" aria-label="{{ footer_ui.home_label }}">DATARA</a>
+            <p>{{ footer_ui.footer_text }}</p>
         </div>
-        <div class="unified-footer-contact">
-            <a href="mailto:shn@datara.dk">{{ ui.email_label }}: shn@datara.dk</a>
+        <address class="unified-footer-contact">
+            <a href="mailto:shn@datara.dk">{{ footer_ui.email_label }}: shn@datara.dk</a>
             <a href="tel:+4552390360">+45 52 39 03 60</a>
-        </div>
-        <nav class="unified-footer-links" aria-label="{{ ui.nav_label }}">
-            <a href="{{ url_for('privatliv') }}">{{ ui.privacy }}</a>
-            <a href="{{ url_for('cookies') }}">{{ ui.cookies }}</a>
-            <a href="{{ url_for('vilkar') }}">{{ ui.terms }}</a>
+        </address>
+        <nav class="unified-footer-links" aria-label="{{ footer_ui.footer_nav_label }}">
+            <a href="{{ url_for('privatliv') }}">{{ footer_ui.privacy }}</a>
+            <a href="{{ url_for('cookies') }}">{{ footer_ui.cookies }}</a>
+            <a href="{{ url_for('vilkar') }}">{{ footer_ui.terms }}</a>
         </nav>
     </div>
-    <p class="unified-footer-copyright">&copy; {{ year }} Datara I/S. {{ ui.rights }}</p>
+    <p class="unified-footer-copyright">&copy; {{ year }} Datara I/S. {{ footer_ui.rights }}</p>
 </footer>

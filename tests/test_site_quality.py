@@ -53,6 +53,87 @@ class SiteQualityTests(unittest.TestCase):
                 html = self.client.get(path).get_data(as_text=True)
                 self.assertIn('/static/site-refresh.css', html)
 
+    def test_every_live_page_uses_the_same_footer_in_both_languages(self):
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            paths = (*PUBLIC_ROUTES, '/denne-side-findes-ikke')
+            for path in paths:
+                with self.subTest(language=language, path=path):
+                    response = self.client.get(path)
+                    expected_status = 404 if path == '/denne-side-findes-ikke' else 200
+                    self.assertEqual(response.status_code, expected_status)
+                    html = response.get_data(as_text=True)
+                    response.close()
+
+                    self.assertEqual(html.count('<footer'), 1)
+                    self.assertEqual(html.count('class="unified-footer"'), 1)
+                    self.assertIn('class="unified-footer-brand"', html)
+                    self.assertIn('>DATARA</a>', html)
+                    self.assertIn('class="unified-footer-contact"', html)
+                    self.assertIn('class="unified-footer-links"', html)
+                    self.assertIn('class="unified-footer-copyright"', html)
+                    self.assertIn('href="mailto:shn@datara.dk"', html)
+                    self.assertIn('href="tel:+4552390360"', html)
+                    self.assertIn('href="/privatliv"', html)
+                    self.assertIn('href="/cookies"', html)
+                    self.assertIn('href="/vilkar"', html)
+                    self.assertNotIn('class="site-footer"', html)
+                    self.assertNotIn('class="project-footer"', html)
+
+                    if language == 'da':
+                        self.assertIn('Skriv til os', html)
+                        self.assertIn('Privatliv', html)
+                        self.assertIn('Vilkår', html)
+                        self.assertIn('Alle rettigheder forbeholdes.', html)
+                        self.assertIn('aria-label="Juridiske links"', html)
+                    else:
+                        self.assertIn('Email us', html)
+                        self.assertIn('Privacy', html)
+                        self.assertIn('Terms', html)
+                        self.assertIn('All rights reserved.', html)
+                        self.assertIn('aria-label="Legal links"', html)
+
+    def test_every_page_uses_the_same_navigation_system(self):
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            for path in PUBLIC_ROUTES:
+                with self.subTest(language=language, path=path):
+                    html = self.client.get(path).get_data(as_text=True)
+                    self.assertIn('class="navbar site-navbar', html)
+                    self.assertIn('id="navbar-burger"', html)
+                    self.assertIn('id="navbar-mobile-menu"', html)
+                    self.assertNotIn('class="project-site-header"', html)
+                    self.assertNotIn('class="content-site-header"', html)
+
+        header_script = self.client.get('/static/js/site-header.js')
+        self.assertEqual(header_script.status_code, 200)
+        self.assertIn(
+            "burger.setAttribute('aria-expanded'",
+            header_script.get_data(as_text=True),
+        )
+        header_script.close()
+
+    def test_project_article_navigation_auto_hides_on_scroll(self):
+        header_script_response = self.client.get('/static/js/site-header.js')
+        header_script = header_script_response.get_data(as_text=True)
+        header_script_response.close()
+        self.assertIn(
+            "document.body.classList.contains('project-detail-page')",
+            header_script,
+        )
+        self.assertIn("navbar.classList.add('navbar-hidden')", header_script)
+        self.assertIn('window.requestAnimationFrame', header_script)
+        self.assertIn("{ passive: true }", header_script)
+
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+        self.assertIn(
+            '.project-detail-page .site-navbar--inner.navbar-hidden',
+            css,
+        )
+        self.assertIn('transform: translateY(calc(-100% - 8px))', css)
+
     def test_language_redirect_rejects_external_referrers(self):
         response = self.client.get(
             '/setlang/en',
@@ -131,6 +212,44 @@ class SiteQualityTests(unittest.TestCase):
             r'\.home-page \.service-card \{\s+min-height: 0;',
         )
 
+    def test_about_and_contact_sections_have_compact_responsive_rules(self):
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+        self.assertIn('height: clamp(350px, 28vw, 430px)', css)
+        self.assertIn(
+            'grid-template-columns: minmax(0, 1.12fr) '
+            'minmax(280px, 0.88fr)',
+            css,
+        )
+        self.assertIn(
+            'grid-template-columns: repeat(2, minmax(0, 1fr)) !important',
+            css,
+        )
+
+    def test_heating_article_results_use_prominent_responsive_maps(self):
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+        self.assertIn(
+            '.project-detail-page--lavtemperaturfjernvarme '
+            '.project-gallery-grid',
+            css,
+        )
+        self.assertIn('grid-template-columns: minmax(0, 1fr)', css)
+        self.assertIn(
+            '.project-detail-page--lavtemperaturfjernvarme '
+            '.project-context-figure',
+            css,
+        )
+        self.assertIn(
+            'width: min(calc(100% - 36px), 900px)',
+            css,
+        )
+        self.assertIn('height: clamp(260px, 24vw, 320px)', css)
+        self.assertIn('width: min(100%, 920px)', css)
+        self.assertIn('width: min(100%, 800px)', css)
+
     def test_manifest_icons_resolve(self):
         manifest_response = self.client.get('/static/site.webmanifest')
         self.assertEqual(manifest_response.status_code, 200)
@@ -151,10 +270,10 @@ class SiteQualityTests(unittest.TestCase):
         self.assertIn('<h1', html)
         self.assertIn('/static/site-refresh.css', html)
 
-    def test_homepage_keeps_the_existing_photography(self):
+    def test_homepage_keeps_the_requested_existing_media(self):
         html = self.client.get('/').get_data(as_text=True)
         for filename in (
-            'fjernvarme.jpg',
+            'fjernvarme-vejkort.png',
             'Pythonbillede.jpg',
             'SKylab%20billede.jpg',
             'DTU-B112%20efterår.jpg',

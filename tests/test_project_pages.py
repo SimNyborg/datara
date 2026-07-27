@@ -56,7 +56,37 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIn('EnergyMAPS', heating)
         self.assertIn('tabindex="-1"', heating)
         self.assertIn('/static/brugerunders%C3%B8gelse%20forside.jpg', automation)
-        self.assertIn('/static/fjernvarme-resultatkort.png', heating)
+        self.assertRegex(
+            heating,
+            r'<figure class="project-hero-figure">\s*'
+            r'<img src="/static/fjernvarme-resultatkort\.png"',
+        )
+        self.assertIn('/static/fjernvarme-vejkort.png', heating)
+        self.assertIn('/static/fjernvarme-overskudsvarmekilder.png', heating)
+        self.assertIn(
+            'Blandt analysens 12.592 bygninger viser grøn højt potentiale',
+            heating,
+        )
+        self.assertNotIn('Kortet viser 12.522 af de 12.527', heating)
+        self.assertNotIn('Vigtigt forbehold', heating)
+        self.assertNotIn(
+            'Resultatet er en screening – ikke dokumentation',
+            heating,
+        )
+        self.assertRegex(
+            heating,
+            r'<figure class="project-context-figure">\s*'
+            r'<img src="/static/fjernvarme\.jpg"',
+        )
+        self.assertNotIn(
+            'Fjernvarmerør under anlæg – den fysiske virkelighed',
+            heating,
+        )
+        self.assertRegex(
+            heating,
+            r'<h3>Fra bygninger til veje</h3>[\s\S]*?'
+            r'<img src="/static/fjernvarme-vejkort\.png"',
+        )
         self.assertIn('Fra skema til rapport', automation)
         self.assertIn('Fra bygninger til veje', heating)
         self.assertNotIn('projekt-automatisering.svg', automation)
@@ -78,6 +108,16 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIn('12,592', heating)
         self.assertIn('three-person project focused on', heating)
         self.assertIn('EnergyMAPS', heating)
+        self.assertIn(
+            'Among the 12,592 buildings in the analysis, green shows high potential',
+            heating,
+        )
+        self.assertIn('Potential sources of surplus heat', heating)
+        self.assertNotIn('An important limitation', heating)
+        self.assertNotIn(
+            'District-heating pipes under construction',
+            heating,
+        )
         self.assertIn('href="/setlang/da"', heating)
         self.assertNotIn('\ufffd', automation + heating)
 
@@ -103,9 +143,14 @@ class ProjectPageTests(unittest.TestCase):
         response = self.client.get('/projekter/999')
         self.assertEqual(response.status_code, 404)
 
-    def test_homepage_keeps_the_original_project_photos(self):
+    def test_homepage_uses_the_requested_project_media(self):
         homepage = self._html('/')
-        self.assertIn('/static/fjernvarme.jpg', homepage)
+        self.assertRegex(
+            homepage,
+            r'<a class="project-card" href="/projekter/2">\s*'
+            r'<img class="project-card-map" '
+            r'src="/static/fjernvarme-vejkort\.png"',
+        )
         self.assertIn('/static/Pythonbillede.jpg', homepage)
         self.assertNotIn('projekt-fjernvarme.svg', homepage)
         self.assertNotIn('projekt-automatisering.svg', homepage)

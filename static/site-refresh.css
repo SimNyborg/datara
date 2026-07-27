@@ -8,7 +8,8 @@
 
 /* Keep the desktop language control fully inside the right page rail. */
 @media (min-width: 801px) {
-  .home-page .navbar > .lang-switch {
+  .home-page .navbar > .lang-switch,
+  .site-navbar--inner > .lang-switch {
     position: absolute;
     top: 50%;
     right: calc(var(--page-margin-line-offset) + var(--header-rail-clearance));
@@ -222,7 +223,7 @@ input:focus-visible,
 .unified-footer {
   margin: 0;
   padding: clamp(38px, 5vw, 64px) max(24px, var(--page-margin-line-offset)) 24px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid rgba(96, 165, 250, 0.38);
   background: var(--accent-color);
   color: #fff;
 }
@@ -259,6 +260,10 @@ input:focus-visible,
   gap: 12px;
 }
 
+.unified-footer-contact {
+  font-style: normal;
+}
+
 .unified-footer-contact a,
 .unified-footer-links a {
   color: rgba(255, 255, 255, 0.86);
@@ -272,6 +277,11 @@ input:focus-visible,
   color: #fff;
   text-decoration: underline;
   text-underline-offset: 4px;
+}
+
+.unified-footer a:focus-visible {
+  outline: 3px solid #93c5fd;
+  outline-offset: 4px;
 }
 
 .unified-footer-copyright {
@@ -422,6 +432,12 @@ input:focus-visible,
   object-fit: cover;
 }
 
+.home-page .project-card img.project-card-map {
+  object-fit: contain;
+  object-position: center;
+  background: #f3f6f4;
+}
+
 .home-page .project-info {
   padding: 24px;
   text-align: left;
@@ -444,6 +460,7 @@ input:focus-visible,
 
 .home-page .services-grid {
   width: min(1180px, calc(100% - (var(--page-margin-line-offset) * 2) - 32px));
+  max-width: 1100px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(14px, 1.6vw, 18px);
   margin-top: 0;
@@ -934,6 +951,121 @@ input:focus-visible,
   text-wrap: pretty;
 }
 
+.project-detail-page--lavtemperaturfjernvarme .project-article-wrap {
+  padding-bottom: clamp(52px, 6vw, 76px);
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-context-figure {
+  width: min(calc(100% - 36px), 900px);
+  margin: 0 auto clamp(44px, 5vw, 64px);
+  overflow: hidden;
+  border-radius: clamp(16px, 2vw, 22px);
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.1);
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-context-figure img {
+  display: block;
+  width: 100%;
+  height: clamp(260px, 24vw, 320px);
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-section {
+  padding: clamp(56px, 6vw, 76px) clamp(18px, 4vw, 48px);
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-inner {
+  width: min(100%, 920px);
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-heading {
+  width: min(100%, 920px);
+  margin-inline: auto;
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(34px, 4vw, 48px);
+}
+
+.project-gallery-result {
+  min-width: 0;
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-result {
+  width: min(100%, 920px);
+  margin-inline: auto;
+}
+
+.project-detail-page--lavtemperaturfjernvarme
+  .project-gallery-result:not(.project-gallery-result--featured) {
+  width: min(100%, 800px);
+}
+
+.project-gallery-result-copy {
+  max-width: 680px;
+  margin-bottom: 20px;
+}
+
+.project-gallery-result-copy h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.3rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  text-wrap: balance;
+}
+
+.project-gallery-result-copy p {
+  margin: 12px 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+  text-wrap: pretty;
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-item {
+  border-radius: clamp(16px, 2vw, 20px);
+}
+
+.project-detail-page--lavtemperaturfjernvarme .project-gallery-item img {
+  height: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .project-detail-page--lavtemperaturfjernvarme .project-context-figure {
+    width: calc(100% - 32px);
+    margin-bottom: 52px;
+    border-radius: 16px;
+  }
+
+  .project-detail-page--lavtemperaturfjernvarme .project-context-figure img {
+    height: auto;
+    object-position: center;
+  }
+
+  .project-detail-page--lavtemperaturfjernvarme .project-gallery-section {
+    padding: 52px 16px;
+  }
+
+  .project-detail-page--lavtemperaturfjernvarme .project-gallery-grid {
+    margin-top: 30px;
+    gap: 42px;
+  }
+
+  .project-gallery-result-copy {
+    margin-bottom: 16px;
+  }
+
+  .project-detail-page--lavtemperaturfjernvarme .project-gallery-item {
+    border-radius: 14px;
+  }
+}
+
 @media (max-width: 900px) {
   .unified-footer-inner {
     grid-template-columns: 1fr 1fr;
@@ -1348,6 +1480,339 @@ input:focus-visible,
 @media (max-width: 420px) {
   .project-nav-link:not(.project-language-link) {
     display: none;
+  }
+}
+
+/* One header system across the homepage, service pages and project articles. */
+.content-page .site-navbar--inner,
+.project-detail-page .site-navbar--inner {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1200;
+  width: 100%;
+  min-height: 84px;
+  padding-inline: clamp(14px, 3vw, 38px);
+  background: rgba(15, 23, 42, 0.96) !important;
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.16);
+  backdrop-filter: blur(14px);
+  transform: none;
+}
+
+.content-page .site-navbar--inner::after,
+.project-detail-page .site-navbar--inner::after {
+  width: min(80%, 1160px);
+}
+
+.project-detail-page .site-navbar--inner {
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.project-detail-page .site-navbar--inner.navbar-hidden {
+  transform: translateY(calc(-100% - 8px));
+}
+
+.project-detail-page .site-navbar--inner.navbar-menu-open,
+.project-detail-page .site-navbar--inner:focus-within {
+  transform: none;
+}
+
+/* Restrained section polish: preserve the imagery and identity, reduce bulk. */
+.home-page .projects-carousel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100, 116, 139, 0.36) transparent;
+}
+
+.home-page .projects-carousel::-webkit-scrollbar {
+  height: 6px;
+}
+
+.home-page .projects-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.home-page .projects-carousel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.36);
+}
+
+.home-page .project-info p,
+.home-page .service-card p,
+.home-page .founders-intro,
+.home-page .contact-description {
+  text-wrap: pretty;
+}
+
+@media (min-width: 1400px) {
+  .home-page .project-card {
+    width: calc((100% - 90px) / 4);
+    min-width: calc((100% - 90px) / 4);
+    max-width: calc((100% - 90px) / 4);
+    flex-basis: calc((100% - 90px) / 4);
+  }
+}
+
+#kontakt .contact-layout {
+  border: 1px solid rgba(203, 213, 225, 0.74);
+  border-radius: 22px;
+  background: linear-gradient(135deg, #f8fbff 0%, #eef4fb 100%);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+#kontakt .contact-copy {
+  margin: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#kontakt .contact-visual {
+  margin: 0;
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+#kontakt .contact-info {
+  gap: 10px;
+  margin-top: 20px;
+}
+
+#kontakt .contact-item {
+  min-height: 52px;
+  padding: 12px 14px;
+  border: 1px solid rgba(203, 213, 225, 0.82);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: none;
+}
+
+#kontakt .contact-item:hover,
+#kontakt .contact-item:focus-visible {
+  border-color: rgba(30, 64, 175, 0.42);
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  transform: translateY(-1px);
+}
+
+#kontakt .contact-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (min-width: 861px) {
+  .home-page .about-datara-layout {
+    width: min(1080px, calc(100% - (var(--page-margin-line-offset) * 2) - 36px));
+  }
+
+  .home-page .about-datara-media {
+    height: clamp(350px, 28vw, 430px);
+    border-radius: 20px;
+  }
+
+  .home-page .about-datara-text {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    margin-left: -26px;
+    padding: clamp(30px, 3vw, 42px);
+    border-radius: 20px;
+  }
+
+  #kontakt .contact-layout {
+    width: min(980px, calc(100% - (var(--page-margin-line-offset) * 2) - 36px));
+    max-width: 980px;
+    grid-template-columns: minmax(0, 1.12fr) minmax(280px, 0.88fr);
+    align-items: stretch;
+    gap: clamp(20px, 3vw, 34px);
+    padding: clamp(22px, 2.6vw, 30px);
+  }
+
+  #kontakt .contact-copy {
+    padding: clamp(24px, 2.8vw, 36px);
+  }
+
+  #kontakt .contact-visual {
+    min-height: 286px;
+  }
+}
+
+@media (min-width: 901px) {
+  #hvemervi.founders-section,
+  #kontakt.contact-section {
+    padding-top: 64px !important;
+    padding-bottom: 64px !important;
+  }
+}
+
+@media (max-width: 860px) {
+  #kontakt.contact-section {
+    padding-top: 56px !important;
+    padding-bottom: 56px !important;
+  }
+
+  #kontakt .contact-layout {
+    width: min(720px, calc(100% - 32px));
+    max-width: 720px;
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 18px;
+  }
+
+  #kontakt .contact-copy {
+    padding: 10px 8px 0;
+  }
+
+  #kontakt .contact-copy h2,
+  #kontakt .contact-description {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  #kontakt .contact-info {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: none;
+    margin-top: 18px;
+  }
+
+  #kontakt .contact-item,
+  #kontakt .contact-item[href^="tel:"],
+  #kontakt .contact-item[href*="linkedin.com"],
+  #kontakt .contact-item[href^="mailto:"] {
+    grid-column: auto !important;
+    width: 100%;
+  }
+
+  #kontakt .contact-visual {
+    order: 2;
+    width: 100%;
+    height: clamp(120px, 20vw, 170px);
+    min-height: 0;
+    max-height: none;
+    margin-top: 18px;
+    aspect-ratio: auto;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 800px) {
+  .content-page .site-navbar--inner,
+  .project-detail-page .site-navbar--inner {
+    min-height: 68px;
+    padding: 0 14px;
+  }
+}
+
+@media (max-width: 900px) {
+  #projekter.projects-section {
+    padding-bottom: 44px !important;
+  }
+
+  #projekter .section-guide-line {
+    position: absolute;
+    bottom: 9px;
+    left: 50%;
+    height: 28px;
+    margin: 0;
+    transform: translateX(-50%) scaleY(0);
+  }
+
+  #projekter .section-guide-line.animate-in {
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+@media (max-width: 700px) {
+  .home-page .project-card {
+    width: min(80vw, 320px);
+    min-width: min(80vw, 320px);
+    flex-basis: min(80vw, 320px);
+  }
+
+  #kontakt.contact-section {
+    padding-top: 44px !important;
+    padding-bottom: 44px !important;
+  }
+
+  #kontakt .contact-layout {
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  #kontakt .contact-copy {
+    padding: 4px 2px 0;
+  }
+
+  #kontakt .contact-description {
+    font-size: 0.94rem;
+    line-height: 1.58;
+  }
+
+  #kontakt .contact-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px;
+  }
+
+  #kontakt .contact-item,
+  #kontakt .contact-item[href^="tel:"],
+  #kontakt .contact-item[href*="linkedin.com"] {
+    grid-column: auto !important;
+    min-height: 48px;
+    padding: 10px;
+  }
+
+  #kontakt .contact-item[href^="mailto:"] {
+    grid-column: 1 / -1 !important;
+    min-height: 48px;
+    padding: 10px;
+  }
+
+  #kontakt .contact-link-text,
+  #kontakt .contact-item[href^="tel:"] .contact-link-text,
+  #kontakt .contact-item[href*="linkedin.com"] .contact-link-text,
+  #kontakt .contact-item[href^="mailto:"] .contact-link-text {
+    font-size: clamp(0.76rem, 2.5vw, 0.88rem);
+    white-space: nowrap !important;
+    overflow-wrap: normal;
+  }
+
+  .content-cta {
+    padding-bottom: 48px;
+  }
+
+  .unified-footer {
+    padding: 30px 20px 20px;
+  }
+
+  .unified-footer-inner {
+    gap: 20px;
+  }
+
+  .unified-footer-brand p {
+    margin-top: 10px;
+  }
+
+  .unified-footer-contact,
+  .unified-footer-links {
+    gap: 9px;
+  }
+
+  .unified-footer-copyright {
+    margin-top: 26px;
+    padding-top: 16px;
+  }
+}
+
+@media (max-width: 350px) {
+  #kontakt .contact-info {
+    grid-template-columns: 1fr !important;
+  }
+
+  #kontakt .contact-item,
+  #kontakt .contact-item[href^="mailto:"] {
+    grid-column: 1 !important;
   }
 }
 

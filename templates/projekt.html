@@ -17,8 +17,8 @@
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260721') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260727-elegance') }}">
-    <script defer src="{{ url_for('static', filename='js/site-header.js', v='site-review-20260727-elegance') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260727-shared-footer') }}">
+    <script defer src="{{ url_for('static', filename='js/site-header.js', v='site-review-20260727-dynamic-header') }}"></script>
 </head>
 <body class="project-detail-page project-detail-page--{{ projekt.slug }}">
     <a class="project-skip-link" href="#project-article">{{ ui.skip_label }}</a>
@@ -81,6 +81,17 @@
                 </div>
             </div>
 
+            {% if projekt.context_image %}
+            <figure class="project-context-figure">
+                <img src="{{ url_for('static', filename=projekt.context_image.filename) }}"
+                     alt="{{ projekt.context_image_alt }}"
+                     width="{{ projekt.context_image.width }}"
+                     height="{{ projekt.context_image.height }}"
+                     loading="lazy"
+                     decoding="async">
+            </figure>
+            {% endif %}
+
             {% if projekt.gallery %}
             <section class="project-gallery-section" aria-labelledby="project-gallery-title">
                 <div class="project-gallery-inner">
@@ -90,17 +101,29 @@
                     </div>
                     <div class="project-gallery-grid">
                         {% for image in projekt.gallery %}
-                        <figure class="project-gallery-item">
-                            <img src="{{ url_for('static', filename=image.filename) }}"
-                                 alt="{{ image.alt }}"
-                                 width="{{ image.width }}"
-                                 height="{{ image.height }}"
-                                 loading="lazy"
-                                 decoding="async">
-                            {% if image.caption %}
-                            <figcaption>{{ image.caption }}</figcaption>
+                        <div class="project-gallery-result{% if image.featured %} project-gallery-result--featured{% endif %}">
+                            {% if image.title or image.description %}
+                            <div class="project-gallery-result-copy">
+                                {% if image.title %}
+                                <h3>{{ image.title }}</h3>
+                                {% endif %}
+                                {% if image.description %}
+                                <p>{{ image.description }}</p>
+                                {% endif %}
+                            </div>
                             {% endif %}
-                        </figure>
+                            <figure class="project-gallery-item">
+                                <img src="{{ url_for('static', filename=image.filename) }}"
+                                     alt="{{ image.alt }}"
+                                     width="{{ image.width }}"
+                                     height="{{ image.height }}"
+                                     loading="lazy"
+                                     decoding="async">
+                                {% if image.caption %}
+                                <figcaption>{{ image.caption }}</figcaption>
+                                {% endif %}
+                            </figure>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
@@ -120,15 +143,6 @@
         </article>
     </main>
 
-    <footer class="project-footer">
-        <div class="project-footer-inner">
-            <p>&copy; {{ year }} Datara I/S. {{ ui.rights }}</p>
-            <nav aria-label="{{ ui.nav_label }}">
-                <a href="{{ url_for('privatliv') }}">{{ ui.privacy }}</a>
-                <a href="{{ url_for('cookies') }}">Cookies</a>
-                <a href="{{ url_for('vilkar') }}">{{ ui.terms }}</a>
-            </nav>
-        </div>
-    </footer>
+    {% include '_content_footer.html' %}
 </body>
 </html>

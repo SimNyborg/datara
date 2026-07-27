@@ -76,7 +76,7 @@ def current_language():
 def inject_strings():
     lang = current_language()
     strings = translations.get(lang, translations['da'])
-    return dict(strings=strings)
+    return dict(strings=strings, footer_ui=CONTENT_UI[lang])
 
 # Favicons are served from the project's `static/` folder and referenced
 # in templates using `url_for('static', filename=...)`. No explicit routes
@@ -337,6 +337,11 @@ PROJECTS = {
         'image': 'fjernvarme-resultatkort.png',
         'image_width': 1280,
         'image_height': 720,
+        'context_image': {
+            'filename': 'fjernvarme.jpg',
+            'width': 3600,
+            'height': 2700,
+        },
         'content': {
             'da': {
                 'seo_title': 'Kortlægning af lavtemperaturfjernvarme | Datara',
@@ -345,7 +350,8 @@ PROJECTS = {
                 'title': 'Hvor kan fjernvarme ved lav temperatur fungere?',
                 'lead': 'Hvilke bygninger kan klare fjernvarme ved en lavere temperatur? Og hvor findes der virksomheder med varme til overs? Projektet samlede svarene i et kort til den tidlige varmeplanlægning.',
                 'image_alt': 'Resultatkort over bygningers potentiale for lavtemperaturfjernvarme i Lyngby-Taarbæk',
-                'image_caption': 'Grøn viser højt potentiale, gul muligt potentiale efter forbedringer og rød lavt potentiale. Kortet viser 12.522 af de 12.527 kategoriserede bygninger. Fem manglede koordinater, og yderligere 65 blev udeladt fra vurderingen.',
+                'image_caption': 'Blandt analysens 12.592 bygninger viser grøn højt potentiale, gul muligt potentiale efter forbedringer og rød lavt potentiale for at modtage lavtemperaturfjernvarme.',
+                'context_image_alt': 'Fjernvarmerør under anlæg på en boligvej',
                 'sections': [
                     {
                         'title': 'Bygningsdata samlet ét sted',
@@ -381,24 +387,26 @@ PROJECTS = {
                     {'value': '6.554', 'label': 'mulige efter forbedringer'},
                     {'value': '78', 'label': 'virksomheder screenet'},
                 ],
-                'note_title': 'Vigtigt forbehold',
-                'note': 'Resultatet er en screening – ikke dokumentation for, at en bestemt bygning kan tilsluttes, eller at en virksomhed kan levere varme.',
-                'gallery_title': 'Fra bygninger til veje',
-                'gallery_intro': 'Bygningsresultaterne blev også samlet på vejstrækninger. Det gør det lettere at se, hvor en nærmere undersøgelse kan begynde.',
+                'gallery_title': 'Resultaterne på kort',
+                'gallery_intro': 'To kort viser, hvor en nærmere undersøgelse kan begynde.',
                 'gallery': [
                     {
                         'filename': 'fjernvarme-vejkort.png',
                         'alt': 'Vejkort med grønne, gule og røde vejstrækninger i Lyngby-Taarbæk',
+                        'title': 'Fra bygninger til veje',
+                        'description': 'Bygningsresultaterne blev samlet på vejstrækninger, så sammenhængende områder er lettere at få øje på.',
                         'caption': 'Grønne veje har kun bygninger med højt eller muligt potentiale. Gule veje har højst 10 procent med lavt potentiale; røde veje har mere end 10 procent.',
                         'width': 1280,
                         'height': 720,
+                        'featured': True,
                     },
                     {
-                        'filename': 'fjernvarme.jpg',
-                        'alt': 'Fjernvarmerør under anlæg på en boligvej',
-                        'caption': 'Fjernvarmerør under anlæg – den fysiske virkelighed bag kortlægningen.',
-                        'width': 3600,
-                        'height': 2700,
+                        'filename': 'fjernvarme-overskudsvarmekilder.png',
+                        'alt': 'Kort over ti steder i Lyngby-Taarbæk udvalgt til nærmere undersøgelse som mulige kilder til overskudsvarme',
+                        'title': 'Mulige kilder til overskudsvarme',
+                        'description': 'Screeningen fremhævede ti steder til nærmere undersøgelse på baggrund af EnergyMAPS-data, kommunens energiplan og en visuel vurdering af køleanlæg.',
+                        'width': 1796,
+                        'height': 924,
                     },
                 ],
                 'cta_title': 'Ligger jeres data spredt?',
@@ -412,7 +420,8 @@ PROJECTS = {
                 'title': 'Where could low-temperature district heating work?',
                 'lead': 'Which buildings can be heated at a lower temperature, and where might local businesses have surplus heat to share? The project brought both sides together in a map for early-stage heat planning.',
                 'image_alt': 'Results map of buildings assessed for low-temperature district heating in Lyngby-Taarbæk',
-                'image_caption': 'Green shows high potential, yellow possible potential after improvements and red low potential. The map shows 12,522 of the 12,527 categorised buildings. Five had no coordinates, and a further 65 were excluded from the assessment.',
+                'image_caption': 'Among the 12,592 buildings in the analysis, green shows high potential, yellow possible potential after improvements and red low potential for low-temperature district heating.',
+                'context_image_alt': 'District-heating pipes being installed on a residential street',
                 'sections': [
                     {
                         'title': 'Building data in one place',
@@ -448,24 +457,26 @@ PROJECTS = {
                     {'value': '6,554', 'label': 'possible after improvements'},
                     {'value': '78', 'label': 'businesses screened'},
                 ],
-                'note_title': 'An important limitation',
-                'note': 'This is a screening result. It does not confirm that a particular building can be connected or that a business can supply heat.',
-                'gallery_title': 'From buildings to streets',
-                'gallery_intro': 'The building-level results were also grouped by street. This makes it easier to see where a closer assessment could begin.',
+                'gallery_title': 'The results on the map',
+                'gallery_intro': 'Two maps show where a closer assessment could begin.',
                 'gallery': [
                     {
                         'filename': 'fjernvarme-vejkort.png',
                         'alt': 'Street map with green, yellow and red sections in Lyngby-Taarbæk',
+                        'title': 'From buildings to streets',
+                        'description': 'The building-level results were grouped by street, making continuous areas easier to spot.',
                         'caption': 'Green streets contain only buildings with high or possible potential. Yellow streets have no more than 10% in the low-potential group; red streets have more than 10%.',
                         'width': 1280,
                         'height': 720,
+                        'featured': True,
                     },
                     {
-                        'filename': 'fjernvarme.jpg',
-                        'alt': 'District-heating pipes being installed on a residential street',
-                        'caption': 'District-heating pipes under construction — the physical work behind the map.',
-                        'width': 3600,
-                        'height': 2700,
+                        'filename': 'fjernvarme-overskudsvarmekilder.png',
+                        'alt': 'Map of ten sites in Lyngby-Taarbæk selected for closer investigation as potential sources of surplus heat',
+                        'title': 'Potential sources of surplus heat',
+                        'description': 'The screening highlighted ten sites for closer investigation, based on EnergyMAPS data, the municipal energy plan and a visual review of cooling systems.',
+                        'width': 1796,
+                        'height': 924,
                     },
                 ],
                 'cta_title': 'Is your data spread across several sources?',

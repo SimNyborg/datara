@@ -39,7 +39,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260727-elegance">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260727-shared-footer">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -95,7 +95,7 @@
 
             <a class="project-card" href="{{ url_for('projekt_detail', projekt_id=2) }}">
 
-                <img src="/static/fjernvarme.jpg" alt="{% if strings.lang_code == 'da' %}Fjernvarmerør under anlæg på en boligvej{% else %}District-heating pipes being installed on a residential street{% endif %}" width="3600" height="2700" loading="lazy" decoding="async">
+                <img class="project-card-map" src="/static/fjernvarme-vejkort.png" alt="{% if strings.lang_code == 'da' %}Vejkort med grønne, gule og røde vejstrækninger i Lyngby-Taarbæk{% else %}Street map with green, yellow and red sections in Lyngby-Taarbæk{% endif %}" width="1280" height="720" loading="lazy" decoding="async">
 
                 <div class="project-info">
 
@@ -434,47 +434,7 @@
 
     
 
-    <footer class="site-footer" id="footer">
-
-        <div class="footer-content">
-
-            <div class="footer-left">
-
-                <div class="footer-copyright">&copy; {{ year }} Datara I/S. {% if strings.lang_code == 'da' %}Alle rettigheder forbeholdes.{% else %}All rights reserved.{% endif %}</div>
-
-            </div>
-
-            <div class="footer-center">
-
-                <div class="footer-contact-prompt">
-                    <strong>{% if strings.lang_code == 'da' %}Har I en opgave i tankerne?{% else %}Have a task in mind?{% endif %}</strong>
-                    <p>{% if strings.lang_code == 'da' %}Skriv til os, så finder vi ud af, om vi kan hjælpe.{% else %}Email us and we will work out whether we can help.{% endif %}</p>
-                    <a href="mailto:shn@datara.dk">shn@datara.dk</a>
-                </div>
-
-            </div>
-
-            <div class="footer-right">
-
-                <div class="footer-links">
-
-                    <a href="/privatliv">{% if strings.lang_code == 'da' %}Privatliv{% else %}Privacy{% endif %}</a>
-
-                    <a href="/cookies">Cookies</a>
-
-                    <a href="/vilkar">{% if strings.lang_code == 'da' %}Vilkår{% else %}Terms{% endif %}</a>
-
-                </div>
-
-                <div class="footer-social">
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </footer>
+    {% include '_content_footer.html' %}
 
     {% endblock %}
 
