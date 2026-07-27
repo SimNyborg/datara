@@ -1,0 +1,82 @@
+{% extends 'content_base.html' %}
+
+{% block title %}{{ service.seo_title }}{% endblock %}
+{% block meta_description %}{{ service.meta_description }}{% endblock %}
+{% block body_class %}service-page service-page--{{ service.slug }}{% endblock %}
+
+{% block content %}
+<article>
+    <header class="service-hero">
+        <div class="service-hero-inner">
+            <p class="content-eyebrow">{{ ui.service_eyebrow }}</p>
+            <h1>{{ service.title }}</h1>
+            <p class="service-lead">{{ service.lead }}</p>
+            <a class="content-primary-button" href="{{ url_for('index') }}#kontakt">{{ ui.contact_label }}</a>
+        </div>
+    </header>
+
+    <section class="content-section service-benefits" aria-labelledby="benefits-title">
+        <div class="content-section-inner">
+            <div class="content-section-heading">
+                <p class="content-section-number" aria-hidden="true">01</p>
+                <h2 id="benefits-title">{{ ui.benefits_title }}</h2>
+            </div>
+            <div class="service-benefit-grid">
+                {% for benefit in service.benefits %}
+                <article class="service-benefit-card">
+                    <h3>{{ benefit.title }}</h3>
+                    <p>{{ benefit.text }}</p>
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <section class="content-section content-section--tinted service-process" aria-labelledby="process-title">
+        <div class="content-section-inner">
+            <div class="content-section-heading">
+                <p class="content-section-number" aria-hidden="true">02</p>
+                <h2 id="process-title">{{ ui.process_title }}</h2>
+            </div>
+            <ol class="service-step-list">
+                {% for step in service.steps %}
+                <li>
+                    <span class="service-step-number" aria-hidden="true">{{ '%02d'|format(loop.index) }}</span>
+                    <div>
+                        <h3>{{ step.title }}</h3>
+                        <p>{{ step.text }}</p>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </section>
+
+    <section class="content-section service-examples" aria-labelledby="examples-title">
+        <div class="content-section-inner service-examples-layout">
+            <div class="content-section-heading">
+                <p class="content-section-number" aria-hidden="true">03</p>
+                <h2 id="examples-title">{{ ui.examples_title }}</h2>
+            </div>
+            <ul class="service-example-list">
+                {% for example in service.examples %}
+                <li>{{ example }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+
+    <section class="content-cta" aria-labelledby="service-cta-title">
+        <div class="content-cta-inner">
+            <h2 id="service-cta-title">{{ service.cta_title }}</h2>
+            <p>{{ service.cta_text }}</p>
+            <div class="content-cta-actions">
+                <a class="content-primary-button" href="{{ url_for('index') }}#kontakt">{{ ui.contact_label }}</a>
+                {% if service.case_href %}
+                <a class="content-secondary-button" href="{{ service.case_href }}">{{ service.case_text }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</article>
+{% endblock %}

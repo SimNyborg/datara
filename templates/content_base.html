@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Datara{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+    <link rel="canonical" href="{{ request.base_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ self.title()|striptags|trim }}">
+    <meta property="og:description" content="{{ self.meta_description()|striptags|trim }}">
+    <meta property="og:image" content="{{ url_for('static', filename='København baggrundsbillede test.jpg', _external=True) }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=site-review-20260721">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css') }}?v=site-review-20260721">
+</head>
+<body class="content-page {% block body_class %}{% endblock %}">
+    <a class="site-skip-link" href="#main-content">{{ ui.skip_label }}</a>
+    {% include '_content_header.html' %}
+    <main id="main-content" tabindex="-1">
+        {% block content %}{% endblock %}
+    </main>
+    {% include '_content_footer.html' %}
+</body>
+</html>

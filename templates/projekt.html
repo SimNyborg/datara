@@ -1,132 +1,144 @@
-{% extends 'index.html' %}
-
-{% block nav %}{% endblock %}
-
-{% block content %}
-
-<div class="project-hero-image-wrapper">
-
-  <img src="/static/{{ projekt.image }}" alt="Billede af {{ projekt.title }}" class="project-hero-image">
-
-  <div class="project-hero-title-overlay">
-
-    <h1>Fra håndskrevne kommentarer til værdifuld indsigt</h1>
-
-  </div>
-
-</div>
-
-<div class="project-underline"></div>
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function() {
-
-  const line = document.querySelector('.project-underline');
-
-  if (line) {
-
-    const observer = new window.IntersectionObserver((entries) => {
-
-      entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-          entry.target.classList.add('animate-in');
-
-          observer.unobserve(entry.target);
-
-        }
-
-      });
-
-    }, { threshold: 0.5 });
-
-    observer.observe(line);
-
-  }
-
-});
-
-</script>
-
-<section class="project-main-content">
-
-  <div class="project-desc">
-
-    <h2>Om projektet</h2>
-
-    <p>Et affaldsselskab ønskede <span class="highlight">en grundig analyse</span> af borgernes oplevelser på deres mere end ti genbrugspladser. Det er dog vanskeligt i praksis, når pladserne dagligt besøges af tusindvis af brugere. Selskabet havde gode erfaringer med papirspørgeskemaer, som giver en høj svarprocent og fungerer uanset vejrforhold, men metoden skabte en tydelig udfordring: Hvordan digitaliserer man tusindvis af skemaer med håndskrevne kommentarer og krydser, som ofte lander uden for felterne?</p>
-
-    <p>Hidtil blev alle svar <span class="highlight">tastet manuelt ind i Excel</span>, kryds for kryds og kommentar for kommentar. Det krævede mange arbejdstimer for hver undersøgelse, og medarbejderne oplevede opgaven som ensformig.</p>
-
-    <p>For at afhjælpe dette udviklede vi <span class="highlight">en automatiseret løsning</span>, hvor spørgeskemaerne blot indscannes. En maskinlæringsmodel identificerer derefter både markeringer og håndskrevne tekster og overfører automatisk alle data til Excel, klar til videre analyse.</p>
-
-    <p>Resultatet var markant. Arbejdet blev reduceret fra omtrent en times manuel indtastning pr. 100 spørgeskemaer til cirka fem minutter, hvilket svarer til <span class="highlight">en tidsbesparelse på over 90 procent</span>. Den frigjorte tid kan nu bruges på opgaver, der skaber langt større værdi.</p>
-
-    <p>Derefter gennemgik vi datamaterialet for at <span class="highlight">identificere centrale indsigter</span> og udarbejdede en rapport med hovedpointer for hver genbrugsplads, suppleret af tydelige datavisualiseringer og perspektiver på, hvordan de enkelte pladser havde udviklet sig siden den forrige undersøgelse.</p>
-
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; justify-items: center; max-width: 650px; margin: 32px auto; align-items: start;">
-
-      {% if projekt.gallery and projekt.gallery|length > 0 %}
-
-        <img src="/static/{{ projekt.gallery[0] }}" alt="Billede af {{ projekt.title }}" style="display:block; margin:auto; max-height:260px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-      {% endif %}
-
-      <img src="/static/spørgeskema.jpg" alt="Spørgeskema" style="display:block; margin:auto; max-height:260px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-      {% if projekt.gallery and projekt.gallery|length > 1 %}
-
-        {% if projekt.gallery|length > 1 %}
-
-          <img src="/static/{{ projekt.gallery[1] }}" alt="Billede af {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-        {% endif %}
-
-        {% if projekt.gallery|length > 2 %}
-
-          <img src="/static/{{ projekt.gallery[2] }}" alt="Billede af {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-        {% endif %}
-
-        {% if projekt.gallery|length > 3 %}
-
-          {# Render any remaining images after the first three, using the smaller bottom size #}
-
-          {% for img in projekt.gallery[3:] %}
-
-            <img src="/static/{{ img }}" alt="Billede af {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-          {% endfor %}
-
-        {% endif %}
-
-      {% endif %}
-
-      <img src="/static/Excel brugerundersøgelse output.png" alt="Excel output" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-      <img src="/static/graf brugerundersøgelse.png" alt="Graf" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<section class="project-cta">
-
-  <a href="/#kontakt" class="cta-btn">Kontakt os om lignende projekter</a>
-
-  <div style="margin-top: 64px;">
-
-    <nav class="breadcrumb"><a href="/#projekter">{{ strings.breadcrumb_back }}</a></nav>
-
-  </div>
-
-</section>
-
-{% endblock %} 
-
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ projekt.seo_title }}</title>
+    <meta name="description" content="{{ projekt.meta_description }}">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="{{ projekt.seo_title }}">
+    <meta property="og:description" content="{{ projekt.meta_description }}">
+    <meta property="og:image" content="{{ url_for('static', filename=projekt.image, _external=True) }}">
+    <link rel="canonical" href="{{ url_for('projekt_detail', projekt_id=projekt_id, _external=True) }}">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260721') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260721') }}">
+</head>
+<body class="project-detail-page project-detail-page--{{ projekt.slug }}">
+    <a class="project-skip-link" href="#project-article">{{ ui.skip_label }}</a>
+
+    <header class="project-site-header">
+        <nav class="project-site-nav" aria-label="{{ ui.nav_label }}">
+            <a class="navbar-logo project-brand" href="{{ url_for('index') }}" aria-label="{{ ui.home_label }}">Datara</a>
+            <div class="project-nav-actions">
+                <a class="project-nav-link" href="{{ url_for('index') }}#projekter">{{ ui.all_projects }}</a>
+                <a class="project-nav-link project-language-link"
+                   href="{{ url_for('set_language', lang=alternate_lang) }}"
+                   hreflang="{{ alternate_lang }}"
+                   aria-label="{{ ui.language_label }}">{{ ui.language_short }}</a>
+            </div>
+        </nav>
+    </header>
+
+    <main id="project-article" tabindex="-1">
+        <article>
+            <header class="project-intro">
+                <div class="project-intro-inner">
+                    <div class="project-intro-copy">
+                        <p class="project-eyebrow">{{ projekt.eyebrow }}</p>
+                        <h1>{{ projekt.title }}</h1>
+                        <p class="project-lead">{{ projekt.lead }}</p>
+                    </div>
+                    <figure class="project-hero-figure">
+                        <img src="{{ url_for('static', filename=projekt.image) }}"
+                             alt="{{ projekt.image_alt }}"
+                             width="{{ projekt.image_width }}"
+                             height="{{ projekt.image_height }}"
+                             fetchpriority="high">
+                        {% if projekt.image_caption %}
+                        <figcaption>{{ projekt.image_caption }}</figcaption>
+                        {% endif %}
+                    </figure>
+                </div>
+            </header>
+
+            <div class="project-article-wrap">
+                <div class="project-article-layout">
+                    <div class="project-story">
+                        {% for section in projekt.sections %}
+                        <section class="project-story-section" aria-labelledby="section-{{ loop.index }}">
+                            <h2 id="section-{{ loop.index }}">{{ section.title }}</h2>
+                            {% for paragraph in section.paragraphs %}
+                            <p>{{ paragraph }}</p>
+                            {% endfor %}
+                        </section>
+                        {% endfor %}
+
+                        {% if projekt.note %}
+                        <aside class="project-note" aria-labelledby="project-note-title">
+                            <h2 id="project-note-title">{{ projekt.note_title }}</h2>
+                            <p>{{ projekt.note }}</p>
+                        </aside>
+                        {% endif %}
+                    </div>
+
+                    <aside class="project-facts" aria-labelledby="project-facts-title">
+                        <h2 id="project-facts-title">{{ projekt.stats_title }}</h2>
+                        <dl>
+                            {% for stat in projekt.stats %}
+                            <div class="project-fact">
+                                <dt>{{ stat.value }}</dt>
+                                <dd>{{ stat.label }}</dd>
+                            </div>
+                            {% endfor %}
+                        </dl>
+                    </aside>
+                </div>
+            </div>
+
+            {% if projekt.gallery %}
+            <section class="project-gallery-section" aria-labelledby="project-gallery-title">
+                <div class="project-gallery-inner">
+                    <div class="project-gallery-heading">
+                        <h2 id="project-gallery-title">{{ projekt.gallery_title }}</h2>
+                        <p>{{ projekt.gallery_intro }}</p>
+                    </div>
+                    <div class="project-gallery-grid">
+                        {% for image in projekt.gallery %}
+                        <figure class="project-gallery-item">
+                            <img src="{{ url_for('static', filename=image.filename) }}"
+                                 alt="{{ image.alt }}"
+                                 width="{{ image.width }}"
+                                 height="{{ image.height }}"
+                                 loading="lazy"
+                                 decoding="async">
+                            {% if image.caption %}
+                            <figcaption>{{ image.caption }}</figcaption>
+                            {% endif %}
+                        </figure>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <section class="project-contact-section" aria-labelledby="project-contact-title">
+                <div class="project-contact-inner">
+                    <h2 id="project-contact-title">{{ projekt.cta_title }}</h2>
+                    <p>{{ projekt.cta_text }}</p>
+                    <div class="project-contact-actions">
+                        <a class="project-button project-button--primary" href="{{ url_for('index') }}#kontakt">{{ projekt.cta_label }}</a>
+                        <a class="project-button project-button--secondary" href="{{ url_for('index') }}#projekter">{{ ui.back_label }}</a>
+                    </div>
+                </div>
+            </section>
+        </article>
+    </main>
+
+    <footer class="project-footer">
+        <div class="project-footer-inner">
+            <p>&copy; {{ year }} Datara I/S. {{ ui.rights }}</p>
+            <nav aria-label="{{ ui.nav_label }}">
+                <a href="{{ url_for('privatliv') }}">{{ ui.privacy }}</a>
+                <a href="{{ url_for('cookies') }}">Cookies</a>
+                <a href="{{ url_for('vilkar') }}">{{ ui.terms }}</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

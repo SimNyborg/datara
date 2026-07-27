@@ -1,0 +1,14 @@
+{% extends 'content_base.html' %}
+
+{% block title %}404 | Datara{% endblock %}
+{% block meta_description %}{{ ui.not_found_text }}{% endblock %}
+{% block body_class %}not-found-page{% endblock %}
+
+{% block content %}
+<div class="not-found-shell">
+    <p class="content-eyebrow">404</p>
+    <h1>{{ ui.not_found_title }}</h1>
+    <p>{{ ui.not_found_text }}</p>
+    <a class="content-primary-button" href="{{ url_for('index') }}">{{ ui.back_home }}</a>
+</div>
+{% endblock %}

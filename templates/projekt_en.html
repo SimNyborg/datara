@@ -1,71 +1,0 @@
-{% extends 'index.html' %}
-{% block nav %}{% endblock %}
-{% block content %}
-<div class="project-hero-image-wrapper">
-  <img src="/static/{{ projekt.image }}" alt="Image of {{ projekt.title }}" class="project-hero-image">
-  <div class="project-hero-title-overlay">
-    <h1>From handwritten comments to valuable insight</h1>
-  </div>
-</div>
-<div class="project-underline"></div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const line = document.querySelector('.project-underline');
-  if (line) {
-    const observer = new window.IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    observer.observe(line);
-  }
-});
-</script>
-<section class="project-main-content">
-  <div class="project-desc">
-    <h2>About the project</h2>
-    <p>A municipal waste management company sought a comprehensive analysis of citizens� experiences across its more than ten recycling centers. In practice, this posed a challenge, as each site is visited by thousands of users every day. The company had achieved strong results using paper-based questionnaires, which deliver high response rates and function reliably regardless of weather conditions. However, this approach presented a significant drawback: digitizing thousands of forms containing handwritten comments and markings that often fell outside predefined fields.</p>
-
-    <p>Previously, all responses were entered manually into Excel, mark by mark and comment by comment. This process required substantial staff time for each survey and was widely regarded as repetitive and inefficient.</p>
-
-    <p>To address this challenge, we developed an automated solution in which completed questionnaires are simply scanned. A machine learning model then identifies both checkmarks and handwritten text and automatically transfers the data into Excel, making it immediately available for further analysis.</p>
-
-    <p>The impact was substantial. Processing time was reduced from approximately one hour per 100 questionnaires to around five minutes, a time saving of more than 90%. The time released through automation can now be allocated to tasks that generate significantly greater value.</p>
-
-    <p>Finally, we reviewed the collected data to identify key insights and produced a report highlighting the main findings for each recycling center. The report was supported by clear data visualizations and included recommendations, as well as an overview of how each site had evolved since the previous survey.</p>
-    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; justify-items: center; max-width: 650px; margin: 32px auto; align-items: start;">
-      {% if projekt.gallery and projekt.gallery|length > 0 %}
-        <img src="/static/{{ projekt.gallery[0] }}" alt="Image of {{ projekt.title }}" style="display:block; margin:auto; max-height:260px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-      {% endif %}
-      <img src="/static/sp�rgeskema.jpg" alt="Questionnaire" style="display:block; margin:auto; max-height:260px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-      {% if projekt.gallery and projekt.gallery|length > 1 %}
-        {% if projekt.gallery|length > 1 %}
-          <img src="/static/{{ projekt.gallery[1] }}" alt="Image of {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-        {% endif %}
-        {% if projekt.gallery|length > 2 %}
-          <img src="/static/{{ projekt.gallery[2] }}" alt="Image of {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-        {% endif %}
-        {% if projekt.gallery|length > 3 %}
-          {# Render any remaining images after the first three, using the smaller bottom size #}
-          {% for img in projekt.gallery[3:] %}
-            <img src="/static/{{ img }}" alt="Image of {{ projekt.title }}" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-          {% endfor %}
-        {% endif %}
-      {% endif %}
-      <img src="/static/Excel brugerunders�gelse output.png" alt="Excel output" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-      <img src="/static/graf brugerunders�gelse.png" alt="Chart" style="display:block; margin:auto; max-height:220px; width:auto; max-width:100%; border-radius: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.1);">
-    </div>
-  </div>
-</section>
-
-<section class="project-cta">
-  <a href="/#kontakt" class="cta-btn">Contact us about similar projects</a>
-  <div style="margin-top: 64px;">
-    <nav class="breadcrumb"><a href="/#projekter">{{ strings.breadcrumb_back }}</a></nav>
-  </div>
-</section>
-{% endblock %}
-

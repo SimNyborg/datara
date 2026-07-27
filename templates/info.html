@@ -1,0 +1,27 @@
+{% extends 'content_base.html' %}
+
+{% block title %}{{ page.seo_title }}{% endblock %}
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
+{% block body_class %}info-content-page{% endblock %}
+
+{% block content %}
+<div class="info-page-shell">
+    <article class="info-article">
+        <p class="content-eyebrow">Datara</p>
+        <h1>{{ page.title }}</h1>
+        <p class="info-intro">{{ page.intro }}</p>
+        {% for section in page.sections %}
+        <section aria-labelledby="info-section-{{ loop.index }}">
+            <h2 id="info-section-{{ loop.index }}">{{ section['title'] }}</h2>
+            {% if section.get('text') %}<p>{{ section['text'] }}</p>{% endif %}
+            {% if section.get('items') %}
+            <ul>
+                {% for item in section['items'] %}<li>{{ item }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+        </section>
+        {% endfor %}
+        <a class="content-secondary-button" href="{{ url_for('index') }}">{{ ui.back_home }}</a>
+    </article>
+</div>
+{% endblock %}

@@ -12,7 +12,13 @@
 
     {% block meta_description %}
 
-    <meta name="description" content="{% if strings.lang_code == 'da' %}Vi hjælper virksomheder med Automatisering, analyser og digitale løsninger, der effektiviserer arbejdsgange og styrker beslutninger.{% else %}We help businesses with automation, analytics and digital solutions that streamline workflows and strengthen decision-making.{% endif %}">
+    <meta name="description" content="{% if strings.lang_code == 'da' %}Datara automatiserer arbejdsgange, analyserer data og bygger digitale løsninger, der passer til jeres hverdag.{% else %}Datara automates workflows, analyses data and builds digital tools that fit the way you work.{% endif %}">
+
+    <link rel="canonical" href="{{ request.base_url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{% if strings.lang_code == 'da' %}Automatisering &amp; analyse for virksomheder | Datara{% else %}Automation &amp; analytics for businesses | Datara{% endif %}">
+    <meta property="og:description" content="{% if strings.lang_code == 'da' %}Datara automatiserer arbejdsgange, analyserer data og bygger digitale løsninger, der passer til jeres hverdag.{% else %}Datara automates workflows, analyses data and builds digital tools that fit the way you work.{% endif %}">
+    <meta property="og:image" content="{{ url_for('static', filename='København baggrundsbillede test.jpg', _external=True) }}">
 
     {% endblock %}
 
@@ -32,9 +38,10 @@
 
     
 
-    <link rel="stylesheet" href="/static/style.css?v=insights-gap-equalized-20260316">
+    <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260721">
 
-    <!-- Leaflet CSS til Indsigt-sektionen �?? midlertidigt deaktiveret
+    <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/leaflet/leaflet.css') }}">
 
@@ -42,13 +49,15 @@
 
 </head>
 
-<body id="top">
+<body id="top" class="home-page">
+
+    <a class="site-skip-link" href="#main-content">{% if strings.lang_code == 'da' %}Gå til indholdet{% else %}Skip to content{% endif %}</a>
 
     
 
     {% block nav %}
 
-    <nav class="navbar">
+    <nav class="navbar" aria-label="{% if strings.lang_code == 'da' %}Hovedmenu{% else %}Main navigation{% endif %}">
 
         <div class="navbar-section navbar-left navbar-logo-mobile">
 
@@ -78,7 +87,11 @@
 
         </div>
 
-            <button class="navbar-burger" id="navbar-burger" aria-label="{% if strings.lang_code == 'da' %}�?bn menu{% else %}Open menu{% endif %}">
+            <button class="navbar-burger" id="navbar-burger" type="button"
+                    aria-label="{% if strings.lang_code == 'da' %}Åbn menu{% else %}Open menu{% endif %}"
+                    aria-expanded="false" aria-controls="navbar-mobile-menu"
+                    data-label-open="{% if strings.lang_code == 'da' %}Åbn menu{% else %}Open menu{% endif %}"
+                    data-label-close="{% if strings.lang_code == 'da' %}Luk menu{% else %}Close menu{% endif %}">
 
             <span></span>
 
@@ -88,23 +101,13 @@
 
         </button>
 
-        <!-- Language flag button placed at the end of the navbar so it sits at the far right -->
-
-        <a class="lang-switch" href="/setlang/{{ 'en' if strings.lang_code == 'da' else 'da' }}" aria-label="{% if strings.lang_code == 'da' %}Skift sprog{% else %}Switch language{% endif %}">
-
-            {% if strings.lang_code == 'da' %}
-
-            <svg width="28" height="20" viewBox="0 0 60 30" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"><clipPath id="t"><rect width="60" height="30" rx="2"/></clipPath><g clip-path="url(#t)"><rect width="60" height="30" fill="#012169"/><path d="M0 0 L60 30 M60 0 L0 30" stroke="#fff" stroke-width="6"/><path d="M0 0 L60 30 M60 0 L0 30" stroke="#C8102E" stroke-width="4"/><path d="M30 0 L30 30 M0 15 L60 15" stroke="#fff" stroke-width="10"/><path d="M30 0 L30 30 M0 15 L60 15" stroke="#C8102E" stroke-width="6"/></g></svg>
-
-            {% else %}
-
-            <svg width="28" height="20" viewBox="0 0 28 20" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true"><rect width="28" height="20" fill="#C60C30"/><rect x="6" y="0" width="4" height="20" fill="#fff"/><rect x="0" y="8" width="28" height="4" fill="#fff"/></svg>
-
-            {% endif %}
-
+        <a class="lang-switch" href="/setlang/{{ 'en' if strings.lang_code == 'da' else 'da' }}"
+           hreflang="{{ 'en' if strings.lang_code == 'da' else 'da' }}"
+           aria-label="{% if strings.lang_code == 'da' %}Læs siden på engelsk{% else %}Read this page in Danish{% endif %}">
+            {% if strings.lang_code == 'da' %}EN{% else %}DA{% endif %}
         </a>
 
-        <div class="navbar-mobile-menu" id="navbar-mobile-menu">
+        <div class="navbar-mobile-menu" id="navbar-mobile-menu" aria-label="{% if strings.lang_code == 'da' %}Mobilmenu{% else %}Mobile navigation{% endif %}">
 
             <a href="#projekter">{{ strings.nav_projekter }}</a>
 
@@ -131,14 +134,20 @@
     
 
     {% block content %}
+    <main id="main-content" tabindex="-1">
 
     <div class="video-background">
 
         <div class="video-overlay">
 
-            <h1 id="typewriter-h1" data-text="{{ strings.hero_h1 }}"></h1>
+            <h1 id="typewriter-h1" data-text="{{ strings.hero_h1 }}">{{ strings.hero_h1 }}</h1>
 
-            <p id="typewriter-p" style="opacity: 0;">{{ strings.hero_p.replace('\n','<br>')|safe }}</p>
+            <p id="typewriter-p">{{ strings.hero_p }}</p>
+
+            <div class="home-hero-actions">
+                <a class="home-hero-button" href="#projekter">{{ strings.hero_primary }}</a>
+                <a class="home-hero-button home-hero-button--secondary" href="#kontakt">{{ strings.hero_secondary }}</a>
+            </div>
 
         </div>
 
@@ -154,29 +163,29 @@
 
         <div class="projects-carousel">
 
-            <a class="project-card" href="/projekter/1">
+            <a class="project-card" href="{{ url_for('projekt_detail', projekt_id=2) }}">
 
-                <img src="/static/fjernvarme.jpg" alt="Fjernvarmekortlægning billede" onerror="this.onerror=null;this.src='/static/Alpha_Ventus_Windmills.webp';">
+                <img src="/static/fjernvarme.jpg" alt="{% if strings.lang_code == 'da' %}Fjernvarmerør under anlæg på en boligvej{% else %}District-heating pipes being installed on a residential street{% endif %}" width="3600" height="2700" loading="lazy" decoding="async">
 
                 <div class="project-info">
 
                     <h3>{% if strings.lang_code == 'da' %}Fjernvarmekortlægning{% else %}District heating mapping{% endif %}</h3>
 
-                    <p>{% if strings.lang_code == 'da' %}Vi kortlagde bygninger og virksomheder med potentiale for at modtage og levere lavtemperaturfjernvarme{% else %}We mapped buildings and companies with potential to receive and deliver low-temperature district heating.{% endif %}</p>
+                    <p>{% if strings.lang_code == 'da' %}Vi samlede bygningsdata og lokale varmekilder i et kort til den første screening af lavtemperaturfjernvarme.{% else %}We brought building data and local heat sources together in a map for an initial screening of low-temperature district heating.{% endif %}</p>
 
                 </div>
 
             </a>
 
-            <a class="project-card" href="/projekter/1">
+            <a class="project-card" href="{{ url_for('projekt_detail', projekt_id=1) }}">
 
-                <img src="/static/Pythonbillede.jpg" alt="Automatisering billede">
+                <img src="/static/Pythonbillede.jpg" alt="{% if strings.lang_code == 'da' %}Kode fra automatiseringen af papirspørgeskemaer{% else %}Code used to automate the paper questionnaires{% endif %}" width="821" height="493" loading="lazy" decoding="async">
 
                 <div class="project-info">
 
                     <h3>{% if strings.lang_code == 'da' %}Automatisering{% else %}Automation{% endif %}</h3>
 
-                    <p>{% if strings.lang_code == 'da' %}Vi hjalp en kunde med at automatisere digitaliseringen af papirspørgeskemaer og reducere manuelt arbejde{% else %}How we helped a client digitize thousands of paper questionnaires and save many hours of manual work per survey.{% endif %}</p>
+                    <p>{% if strings.lang_code == 'da' %}Et program reducerede tastearbejdet for 8.000 papirskemaer fra cirka 80 timer til under syv.{% else %}A program cut the data-entry work for 8,000 paper forms from roughly 80 hours to under seven.{% endif %}</p>
 
                 </div>
 
@@ -184,15 +193,15 @@
 
             <div class="project-card disabled" aria-disabled="true">
 
-                <span class="coming-soon-badge">{% if strings.lang_code == 'da' %}Endnu ikke færdiggjort{% else %}Coming soon{% endif %}</span>
+                <span class="coming-soon-badge">{% if strings.lang_code == 'da' %}På vej{% else %}Coming soon{% endif %}</span>
 
-                <img src="/static/Map%20debat.png" alt="Kortlægning af offentlig debat billede">
+                <img src="/static/Map%20debat.png" alt="{% if strings.lang_code == 'da' %}Kort over aktører i GMO-debatten{% else %}Map of participants in the GMO debate{% endif %}" width="1054" height="884" loading="lazy" decoding="async">
 
                 <div class="project-info">
 
-                    <h3>{% if strings.lang_code == 'da' %}Kortlægning af GMO-debat{% else %}Mapping of GMO debate{% endif %}</h3>
+                    <h3>{% if strings.lang_code == 'da' %}Kortlægning af GMO-debat{% else %}Mapping the GMO debate{% endif %}</h3>
 
-                    <p>{% if strings.lang_code == 'da' %}Vi analyserede GMO-debatten online og identificerede de centrale aktører{% else %}We analyzed the GMO debate online and identified the key actors{% endif %}</p>
+                    <p>{% if strings.lang_code == 'da' %}Vi kortlagde GMO-debatten på nettet og fandt de centrale aktører.{% else %}We mapped the online GMO debate and identified the main participants.{% endif %}</p>
 
                 </div>
 
@@ -200,15 +209,15 @@
 
             <div class="project-card disabled" aria-disabled="true">
 
-                <span class="coming-soon-badge">{% if strings.lang_code == 'da' %}Endnu ikke færdiggjort{% else %}Coming soon{% endif %}</span>
+                <span class="coming-soon-badge">{% if strings.lang_code == 'da' %}På vej{% else %}Coming soon{% endif %}</span>
 
-                <img src="/static/appudvikling foto.jpg" alt="Appudvikling billede">
+                <img src="/static/appudvikling foto.jpg" alt="{% if strings.lang_code == 'da' %}Skærmbillede fra udviklingen af en genbrugsapp{% else %}Screen from the development of a recycling app{% endif %}" width="1024" height="1024" loading="lazy" decoding="async">
 
                 <div class="project-info">
 
                     <h3>{% if strings.lang_code == 'da' %}Udvikling af genbrugsapp{% else %}Recycling app development{% endif %}</h3>
 
-                    <p>{% if strings.lang_code == 'da' %}Vi udviklede en app til at håndtere og administrere direkte genbrug{% else %}We developed an app to handle and manage direct recycling{% endif %}</p>
+                    <p>{% if strings.lang_code == 'da' %}Vi udviklede en app til at koordinere direkte genbrug.{% else %}We developed an app for coordinating direct reuse.{% endif %}</p>
 
                 </div>
 
@@ -236,7 +245,7 @@
 
                 <h3>{% if strings.lang_code == 'da' %}Dataanalyse{% else %}Data analysis{% endif %}</h3>
 
-                <p>{% if strings.lang_code == 'da' %}Vi hjælper virksomheder med at omsætte data til konkrete indsigter og bedre beslutninger.{% else %}We help companies turn data into concrete insights and better decisions.{% endif %}</p>
+                <p>{% if strings.lang_code == 'da' %}Vi samler, rydder op i og analyserer data, så resultaterne kan bruges i konkrete beslutninger.{% else %}We bring data together, clean it and analyse it, making the results easier to use in real decisions.{% endif %}</p>
 
             </a>
 
@@ -244,9 +253,9 @@
 
                 <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="36" height="36"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941" /></svg></div>
 
-                <h3>{% if strings.lang_code == 'da' %}Forretningsudvikling{% else %}Business Development{% endif %}</h3>
+                <h3>{% if strings.lang_code == 'da' %}Forretningsudvikling{% else %}Business development{% endif %}</h3>
 
-                <p>{% if strings.lang_code == 'da' %}Vi rådgiver om strategi, procesoptimering og vækst baseret på data og erfaring.{% else %}We advise on strategy, process optimization and growth based on data and experience.{% endif %}</p>
+                <p>{% if strings.lang_code == 'da' %}Vi bruger data til at finde flaskehalse, prioritere muligheder og lægge en plan, der kan gennemføres.{% else %}We use data to find bottlenecks, prioritise opportunities and create a plan your team can carry out.{% endif %}</p>
 
             </a>
 
@@ -256,7 +265,7 @@
 
                 <h3>{% if strings.lang_code == 'da' %}Automatisering{% else %}Automation{% endif %}</h3>
 
-                <p>{% if strings.lang_code == 'da' %}Vi udvikler digitale løsninger, der automatiserer og effektiviserer jeres arbejdsgange.{% else %}We develop digital solutions that automate and streamline your workflows.{% endif %}</p>
+                <p>{% if strings.lang_code == 'da' %}Vi automatiserer gentagne opgaver, så I sparer tid og mindsker risikoen for fejl.{% else %}We automate repetitive tasks, saving time and reducing the risk of errors.{% endif %}</p>
 
             </a>
 
@@ -264,9 +273,9 @@
 
                 <div class="service-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="36" height="36"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 17.25h16.5M4.5 6.75h15a.75.75 0 0 1 .75.75v8.25a.75.75 0 0 1-.75.75h-15a.75.75 0 0 1-.75-.75V7.5a.75.75 0 0 1 .75-.75z"/></svg></div>
 
-                <h3>{% if strings.lang_code == 'da' %}IT-Produktudvikling{% else %}IT Product Development{% endif %}</h3>
+                <h3>{% if strings.lang_code == 'da' %}IT-produktudvikling{% else %}IT product development{% endif %}</h3>
 
-                <p>{% if strings.lang_code == 'da' %}Vi udvikler skræddersyede IT-løsninger og digitale produkter, der understøtter jeres forretning og vækst.{% else %}We build tailored IT solutions and digital products that support your business and growth.{% endif %}</p>
+                <p>{% if strings.lang_code == 'da' %}Vi bygger software til arbejdsgange, som standardværktøjer ikke løser godt nok.{% else %}We build software for workflows that standard tools do not handle well.{% endif %}</p>
 
             </a>
 
@@ -282,7 +291,7 @@
 
             <div class="about-datara-media">
 
-                <img src="/static/SKylab%20billede.jpg" alt="Datara skylab billede">
+                <img src="/static/SKylab%20billede.jpg" alt="{% if strings.lang_code == 'da' %}Arbejdsmiljø i DTU Skylab{% else %}Workspace at DTU Skylab{% endif %}" width="1920" height="1280" loading="lazy" decoding="async">
 
                 <svg class="about-path-line" viewBox="0 0 96 92" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true">
 
@@ -314,7 +323,11 @@
 
                 <h2>{{ strings.founders_h2 }}</h2>
 
-                <p class="founders-intro">{% if strings.lang_code == 'da' %}Datara blev stiftet i 2025 med formålet at hjælpe virksomheder med at udnytte data og ny teknologi til at optimere manuelle og tidskrævende processer. Målet er at frigøre tid, så virksomheder kan fokusere på deres kerneopgaver. Datara' vision er at eliminere unødvendigt og værdiløst manuelt arbejde.{% else %}Datara was founded in 2025 by Simon Nyborg to help companies harness data and new technology to optimize manual and time-consuming processes. The goal is to free up time so businesses can focus on their core tasks. Datara's vision is to eliminate unnecessary and low-value manual work.{% endif %}</p>
+                <p class="founders-intro">{% if strings.lang_code == 'da' %}Datara blev stiftet i 2025 for at gøre data og ny teknologi brugbare i virksomhedernes hverdag. Vi automatiserer tidskrævende opgaver og gør data lettere at arbejde med, så medarbejderne får mere tid til kernearbejdet.{% else %}Datara was founded in 2025 to make data and new technology useful in day-to-day work. We automate time-consuming tasks and make data easier to use, giving teams more time for their core work.{% endif %}</p>
+                <div class="about-founder-links" aria-label="{% if strings.lang_code == 'da' %}Mød teamet{% else %}Meet the team{% endif %}">
+                    <a href="{{ url_for('founder_simon') }}">{% if strings.lang_code == 'da' %}Mød Simon{% else %}Meet Simon{% endif %}</a>
+                    <a href="{{ url_for('founder_albert') }}">{% if strings.lang_code == 'da' %}Mød Albert{% else %}Meet Albert{% endif %}</a>
+                </div>
 
             </div>
 
@@ -326,7 +339,7 @@
 
 
 
-    <!-- INDSIGT-SEKTION MIDLERTIDIGT SKJULT �?? fjern kommentarerne for at aktivere den igen
+    {# INDSIGT-SEKTION MIDLERTIDIGT SKJULT – fjern Jinja-kommentaren for at aktivere den igen
 
     <section class="insights-section" id="insights">
 
@@ -340,7 +353,7 @@
 
             </div>
 
-            <div id="insights-status" class="insights-status">Loading charts�?�</div>
+            <div id="insights-status" class="insights-status">Loading charts…</div>
 
             <div class="insights-grid">
 
@@ -394,7 +407,7 @@
 
                     <div class="insight-header">
 
-                        <h3>{% if strings.lang_code == 'da' %}Samme projekt �?? ca. 3 uger hurtigere levering{% else %}Same project �?? ~3 weeks faster delivery{% endif %}</h3>
+                        <h3>{% if strings.lang_code == 'da' %}Samme projekt – ca. 3 uger hurtigere levering{% else %}Same project – ~3 weeks faster delivery{% endif %}</h3>
 
                         <p class="insight-description">{% if strings.lang_code == 'da' %}Illustrativ sammenligning for samme projekttype og scope.{% else %}Illustrative comparison for same project type and scope.{% endif %}</p>
 
@@ -406,7 +419,7 @@
 
                     </div>
 
-                    <p class="insight-note">{% if strings.lang_code == 'da' %}�?? 3 uger sparet.{% else %}�?? 3 weeks saved.{% endif %}</p>
+                    <p class="insight-note">{% if strings.lang_code == 'da' %}Cirka 3 uger sparet.{% else %}Around 3 weeks saved.{% endif %}</p>
 
                     <p class="insight-fallback">{% if strings.lang_code == 'da' %}Grafen vises her, hvis JavaScript er slået til.{% else %}The chart appears here if JavaScript is enabled.{% endif %}</p>
 
@@ -438,7 +451,7 @@
 
     </section>
 
-    SLUT P�? INDSIGT-SEKTION -->
+    SLUT PÅ INDSIGT-SEKTION #}
 
     <!-- Kontakt sektion -->
 
@@ -458,11 +471,11 @@
 
                         <span class="contact-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg></span>
 
-                        <span class="contact-link-text">+4552390360</span>
+                        <span class="contact-link-text">+45 52 39 03 60</span>
 
                     </a>
 
-                    <a class="contact-item" href="https://www.linkedin.com/in/simon-nyborg" target="_blank">
+                    <a class="contact-item" href="https://www.linkedin.com/in/simon-nyborg" target="_blank" rel="noopener noreferrer">
 
                         <span class="contact-icon"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 50 50"><path d="M 9 4 C 6.2504839 4 4 6.2504839 4 9 L 4 41 C 4 43.749516 6.2504839 46 9 46 L 41 46 C 43.749516 46 46 43.749516 46 41 L 46 9 C 46 6.2504839 43.749516 4 41 4 L 9 4 z M 9 6 L 41 6 C 42.668484 6 44 7.3315161 44 9 L 44 41 C 44 42.668484 42.668484 44 41 44 L 9 44 C 7.3315161 44 6 42.668484 6 41 L 6 9 C 6 7.3315161 7.3315161 6 9 6 z M 14 11.011719 C 12.904779 11.011719 11.919219 11.339079 11.189453 11.953125 C 10.459687 12.567171 10.011719 13.484511 10.011719 14.466797 C 10.011719 16.333977 11.631285 17.789609 13.691406 17.933594 A 0.98809878 0.98809878 0 0 0 13.695312 17.935547 A 0.98809878 0.98809878 0 0 0 14 17.988281 C 16.27301 17.988281 17.988281 16.396083 17.988281 14.466797 A 0.98809878 0.98809878 0 0 0 17.986328 14.414062 C 17.884577 12.513831 16.190443 11.011719 14 11.011719 z M 14 12.988281 C 15.392231 12.988281 15.94197 13.610038 16.001953 14.492188 C 15.989803 15.348434 15.460091 16.011719 14 16.011719 C 12.614594 16.011719 11.988281 15.302225 11.988281 14.466797 C 11.988281 14.049083 12.140703 13.734298 12.460938 13.464844 C 12.78117 13.19539 13.295221 12.988281 14 12.988281 z M 11 19 A 1.0001 1.0001 0 0 0 10 20 L 10 39 A 1.0001 1.0001 0 0 0 11 40 L 17 40 A 1.0001 1.0001 0 0 0 18 39 L 18 33.134766 L 18 20 A 1.0001 1.0001 0 0 0 17 19 L 11 19 z M 20 19 A 1.0001 1.0001 0 0 0 19 20 L 19 39 A 1.0001 1.0001 0 0 0 20 40 L 26 40 A 1.0001 1.0001 0 0 0 27 39 L 27 29 C 27 28.170333 27.226394 27.345035 27.625 26.804688 C 28.023606 26.264339 28.526466 25.940057 29.482422 25.957031 C 30.468166 25.973981 30.989999 26.311669 31.384766 26.841797 C 31.779532 27.371924 32 28.166667 32 29 L 32 39 A 1.0001 1.0001 0 0 0 33 40 L 39 40 A 1.0001 1.0001 0 0 0 40 39 L 40 28.261719 C 40 25.300181 39.122788 22.95433 37.619141 21.367188 C 36.115493 19.780044 34.024172 19 31.8125 19 C 29.710483 19 28.110853 19.704889 27 20.423828 L 27 20 A 1.0001 1.0001 0 0 0 26 19 L 20 19 z M 12 21 L 16 21 L 16 33.134766 L 16 38 L 12 38 L 12 21 z M 21 21 L 25 21 L 25 22.560547 A 1.0001 1.0001 0 0 0 26.798828 23.162109 C 26.798828 23.162109 28.369194 21 31.8125 21 C 33.565828 21 35.069366 21.582581 36.167969 22.742188 C 37.266572 23.901794 38 25.688257 38 28.261719 L 38 38 L 34 38 L 34 29 C 34 27.833333 33.720468 26.627107 32.990234 25.646484 C 32.260001 24.665862 31.031834 23.983076 29.517578 23.957031 C 27.995534 23.930001 26.747519 24.626988 26.015625 25.619141 C 25.283731 26.611293 25 27.829667 25 29 L 25 38 L 21 38 L 21 21 z"></path></svg></span>
 
@@ -484,13 +497,14 @@
 
             <div class="contact-visual">
 
-                <img src="/static/DTU-B112%20efterår.jpg" alt="{% if strings.lang_code == 'da' %}DTU B112 i efterårsstemning{% else %}DTU B112 in autumn{% endif %}">
+                <img src="/static/DTU-B112%20efterår.jpg" alt="{% if strings.lang_code == 'da' %}DTU B112 i efterårsstemning{% else %}DTU B112 in autumn{% endif %}" width="1080" height="608" loading="lazy" decoding="async">
 
             </div>
 
         </div>
 
     </section>
+    </main>
 
     
 
@@ -506,21 +520,11 @@
 
             <div class="footer-center">
 
-                <form class="footer-newsletter" action="/newsletter-signup" method="post">
-
-                    <label for="newsletter-email"><strong>{{ strings.newsletter_label }}</strong></label>
-
-                    <p>{% if strings.lang_code == 'da' %}Få nyheder og indsigter direkte i din indbakke{% else %}Receive news and insights directly to your inbox{% endif %}</p>
-
-                    <div class="newsletter-row">
-
-                        <input type="email" id="newsletter-email" name="email" placeholder="{% if strings.lang_code == 'da' %}Email adresse{% else %}Email address{% endif %}" data-msg-missing="{% if strings.lang_code == 'da' %}Indtast din e-mailadresse.{% else %}Please enter your email address.{% endif %}" data-msg-type-mismatch="{% if strings.lang_code == 'da' %}Indtast en gyldig e-mailadresse (f.eks. nav@domæne.dk).{% else %}Please enter a valid email address (for example: name@domain.com).{% endif %}" data-msg-invalid="{% if strings.lang_code == 'da' %}Indtast en gyldig e-mailadresse.{% else %}Please enter a valid email address.{% endif %}" required>
-
-                        <button type="submit">{{ strings.newsletter_button }}</button>
-
-                    </div>
-
-                </form>
+                <div class="footer-contact-prompt">
+                    <strong>{% if strings.lang_code == 'da' %}Har I en opgave i tankerne?{% else %}Have a task in mind?{% endif %}</strong>
+                    <p>{% if strings.lang_code == 'da' %}Skriv til os, så finder vi ud af, om vi kan hjælpe.{% else %}Email us and we will work out whether we can help.{% endif %}</p>
+                    <a href="mailto:shn@datara.dk">shn@datara.dk</a>
+                </div>
 
             </div>
 
@@ -550,7 +554,7 @@
 
 
 
-    <!-- Scripts til Indsigt-sektionen �?? midlertidigt deaktiveret
+    {# Scripts til Indsigt-sektionen – midlertidigt deaktiveret
 
     <script defer src="{{ url_for('static', filename='vendor/chartjs/chart.umd.min.js') }}"></script>
 
@@ -558,9 +562,7 @@
 
     <script defer src="{{ url_for('static', filename='js/insights.js') }}"></script>
 
-    -->
-
-    <script>console.log("Bottom scripts reached");</script>
+    #}
 
 <script>
 
@@ -618,20 +620,6 @@ function lockNavbar(ms = 1200) {
 
 
 
-// Hook scrollIntoView globalt så navbar altid låses ved programmatic scroll
-
-const _scrollIntoView = Element.prototype.scrollIntoView;
-
-Element.prototype.scrollIntoView = function(...args) {
-
-    lockNavbar(1500);
-
-    return _scrollIntoView.apply(this, args);
-
-};
-
-
-
 window.addEventListener('scroll', function() {
 
     // Under lock: hold navbar synlig men opdatér baggrund
@@ -684,14 +672,6 @@ document.querySelectorAll('.navbar-links a[href^="#"]').forEach(link => {
 
         updateNavbarBackground();
 
-        // Remove focus after click to hide underline
-
-        setTimeout(() => {
-
-            this.blur();
-
-        }, 0);
-
     });
 
 });
@@ -712,6 +692,8 @@ function syncMobileMenuState() {
 
     burger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
 
+    burger.setAttribute('aria-label', isOpen ? burger.dataset.labelClose : burger.dataset.labelOpen);
+
     updateNavbarBackground();
 
 }
@@ -723,6 +705,20 @@ burger.addEventListener('click', function() {
     mobileMenu.classList.toggle('open');
 
     syncMobileMenuState();
+
+});
+
+document.addEventListener('keydown', function(event) {
+
+    if (event.key === 'Escape' && mobileMenu.classList.contains('open')) {
+
+        mobileMenu.classList.remove('open');
+
+        syncMobileMenuState();
+
+        burger.focus();
+
+    }
 
 });
 
@@ -1084,7 +1080,7 @@ window.addEventListener('load', function() {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-  const navLinks = document.querySelectorAll('a[href^="#"]');
+  const navLinks = document.querySelectorAll('a[href^="#"]:not(.site-skip-link)');
 
   
 
@@ -1232,64 +1228,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
-});
-
-
-
-// Elegant, staggered fade-in for hero title and subtitle.
-document.addEventListener('DOMContentLoaded', function() {
-    const h1Element = document.getElementById('typewriter-h1');
-    const pElement = document.getElementById('typewriter-p');
-
-    if (!h1Element || !pElement) {
-        return;
-    }
-
-    const h1Text = h1Element.dataset.text || '';
-    const lines = h1Text.split('\n');
-    const baseDelay = 220;
-    const stepDelay = 85;
-    let wordCounter = 0;
-
-    h1Element.innerHTML = '';
-
-    lines.forEach(function(line, lineIndex) {
-        const lineFragment = document.createDocumentFragment();
-        const tokens = line.split(/(\s+)/);
-
-        tokens.forEach(function(token) {
-            if (/^\s+$/.test(token)) {
-                lineFragment.appendChild(document.createTextNode(token));
-                return;
-            }
-
-            const word = document.createElement('span');
-            word.className = 'hero-word';
-            word.textContent = token;
-            word.style.setProperty('--word-delay', (baseDelay + wordCounter * stepDelay) + 'ms');
-            lineFragment.appendChild(word);
-            wordCounter += 1;
-        });
-
-        h1Element.appendChild(lineFragment);
-
-        if (lineIndex < lines.length - 1) {
-            h1Element.appendChild(document.createElement('br'));
-        }
-    });
-
-    requestAnimationFrame(function() {
-        h1Element.classList.add('hero-title-ready');
-
-        requestAnimationFrame(function() {
-            h1Element.classList.add('hero-title-visible');
-        });
-    });
-
-    const subtitleDelay = baseDelay + wordCounter * stepDelay + 220;
-    setTimeout(function() {
-        pElement.classList.add('hero-subtitle-visible');
-    }, subtitleDelay);
 });
 
 
