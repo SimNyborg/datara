@@ -39,7 +39,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260727-compact">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260727-elegance">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -56,77 +56,7 @@
     
 
     {% block nav %}
-
-    <nav class="navbar" aria-label="{% if strings.lang_code == 'da' %}Hovedmenu{% else %}Main navigation{% endif %}">
-
-        <div class="navbar-section navbar-left navbar-logo-mobile">
-
-            <a href="/" class="navbar-logo">Datara</a>
-
-        </div>
-
-        <div class="navbar-section navbar-left navbar-links">
-
-            <a href="#projekter">{{ strings.nav_projekter }}</a>
-
-            <a href="#services">{{ strings.nav_services }}</a>
-
-        </div>
-
-        <div class="navbar-section navbar-center navbar-logo-desktop">
-
-            <a href="/" class="navbar-logo">Datara</a>
-
-        </div>
-
-        <div class="navbar-section navbar-right navbar-links">
-
-            <a href="#hvemervi">{{ strings.nav_om }}</a>
-
-            <a href="#kontakt">{{ strings.nav_kontakt }}</a>
-
-        </div>
-
-            <button class="navbar-burger" id="navbar-burger" type="button"
-                    aria-label="{% if strings.lang_code == 'da' %}Åbn menu{% else %}Open menu{% endif %}"
-                    aria-expanded="false" aria-controls="navbar-mobile-menu"
-                    data-label-open="{% if strings.lang_code == 'da' %}Åbn menu{% else %}Open menu{% endif %}"
-                    data-label-close="{% if strings.lang_code == 'da' %}Luk menu{% else %}Close menu{% endif %}">
-
-            <span></span>
-
-            <span></span>
-
-            <span></span>
-
-        </button>
-
-        <a class="lang-switch" href="/setlang/{{ 'en' if strings.lang_code == 'da' else 'da' }}"
-           hreflang="{{ 'en' if strings.lang_code == 'da' else 'da' }}"
-           aria-label="{% if strings.lang_code == 'da' %}Læs siden på engelsk{% else %}Read this page in Danish{% endif %}">
-            {% if strings.lang_code == 'da' %}EN{% else %}DA{% endif %}
-        </a>
-
-        <div class="navbar-mobile-menu" id="navbar-mobile-menu" aria-label="{% if strings.lang_code == 'da' %}Mobilmenu{% else %}Mobile navigation{% endif %}">
-
-            <a href="#projekter">{{ strings.nav_projekter }}</a>
-
-            <a href="#services">{{ strings.nav_services }}</a>
-
-            <a href="#hvemervi">{{ strings.nav_om }}</a>
-
-            <a href="#kontakt">{{ strings.nav_kontakt }}</a>
-
-            <a class="lang-switch" href="/setlang/{{ 'en' if strings.lang_code == 'da' else 'da' }}" aria-label="{% if strings.lang_code == 'da' %}Skift sprog{% else %}Switch language{% endif %}">
-
-                {% if strings.lang_code == 'da' %}<strong>DA</strong> | EN{% else %}DA | <strong>EN</strong>{% endif %}
-
-            </a>
-
-        </div>
-
-    </nav>
-
+    {% include '_site_header.html' %}
     {% endblock %}
 
     

@@ -17,23 +17,13 @@
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260721') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260727-compact') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260727-elegance') }}">
+    <script defer src="{{ url_for('static', filename='js/site-header.js', v='site-review-20260727-elegance') }}"></script>
 </head>
 <body class="project-detail-page project-detail-page--{{ projekt.slug }}">
     <a class="project-skip-link" href="#project-article">{{ ui.skip_label }}</a>
 
-    <header class="project-site-header">
-        <nav class="project-site-nav" aria-label="{{ ui.nav_label }}">
-            <a class="navbar-logo project-brand" href="{{ url_for('index') }}" aria-label="{{ ui.home_label }}">Datara</a>
-            <div class="project-nav-actions">
-                <a class="project-nav-link" href="{{ url_for('index') }}#projekter">{{ ui.all_projects }}</a>
-                <a class="project-nav-link project-language-link"
-                   href="{{ url_for('set_language', lang=alternate_lang) }}"
-                   hreflang="{{ alternate_lang }}"
-                   aria-label="{{ ui.language_label }}">{{ ui.language_short }}</a>
-            </div>
-        </nav>
-    </header>
+    {% include '_site_header.html' %}
 
     <main id="project-article" tabindex="-1">
         <article>

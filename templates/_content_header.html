@@ -1,14 +1,1 @@
-<header class="content-site-header">
-    <nav class="content-site-nav" aria-label="{{ ui.nav_label }}">
-        <a class="content-brand" href="{{ url_for('index') }}" aria-label="{{ ui.home_label }}">Datara</a>
-        <div class="content-nav-actions">
-            <a class="content-nav-link" href="{{ url_for('index') }}#projekter">{{ ui.projects }}</a>
-            <a class="content-nav-link content-nav-link--optional" href="{{ url_for('index') }}#services">{{ ui.services }}</a>
-            <a class="content-nav-link content-nav-link--optional" href="{{ url_for('index') }}#kontakt">{{ ui.contact }}</a>
-            <a class="content-language-link"
-               href="{{ url_for('set_language', lang=alternate_lang) }}"
-               hreflang="{{ alternate_lang }}"
-               aria-label="{{ ui.language_label }}">{{ ui.language_short }}</a>
-        </div>
-    </nav>
-</header>
+{% include '_site_header.html' %}
