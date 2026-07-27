@@ -12,8 +12,6 @@ PUBLIC_ROUTES = (
     '/services/forretningsudvikling',
     '/services/automatisering',
     '/services/it-produktudvikling',
-    '/founder/simon-nyborg',
-    '/founder/albert-koba',
     '/privatliv',
     '/cookies',
     '/vilkar',
@@ -87,10 +85,22 @@ class SiteQualityTests(unittest.TestCase):
         self.assertIn('site_lang', cookies)
         self.assertIn('30 days', cookies)
 
-    def test_founder_profiles_are_linked_from_the_homepage(self):
-        html = self.client.get('/').get_data(as_text=True)
-        self.assertIn('/founder/simon-nyborg', html)
-        self.assertIn('/founder/albert-koba', html)
+    def test_founder_buttons_and_profile_pages_are_retired(self):
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            html = self.client.get('/').get_data(as_text=True)
+            for text in ('Mød Simon', 'Mød Albert', 'Meet Simon', 'Meet Albert'):
+                self.assertNotIn(text, html)
+            self.assertNotIn('/founder/', html)
+
+        for path in ('/founder/simon-nyborg', '/founder/albert-koba'):
+            with self.subTest(path=path):
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 301)
+                self.assertEqual(response.headers['Location'], '/#hvemervi')
+
+        sitemap = self.client.get('/sitemap.xml').get_data(as_text=True)
+        self.assertNotIn('/founder/', sitemap)
 
     def test_manifest_icons_resolve(self):
         manifest_response = self.client.get('/static/site.webmanifest')

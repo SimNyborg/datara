@@ -324,10 +324,6 @@
                 <h2>{{ strings.founders_h2 }}</h2>
 
                 <p class="founders-intro">{% if strings.lang_code == 'da' %}Datara blev stiftet i 2025 for at gøre data og ny teknologi brugbare i virksomhedernes hverdag. Vi automatiserer tidskrævende opgaver og gør data lettere at arbejde med, så medarbejderne får mere tid til kernearbejdet.{% else %}Datara was founded in 2025 to make data and new technology useful in day-to-day work. We automate time-consuming tasks and make data easier to use, giving teams more time for their core work.{% endif %}</p>
-                <div class="about-founder-links" aria-label="{% if strings.lang_code == 'da' %}Mød teamet{% else %}Meet the team{% endif %}">
-                    <a href="{{ url_for('founder_simon') }}">{% if strings.lang_code == 'da' %}Mød Simon{% else %}Meet Simon{% endif %}</a>
-                    <a href="{{ url_for('founder_albert') }}">{% if strings.lang_code == 'da' %}Mød Albert{% else %}Meet Albert{% endif %}</a>
-                </div>
 
             </div>
 
@@ -765,38 +761,6 @@ window.addEventListener('scroll', function() {
 // Initialize aria/bg state on load.
 
 syncMobileMenuState();
-
-</script>
-
-<script>
-
-// Animation for 'Læs mere' knapper i Om Gundlæggeren
-
-document.addEventListener('DOMContentLoaded', function() {
-
-  const observer = new window.IntersectionObserver((entries) => {
-
-    entries.forEach(entry => {
-
-      if (entry.isIntersecting) {
-
-        entry.target.classList.add('animate-in');
-
-        observer.unobserve(entry.target);
-
-      }
-
-    });
-
-  }, { threshold: 0.3 });
-
-  document.querySelectorAll('.founder-readmore').forEach(btn => {
-
-    observer.observe(btn);
-
-  });
-
-});
 
 </script>
 

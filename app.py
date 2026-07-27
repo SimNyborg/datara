@@ -2,7 +2,7 @@ from flask import Flask, abort, render_template, send_from_directory, request, r
 from datetime import datetime
 from urllib.parse import urljoin, urlparse
 
-from site_content import CONTENT_UI, FOUNDERS, INFO_PAGES, SERVICE_PAGES
+from site_content import CONTENT_UI, INFO_PAGES, SERVICE_PAGES
 
 app = Flask(__name__)
 
@@ -110,28 +110,11 @@ def set_language(lang):
 def index():
     return render_template('index.html', year=datetime.now().year)
 
-# Founder detail pages
 @app.route('/founder/simon-nyborg')
-def founder_simon():
-    return render_founder('simon-nyborg')
-
 @app.route('/founder/albert-koba')
-def founder_albert():
-    return render_founder('albert-koba')
-
-
-def render_founder(slug):
-    lang = current_language()
-    profile = FOUNDERS[slug]
-    founder = {**profile, **profile['content'][lang]}
-    return render_template(
-        'founder.html',
-        founder=founder,
-        lang=lang,
-        alternate_lang='en' if lang == 'da' else 'da',
-        ui=CONTENT_UI[lang],
-        year=datetime.now().year,
-    )
+def retired_founder_profiles():
+    """Keep old bookmarks useful without maintaining separate profile pages."""
+    return redirect('/#hvemervi', code=301)
 
 # Footer info pages
 @app.route('/privatliv')
@@ -583,9 +566,6 @@ def sitemap():
     for projekt_id in PROJECTS.keys():
         urls.append((f'/projekter/{projekt_id}', 'monthly', '0.7'))
 
-    for founder in ('/founder/simon-nyborg', '/founder/albert-koba'):
-        urls.append((founder, 'yearly', '0.5'))
-    
     # Legal/Info pages
     info_pages = [
         '/privatliv',
