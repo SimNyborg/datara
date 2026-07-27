@@ -102,6 +102,17 @@ class SiteQualityTests(unittest.TestCase):
         sitemap = self.client.get('/sitemap.xml').get_data(as_text=True)
         self.assertNotIn('/founder/', sitemap)
 
+    def test_desktop_language_switch_clears_the_page_rail(self):
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+        self.assertIn('--header-rail-clearance: 16px', css)
+        self.assertIn(
+            'right: calc(var(--page-margin-line-offset) + '
+            'var(--header-rail-clearance))',
+            css,
+        )
+
     def test_manifest_icons_resolve(self):
         manifest_response = self.client.get('/static/site.webmanifest')
         self.assertEqual(manifest_response.status_code, 200)

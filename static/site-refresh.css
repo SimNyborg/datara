@@ -3,6 +3,18 @@
 :root {
   /* Keep the blue page rails fluid instead of jumping at 1200px. */
   --page-margin-line-offset: clamp(3px, calc(9vw - 60px), 82px);
+  --header-rail-clearance: 16px;
+}
+
+/* Keep the desktop language control fully inside the right page rail. */
+@media (min-width: 801px) {
+  .home-page .navbar > .lang-switch {
+    position: absolute;
+    top: 50%;
+    right: calc(var(--page-margin-line-offset) + var(--header-rail-clearance));
+    margin: 0;
+    transform: translateY(-50%);
+  }
 }
 
 *,
