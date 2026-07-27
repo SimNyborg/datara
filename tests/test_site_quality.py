@@ -113,6 +113,24 @@ class SiteQualityTests(unittest.TestCase):
             css,
         )
 
+    def test_homepage_service_cards_use_compact_responsive_layouts(self):
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+        self.assertIn(
+            'grid-template-columns: repeat(4, minmax(0, 1fr))',
+            css,
+        )
+        self.assertIn(
+            'grid-template-columns: 34px minmax(0, 1fr)',
+            css,
+        )
+        self.assertIn('#services.services-section', css)
+        self.assertRegex(
+            css,
+            r'\.home-page \.service-card \{\s+min-height: 0;',
+        )
+
     def test_manifest_icons_resolve(self):
         manifest_response = self.client.get('/static/site.webmanifest')
         self.assertEqual(manifest_response.status_code, 200)
