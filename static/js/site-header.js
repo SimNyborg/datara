@@ -1,8 +1,10 @@
 (() => {
-  const navbar = document.querySelector('.site-navbar--inner');
+  const navbar = document.querySelector('.site-navbar');
   const burger = navbar?.querySelector('#navbar-burger');
   const mobileMenu = navbar?.querySelector('#navbar-mobile-menu');
-  const shouldAutoHide = document.body.classList.contains('project-detail-page');
+  const shouldAutoHide = navbar?.classList.contains('site-navbar--inner');
+  const reducedMotionMedia = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const mobileViewportMedia = window.matchMedia('(max-width: 800px)');
 
   if (!navbar || !burger || !mobileMenu) {
     return;
@@ -27,9 +29,13 @@
     }
   };
 
-  const closeMenu = () => {
+  const closeMenu = (returnFocus = false) => {
     mobileMenu.classList.remove('open');
     syncMenuState();
+
+    if (returnFocus) {
+      burger.focus();
+    }
   };
 
   burger.addEventListener('click', () => {
@@ -38,17 +44,30 @@
   });
 
   mobileMenu.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', closeMenu);
+    link.addEventListener('click', () => closeMenu());
   });
 
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape' && mobileMenu.classList.contains('open')) {
-      closeMenu();
-      burger.focus();
+      closeMenu(true);
     }
   });
 
   navbar.addEventListener('focusin', showNavbar);
+
+  const handleViewportChange = (event) => {
+    if (!event.matches && mobileMenu.classList.contains('open')) {
+      closeMenu();
+    }
+
+    showNavbar();
+  };
+
+  if (typeof mobileViewportMedia.addEventListener === 'function') {
+    mobileViewportMedia.addEventListener('change', handleViewportChange);
+  } else {
+    mobileViewportMedia.addListener(handleViewportChange);
+  }
 
   if (shouldAutoHide) {
     let lastScrollY = Math.max(window.scrollY, 0);
@@ -62,6 +81,8 @@
       const focusIsInNavbar = navbar.contains(document.activeElement);
 
       if (
+        reducedMotionMedia.matches
+        ||
         currentScrollY <= 72
         || scrollingUp
         || menuIsOpen
@@ -90,5 +111,18 @@
         showNavbar();
       }
     });
+
+    const handleReducedMotionChange = () => {
+      showNavbar();
+      lastScrollY = Math.max(window.scrollY, 0);
+    };
+
+    if (typeof reducedMotionMedia.addEventListener === 'function') {
+      reducedMotionMedia.addEventListener('change', handleReducedMotionChange);
+    } else {
+      reducedMotionMedia.addListener(handleReducedMotionChange);
+    }
   }
+
+  syncMenuState();
 })();

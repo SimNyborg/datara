@@ -63,6 +63,16 @@ class ProjectPageTests(unittest.TestCase):
         )
         self.assertIn('/static/fjernvarme-vejkort.png', heating)
         self.assertIn('/static/fjernvarme-overskudsvarmekilder.png', heating)
+        self.assertEqual(
+            len(
+                re.findall(
+                    r'<div class="project-gallery-result'
+                    r'(?: project-gallery-result--featured)?">',
+                    heating,
+                )
+            ),
+            2,
+        )
         self.assertIn(
             'Blandt analysens 12.592 bygninger viser grøn højt potentiale',
             heating,
@@ -73,11 +83,8 @@ class ProjectPageTests(unittest.TestCase):
             'Resultatet er en screening – ikke dokumentation',
             heating,
         )
-        self.assertRegex(
-            heating,
-            r'<figure class="project-context-figure">\s*'
-            r'<img src="/static/fjernvarme\.jpg"',
-        )
+        self.assertNotIn('project-context-figure', heating)
+        self.assertNotIn('/static/fjernvarme.jpg', heating)
         self.assertNotIn(
             'Fjernvarmerør under anlæg – den fysiske virkelighed',
             heating,
@@ -118,6 +125,7 @@ class ProjectPageTests(unittest.TestCase):
             'District-heating pipes under construction',
             heating,
         )
+        self.assertNotIn('/static/fjernvarme.jpg', heating)
         self.assertIn('href="/setlang/da"', heating)
         self.assertNotIn('\ufffd', automation + heating)
 

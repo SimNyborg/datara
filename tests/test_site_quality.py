@@ -113,26 +113,118 @@ class SiteQualityTests(unittest.TestCase):
         )
         header_script.close()
 
-    def test_project_article_navigation_auto_hides_on_scroll(self):
+    def test_secondary_page_navigation_auto_hides_on_scroll(self):
         header_script_response = self.client.get('/static/js/site-header.js')
         header_script = header_script_response.get_data(as_text=True)
         header_script_response.close()
         self.assertIn(
+            "navbar?.classList.contains('site-navbar--inner')",
+            header_script,
+        )
+        self.assertNotIn(
             "document.body.classList.contains('project-detail-page')",
             header_script,
         )
         self.assertIn("navbar.classList.add('navbar-hidden')", header_script)
         self.assertIn('window.requestAnimationFrame', header_script)
         self.assertIn("{ passive: true }", header_script)
+        self.assertIn('reducedMotionMedia.matches', header_script)
 
         css_response = self.client.get('/static/site-refresh.css')
         css = css_response.get_data(as_text=True)
         css_response.close()
         self.assertIn(
+            '.content-page .site-navbar--inner.navbar-hidden',
+            css,
+        )
+        self.assertIn(
             '.project-detail-page .site-navbar--inner.navbar-hidden',
             css,
         )
         self.assertIn('transform: translateY(calc(-100% - 8px))', css)
+        self.assertIn('.site-navbar.navbar-hidden', css)
+        self.assertIn('transform: none !important', css)
+
+    def test_active_service_pages_share_complete_structure_in_both_languages(self):
+        service_paths = (
+            '/services/dataanalyse',
+            '/services/forretningsudvikling',
+            '/services/automatisering',
+            '/services/it-produktudvikling',
+        )
+
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            for path in service_paths:
+                with self.subTest(language=language, path=path):
+                    html = self.client.get(path).get_data(as_text=True)
+                    self.assertEqual(html.count('class="service-hero"'), 1)
+                    self.assertEqual(
+                        html.count('class="service-benefit-card"'),
+                        3,
+                    )
+                    self.assertEqual(
+                        html.count('class="service-step-number"'),
+                        4,
+                    )
+                    self.assertEqual(
+                        len(re.findall(r'<li(?:\s|>)', html)),
+                        7,
+                    )
+                    self.assertEqual(html.count('class="content-cta"'), 1)
+                    self.assertNotIn('\ufffd', html)
+
+        data_page = self.client.get('/services/dataanalyse').get_data(as_text=True)
+        automation_page = self.client.get(
+            '/services/automatisering',
+        ).get_data(as_text=True)
+        business_page = self.client.get(
+            '/services/forretningsudvikling',
+        ).get_data(as_text=True)
+        product_page = self.client.get(
+            '/services/it-produktudvikling',
+        ).get_data(as_text=True)
+
+        self.assertIn('href="/projekter/2"', data_page)
+        self.assertIn('href="/projekter/1"', automation_page)
+        self.assertNotIn('href="/projekter/', business_page)
+        self.assertNotIn('href="/projekter/', product_page)
+
+    def test_service_layout_clears_divider_and_uses_responsive_rules(self):
+        css_response = self.client.get('/static/site-refresh.css')
+        css = css_response.get_data(as_text=True)
+        css_response.close()
+
+        self.assertRegex(
+            css,
+            r'\.service-page \.content-cta \{\s+'
+            r'padding: clamp\(44px, 6vw, 76px\)',
+        )
+        self.assertIn(
+            'grid-template-columns: repeat(2, minmax(0, 1fr))',
+            css,
+        )
+        self.assertRegex(
+            css,
+            r'@media \(max-width: 800px\)[\s\S]*?'
+            r'\.service-page \.service-step-list \{\s+'
+            r'grid-template-columns: minmax\(0, 1fr\)',
+        )
+        self.assertRegex(
+            css,
+            r'@media \(max-width: 700px\)[\s\S]*?'
+            r'\.service-page \.service-benefit-grid \{\s+'
+            r'grid-template-columns: minmax\(0, 1fr\)',
+        )
+        self.assertIn('padding: 28px 22px', css)
+        self.assertIn(
+            'font-size: clamp(1.72rem, 8.5vw, 2.15rem)',
+            css,
+        )
+        self.assertRegex(
+            css,
+            r'\.unified-footer \{[\s\S]*?text-align: left;',
+        )
 
     def test_language_redirect_rejects_external_referrers(self):
         response = self.client.get(
@@ -212,6 +304,14 @@ class SiteQualityTests(unittest.TestCase):
             r'\.home-page \.service-card \{\s+min-height: 0;',
         )
 
+    def test_homepage_hero_has_no_action_buttons_in_either_language(self):
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            html = self.client.get('/').get_data(as_text=True)
+            with self.subTest(language=language):
+                self.assertNotIn('home-hero-actions', html)
+                self.assertNotIn('home-hero-button', html)
+
     def test_about_and_contact_sections_have_compact_responsive_rules(self):
         css_response = self.client.get('/static/site-refresh.css')
         css = css_response.get_data(as_text=True)
@@ -227,6 +327,122 @@ class SiteQualityTests(unittest.TestCase):
             css,
         )
 
+    def test_about_contact_connector_is_decorative_in_both_languages(self):
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            html = self.client.get('/').get_data(as_text=True)
+            connector = re.search(
+                r'<svg\b[^>]*class="about-contact-path"[^>]*>'
+                r'[\s\S]*?</svg>',
+                html,
+            )
+            with self.subTest(language=language):
+                self.assertIsNotNone(connector)
+                self.assertEqual(html.count('class="about-contact-path"'), 1)
+                self.assertIn('role="presentation"', connector.group(0))
+                self.assertIn('focusable="false"', connector.group(0))
+                self.assertIn('aria-hidden="true"', connector.group(0))
+                self.assertIn('about-contact-path__guide', connector.group(0))
+                self.assertIn('about-contact-path__reveal', connector.group(0))
+                self.assertIn('about-contact-path__ribbon', connector.group(0))
+                self.assertIn('id="aboutContactRevealMask"', connector.group(0))
+                self.assertIn('pathLength="1"', connector.group(0))
+                self.assertIn(
+                    'mask="url(#aboutContactRevealMask)"',
+                    connector.group(0),
+                )
+                self.assertNotIn('about-contact-path__core', connector.group(0))
+                self.assertIn('data-path-x="1056"', html)
+                self.assertIn('data-path-width="105"', html)
+
+    def test_about_contact_connector_uses_live_responsive_geometry(self):
+        script_response = self.client.get(
+            '/static/js/about-contact-path.js?v=20260728'
+        )
+        self.assertEqual(script_response.status_code, 200)
+        script = script_response.get_data(as_text=True)
+        script_response.close()
+
+        self.assertIn("document.querySelector('.about-datara-media')", script)
+        self.assertIn(
+            "document.querySelector('#kontakt .contact-layout')",
+            script,
+        )
+        self.assertIn('getBoundingClientRect()', script)
+        self.assertIn("connector.setAttribute(", script)
+        self.assertIn("'viewBox'", script)
+        self.assertIn("guide.setAttribute('d', pathData)", script)
+        self.assertIn("reveal.setAttribute('d', pathData)", script)
+        self.assertIn('buildTaperedRibbon', script)
+        self.assertIn('getTotalLength()', script)
+        self.assertIn('getPointAtLength(', script)
+        self.assertIn("ribbon.setAttribute(", script)
+        self.assertIn("'--connector-roll-duration'", script)
+        self.assertIn("revealMask.setAttribute(", script)
+        self.assertIn("connector.dataset.routeSide = 'right'", script)
+        self.assertNotIn("routeSide = 'left'", script)
+        self.assertIn('const seamHoldDistance = clamp(', script)
+        self.assertIn('const taperProgress = clamp(', script)
+        self.assertIn('const imagePathSlope = 0.55', script)
+        self.assertIn('const pathStartX =', script)
+        self.assertIn('const seamJoinDistance = Math.hypot(', script)
+        self.assertIn('seamPoint.distance', script)
+        self.assertIn('`L ${round(startX)} ${connectorOverlap}`', script)
+        self.assertIn('const polygonPoints = [', script)
+        self.assertNotIn('curveThroughPoints', script)
+        self.assertIn('const connectorOverlap = 2', script)
+        self.assertIn("connector.classList.toggle('is-disabled'", script)
+        self.assertIn('layoutRect.width / 2', script)
+        self.assertIn('IntersectionObserver', script)
+        self.assertIn('ResizeObserver', script)
+        self.assertIn("image.addEventListener('load'", script)
+        self.assertNotIn("document.createElement('canvas')", script)
+
+    def test_about_contact_connector_remains_visible_and_non_interactive(self):
+        refresh_response = self.client.get('/static/site-refresh.css')
+        refresh_css = refresh_response.get_data(as_text=True)
+        refresh_response.close()
+        legacy_response = self.client.get('/static/style.css')
+        legacy_css = legacy_response.get_data(as_text=True)
+        legacy_response.close()
+
+        connector_rule = re.search(
+            r'\.about-contact-path \{[\s\S]*?\}',
+            refresh_css,
+        )
+        self.assertIsNotNone(connector_rule)
+        self.assertIn('pointer-events: none', connector_rule.group(0))
+        self.assertIn('overflow: visible', connector_rule.group(0))
+        self.assertIn('object-position: center bottom', refresh_css)
+        self.assertIn('@media (prefers-reduced-motion: reduce)', refresh_css)
+        self.assertIn('stroke-dasharray: 1', refresh_css)
+        self.assertIn('stroke-dashoffset: 1', refresh_css)
+        self.assertIn(
+            'var(--connector-roll-duration, 3s)',
+            refresh_css,
+        )
+        self.assertIn('@media (max-width: 860px)', refresh_css)
+        self.assertRegex(
+            refresh_css,
+            r'@media \(max-width: 860px\) \{[\s\S]*?'
+            r'\.about-contact-path \{[\s\S]*?display: none;',
+        )
+        self.assertRegex(
+            refresh_css,
+            r'\.about-contact-path\.animate-in '
+            r'\.about-contact-path__reveal \{[\s\S]*?'
+            r'stroke-dashoffset: 0;',
+        )
+        ribbon_rule = re.search(
+            r'\.about-contact-path__ribbon \{[\s\S]*?\}',
+            refresh_css,
+        )
+        self.assertIsNotNone(ribbon_rule)
+        self.assertIn('opacity: 1', ribbon_rule.group(0))
+        self.assertNotIn('transition:', ribbon_rule.group(0))
+        self.assertNotIn('.about-contact-path__core', refresh_css)
+        self.assertNotIn('.about-path-line', legacy_css)
+
     def test_heating_article_results_use_prominent_responsive_maps(self):
         css_response = self.client.get('/static/site-refresh.css')
         css = css_response.get_data(as_text=True)
@@ -237,18 +453,22 @@ class SiteQualityTests(unittest.TestCase):
             css,
         )
         self.assertIn('grid-template-columns: minmax(0, 1fr)', css)
-        self.assertIn(
+        self.assertNotIn(
             '.project-detail-page--lavtemperaturfjernvarme '
             '.project-context-figure',
             css,
         )
+        self.assertIn('width: min(100%, 720px)', css)
         self.assertIn(
-            'width: min(calc(100% - 36px), 900px)',
+            'box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16)',
             css,
         )
-        self.assertIn('height: clamp(260px, 24vw, 320px)', css)
-        self.assertIn('width: min(100%, 920px)', css)
-        self.assertIn('width: min(100%, 800px)', css)
+        self.assertIn('border-radius: clamp(18px, 3vw, 30px)', css)
+        self.assertRegex(
+            css,
+            r'\.project-gallery-item figcaption \{[\s\S]*?'
+            r'background: #fff;',
+        )
 
     def test_manifest_icons_resolve(self):
         manifest_response = self.client.get('/static/site.webmanifest')

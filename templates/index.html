@@ -39,7 +39,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260727-shared-footer">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260728-seam-calibrated-ribbon">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -66,6 +66,34 @@
     {% block content %}
     <main id="main-content" tabindex="-1">
 
+    <svg class="about-contact-path" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true" preserveAspectRatio="none">
+
+        <defs>
+
+            <linearGradient id="aboutContactRibbonFade" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="220">
+
+                <stop offset="0%" stop-color="#ff9803" stop-opacity="0.98" />
+
+                <stop offset="68%" stop-color="#f39a13" stop-opacity="0.74" />
+
+                <stop offset="100%" stop-color="#ef8a00" stop-opacity="0" />
+
+            </linearGradient>
+
+            <mask id="aboutContactRevealMask" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse" x="0" y="0" width="1" height="1">
+
+                <path class="about-contact-path__reveal" pathLength="1" />
+
+            </mask>
+
+        </defs>
+
+        <path class="about-contact-path__guide" />
+
+        <path class="about-contact-path__ribbon" mask="url(#aboutContactRevealMask)" />
+
+    </svg>
+
     <div class="video-background">
 
         <div class="video-overlay">
@@ -73,11 +101,6 @@
             <h1 id="typewriter-h1" data-text="{{ strings.hero_h1 }}">{{ strings.hero_h1 }}</h1>
 
             <p id="typewriter-p">{{ strings.hero_p }}</p>
-
-            <div class="home-hero-actions">
-                <a class="home-hero-button" href="#projekter">{{ strings.hero_primary }}</a>
-                <a class="home-hero-button home-hero-button--secondary" href="#kontakt">{{ strings.hero_secondary }}</a>
-            </div>
 
         </div>
 
@@ -221,31 +244,7 @@
 
             <div class="about-datara-media">
 
-                <img src="/static/SKylab%20billede.jpg" alt="{% if strings.lang_code == 'da' %}Arbejdsmiljø i DTU Skylab{% else %}Workspace at DTU Skylab{% endif %}" width="1920" height="1280" loading="lazy" decoding="async">
-
-                <svg class="about-path-line" viewBox="0 0 96 92" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false" aria-hidden="true">
-
-                    <defs>
-
-                        <linearGradient id="aboutPathThickFade" x1="0" y1="0" x2="0" y2="1">
-
-                            <stop offset="0%" stop-color="#f39a13" stop-opacity="1" />
-
-                            <stop offset="52%" stop-color="#f08a00" stop-opacity="0.68" />
-
-                            <stop offset="78%" stop-color="#ee7f00" stop-opacity="0.14" />
-
-                            <stop offset="100%" stop-color="#ee7f00" stop-opacity="0" />
-
-                        </linearGradient>
-
-                    </defs>
-
-                    <path class="about-path-line-path about-path-line-path-thick" d="M24 0 C24 20 78 22 78 42 L78 72" />
-
-                    <path class="about-path-line-path about-path-line-path-thin" d="M24 0 C24 20 78 22 78 42 L78 72" />
-
-                </svg>
+                <img src="/static/SKylab%20billede.jpg" alt="{% if strings.lang_code == 'da' %}Arbejdsmiljø i DTU Skylab{% else %}Workspace at DTU Skylab{% endif %}" width="1920" height="1280" data-path-x="1056" data-path-width="105" loading="lazy" decoding="async">
 
             </div>
 
@@ -656,36 +655,49 @@ syncMobileMenuState();
 
 <script>
 
-// Animation for kontaktbokse
+// Diskrete indgangsanimationer. Indholdet vises straks ved reduceret bevægelse.
 
 document.addEventListener('DOMContentLoaded', function() {
+
+  const targets = document.querySelectorAll('.contact-item, .about-next-line, .section-guide-line');
+
+  const reveal = (target) => target.classList.add('animate-in');
+
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+
+    targets.forEach(reveal);
+
+    return;
+
+  }
 
   const observer = new window.IntersectionObserver((entries) => {
 
     entries.forEach(entry => {
 
-      if (entry.isIntersecting) {
+      if (!entry.isIntersecting) {
 
-        entry.target.classList.add('animate-in');
-
-        observer.unobserve(entry.target);
+        return;
 
       }
 
+      reveal(entry.target);
+
+      observer.unobserve(entry.target);
+
     });
 
-  }, { threshold: 0.3 });
+  }, { threshold: 0.16 });
 
-    document.querySelectorAll('.contact-item, .about-next-line, .section-guide-line, .about-path-line').forEach(box => {
-
-    observer.observe(box);
-
-  });
+  targets.forEach(target => observer.observe(target));
 
 });
 
 </script>
 
+{# Den tidligere pixel-scanning er bevaret i versionshistorikken; den faste billedforankring nedenfor er mere præcis og lettere.
 <script>
 
 // Finder orange spor i Om Datara-billedet og forankrer den buede sti dynamisk.
@@ -873,6 +885,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 </script>
+#}
+
+<script defer src="/static/js/about-contact-path.js?v=20260728-seam-calibrated-ribbon"></script>
 
 <script>
 

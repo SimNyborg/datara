@@ -962,46 +962,6 @@ html {
     opacity: var(--page-margin-line-opacity);
     transform: translateX(-50%) scaleY(1);
 }
-.about-path-line {
-    position: absolute;
-    left: var(--about-path-anchor-x, 28%);
-    top: calc(100% + 2px);
-    width: 96px;
-    height: 82px;
-    overflow: visible;
-    opacity: 1;
-    transform: translateX(-50%);
-    pointer-events: none;
-}
-.about-path-line-path {
-    fill: none;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    opacity: 0.95;
-}
-.about-path-line-path-thin {
-    stroke: #f39a13;
-    stroke-width: 2.6;
-    stroke-dasharray: 150;
-    stroke-dashoffset: 150;
-    transition: stroke-dashoffset 2.1s cubic-bezier(0.35,0,0.2,1);
-}
-.about-path-line-path-thick {
-    stroke: url(#aboutPathThickFade);
-    stroke-width: 8;
-    stroke-dasharray: 150;
-    stroke-dashoffset: 150;
-    transition: stroke-dashoffset 2.1s cubic-bezier(0.35,0,0.2,1);
-}
-.about-path-line.animate-in .about-path-line-path-thin,
-.about-path-line.animate-in .about-path-line-path-thick {
-    stroke-dashoffset: 0;
-}
-@media (max-width: 1000px) {
-    .about-path-line {
-        display: none;
-    }
-}
 .section-guide-line {
     width: var(--page-margin-line-thickness);
     height: 62px;

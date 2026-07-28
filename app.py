@@ -29,8 +29,6 @@ translations = {
         'nav_kontakt': 'Kontakt',
         'hero_h1': 'Mindre manuelt arbejde. Bedre beslutninger.',
         'hero_p': 'Vi automatiserer arbejdsgange, analyserer data og bygger digitale løsninger, der passer til jeres hverdag.',
-        'hero_primary': 'Se vores projekter',
-        'hero_secondary': 'Kontakt os',
         'projects_h2': 'Vores projekter',
         'projects_subheading': 'Her er nogle af de opgaver, vi har løst med data, automatisering og software.',
         'services_h2': 'Det hjælper vi med',
@@ -50,8 +48,6 @@ translations = {
         'nav_kontakt': 'Contact',
         'hero_h1': 'Less manual work. Better decisions.',
         'hero_p': 'We automate workflows, analyse data and build digital tools that fit the way you work.',
-        'hero_primary': 'See our projects',
-        'hero_secondary': 'Contact us',
         'projects_h2': 'Our projects',
         'projects_subheading': 'A few examples of how we have used data, automation and software to solve real tasks.',
         'services_h2': 'What we can help with',
@@ -337,11 +333,6 @@ PROJECTS = {
         'image': 'fjernvarme-resultatkort.png',
         'image_width': 1280,
         'image_height': 720,
-        'context_image': {
-            'filename': 'fjernvarme.jpg',
-            'width': 3600,
-            'height': 2700,
-        },
         'content': {
             'da': {
                 'seo_title': 'Kortlægning af lavtemperaturfjernvarme | Datara',
@@ -351,7 +342,6 @@ PROJECTS = {
                 'lead': 'Hvilke bygninger kan klare fjernvarme ved en lavere temperatur? Og hvor findes der virksomheder med varme til overs? Projektet samlede svarene i et kort til den tidlige varmeplanlægning.',
                 'image_alt': 'Resultatkort over bygningers potentiale for lavtemperaturfjernvarme i Lyngby-Taarbæk',
                 'image_caption': 'Blandt analysens 12.592 bygninger viser grøn højt potentiale, gul muligt potentiale efter forbedringer og rød lavt potentiale for at modtage lavtemperaturfjernvarme.',
-                'context_image_alt': 'Fjernvarmerør under anlæg på en boligvej',
                 'sections': [
                     {
                         'title': 'Bygningsdata samlet ét sted',
@@ -404,7 +394,8 @@ PROJECTS = {
                         'filename': 'fjernvarme-overskudsvarmekilder.png',
                         'alt': 'Kort over ti steder i Lyngby-Taarbæk udvalgt til nærmere undersøgelse som mulige kilder til overskudsvarme',
                         'title': 'Mulige kilder til overskudsvarme',
-                        'description': 'Screeningen fremhævede ti steder til nærmere undersøgelse på baggrund af EnergyMAPS-data, kommunens energiplan og en visuel vurdering af køleanlæg.',
+                        'description': 'Udvælgelsen kombinerede EnergyMAPS-data, kommunens energiplan og en visuel vurdering af køleanlæg.',
+                        'caption': 'De ti markerede steder er kandidater til en nærmere lokal undersøgelse.',
                         'width': 1796,
                         'height': 924,
                     },
@@ -421,7 +412,6 @@ PROJECTS = {
                 'lead': 'Which buildings can be heated at a lower temperature, and where might local businesses have surplus heat to share? The project brought both sides together in a map for early-stage heat planning.',
                 'image_alt': 'Results map of buildings assessed for low-temperature district heating in Lyngby-Taarbæk',
                 'image_caption': 'Among the 12,592 buildings in the analysis, green shows high potential, yellow possible potential after improvements and red low potential for low-temperature district heating.',
-                'context_image_alt': 'District-heating pipes being installed on a residential street',
                 'sections': [
                     {
                         'title': 'Building data in one place',
@@ -474,7 +464,8 @@ PROJECTS = {
                         'filename': 'fjernvarme-overskudsvarmekilder.png',
                         'alt': 'Map of ten sites in Lyngby-Taarbæk selected for closer investigation as potential sources of surplus heat',
                         'title': 'Potential sources of surplus heat',
-                        'description': 'The screening highlighted ten sites for closer investigation, based on EnergyMAPS data, the municipal energy plan and a visual review of cooling systems.',
+                        'description': 'The selection combined EnergyMAPS data, the municipal energy plan and a visual review of cooling systems.',
+                        'caption': 'The ten marked sites are candidates for closer local investigation.',
                         'width': 1796,
                         'height': 924,
                     },
