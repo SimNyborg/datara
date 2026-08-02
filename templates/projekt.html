@@ -16,9 +16,9 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260721') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260728-service-layout') }}">
-    <script defer src="{{ url_for('static', filename='js/site-header.js', v='site-review-20260728-unified-header') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260802-case-articles') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260802-case-articles') }}">
+    <script defer src="{{ url_for('static', filename='js/site-header.js', v='site-review-20260730-header-fold') }}"></script>
 </head>
 <body class="project-detail-page project-detail-page--{{ projekt.slug }}">
     <a class="project-skip-link" href="#project-article">{{ ui.skip_label }}</a>
@@ -30,7 +30,6 @@
             <header class="project-intro">
                 <div class="project-intro-inner">
                     <div class="project-intro-copy">
-                        <p class="project-eyebrow">{{ projekt.eyebrow }}</p>
                         <h1>{{ projekt.title }}</h1>
                         <p class="project-lead">{{ projekt.lead }}</p>
                     </div>
@@ -51,12 +50,31 @@
                 <div class="project-article-layout">
                     <div class="project-story">
                         {% for section in projekt.sections %}
-                        <section class="project-story-section" aria-labelledby="section-{{ loop.index }}">
-                            <h2 id="section-{{ loop.index }}">{{ section.title }}</h2>
-                            {% for paragraph in section.paragraphs %}
-                            <p>{{ paragraph }}</p>
-                            {% endfor %}
+                        <section class="project-story-section{% if section.figure %} project-story-section--with-figure{% endif %}"
+                                 aria-labelledby="section-{{ loop.index }}">
+                            <div class="project-story-section-copy">
+                                <h2 id="section-{{ loop.index }}">{{ section.title }}</h2>
+                                {% for paragraph in section.paragraphs %}
+                                <p>{{ paragraph }}</p>
+                                {% endfor %}
+                            </div>
+                            {% if section.figure %}
+                            <figure class="project-story-figure">
+                                <img src="{{ url_for('static', filename=section.figure.filename) }}"
+                                     alt="{{ section.figure.alt }}"
+                                     width="{{ section.figure.width }}"
+                                     height="{{ section.figure.height }}"
+                                     loading="lazy"
+                                     decoding="async">
+                                {% if section.figure.caption %}
+                                <figcaption>{{ section.figure.caption }}</figcaption>
+                                {% endif %}
+                            </figure>
+                            {% endif %}
                         </section>
+                        {% if projekt.gallery and projekt.gallery_after_section == loop.index %}
+                        {% include '_project_gallery.html' %}
+                        {% endif %}
                         {% endfor %}
 
                         {% if projekt.note %}
@@ -66,18 +84,6 @@
                         </aside>
                         {% endif %}
                     </div>
-
-                    <aside class="project-facts" aria-labelledby="project-facts-title">
-                        <h2 id="project-facts-title">{{ projekt.stats_title }}</h2>
-                        <dl>
-                            {% for stat in projekt.stats %}
-                            <div class="project-fact">
-                                <dt>{{ stat.value }}</dt>
-                                <dd>{{ stat.label }}</dd>
-                            </div>
-                            {% endfor %}
-                        </dl>
-                    </aside>
                 </div>
             </div>
 
@@ -92,54 +98,10 @@
             </figure>
             {% endif %}
 
-            {% if projekt.gallery %}
-            <section class="project-gallery-section" aria-labelledby="project-gallery-title">
-                <div class="project-gallery-inner">
-                    <div class="project-gallery-heading">
-                        <h2 id="project-gallery-title">{{ projekt.gallery_title }}</h2>
-                        <p>{{ projekt.gallery_intro }}</p>
-                    </div>
-                    <div class="project-gallery-grid">
-                        {% for image in projekt.gallery %}
-                        <div class="project-gallery-result{% if image.featured %} project-gallery-result--featured{% endif %}">
-                            {% if image.title or image.description %}
-                            <div class="project-gallery-result-copy">
-                                {% if image.title %}
-                                <h3>{{ image.title }}</h3>
-                                {% endif %}
-                                {% if image.description %}
-                                <p>{{ image.description }}</p>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                            <figure class="project-gallery-item">
-                                <img src="{{ url_for('static', filename=image.filename) }}"
-                                     alt="{{ image.alt }}"
-                                     width="{{ image.width }}"
-                                     height="{{ image.height }}"
-                                     loading="lazy"
-                                     decoding="async">
-                                {% if image.caption %}
-                                <figcaption>{{ image.caption }}</figcaption>
-                                {% endif %}
-                            </figure>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </section>
+            {% if projekt.gallery and not projekt.gallery_after_section %}
+            {% include '_project_gallery.html' %}
             {% endif %}
 
-            <section class="project-contact-section" aria-labelledby="project-contact-title">
-                <div class="project-contact-inner">
-                    <h2 id="project-contact-title">{{ projekt.cta_title }}</h2>
-                    <p>{{ projekt.cta_text }}</p>
-                    <div class="project-contact-actions">
-                        <a class="project-button project-button--primary" href="{{ url_for('index') }}#kontakt">{{ projekt.cta_label }}</a>
-                        <a class="project-button project-button--secondary" href="{{ url_for('index') }}#projekter">{{ ui.back_label }}</a>
-                    </div>
-                </div>
-            </section>
         </article>
     </main>
 

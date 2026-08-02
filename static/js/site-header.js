@@ -38,9 +38,15 @@
     }
   };
 
-  burger.addEventListener('click', () => {
+  burger.addEventListener('click', (event) => {
     mobileMenu.classList.toggle('open');
     syncMenuState();
+
+    // Pointer clicks should not leave focus behind and pin the bar in place.
+    // Keyboard activation keeps focus visible for accessibility.
+    if (event.detail > 0) {
+      burger.blur();
+    }
   });
 
   mobileMenu.querySelectorAll('a').forEach((link) => {
@@ -77,19 +83,22 @@
       const currentScrollY = Math.max(window.scrollY, 0);
       const scrollingDown = currentScrollY > lastScrollY;
       const scrollingUp = currentScrollY < lastScrollY;
-      const menuIsOpen = mobileMenu.classList.contains('open');
+
+      if (mobileMenu.classList.contains('open')) {
+        closeMenu();
+      }
+
       const focusIsInNavbar = navbar.contains(document.activeElement);
 
       if (
         reducedMotionMedia.matches
         ||
-        currentScrollY <= 72
+        currentScrollY <= 10
         || scrollingUp
-        || menuIsOpen
         || focusIsInNavbar
       ) {
         showNavbar();
-      } else if (scrollingDown && currentScrollY > 120) {
+      } else if (scrollingDown && currentScrollY > 50) {
         navbar.classList.add('navbar-hidden');
       }
 
@@ -107,7 +116,7 @@
     window.addEventListener('pageshow', () => {
       lastScrollY = Math.max(window.scrollY, 0);
 
-      if (lastScrollY <= 72) {
+      if (lastScrollY <= 10) {
         showNavbar();
       }
     });

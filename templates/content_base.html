@@ -14,9 +14,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
     <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=site-review-20260721">
-    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css') }}?v=site-review-20260728-service-layout">
-    <script defer src="{{ url_for('static', filename='js/site-header.js') }}?v=site-review-20260728-unified-header"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css', v='site-review-20260802-software-article') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='site-refresh.css', v='site-review-20260802-software-article') }}">
+    <script defer src="{{ url_for('static', filename='js/site-header.js') }}?v=site-review-20260730-header-fold"></script>
 </head>
 <body class="content-page {% block body_class %}{% endblock %}">
     <a class="site-skip-link" href="#main-content">{{ ui.skip_label }}</a>

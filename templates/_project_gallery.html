@@ -1,0 +1,41 @@
+<section class="project-gallery-section{% if projekt.gallery_after_section %} project-gallery-section--in-article{% endif %}{% if projekt.gallery_layout %} project-gallery-section--{{ projekt.gallery_layout }}{% endif %}"
+         aria-labelledby="project-gallery-title">
+    <div class="project-gallery-inner">
+        <div class="project-gallery-heading">
+            <h2 id="project-gallery-title">{{ projekt.gallery_title }}</h2>
+            {% if projekt.gallery_intro %}
+            <p>{{ projekt.gallery_intro }}</p>
+            {% endif %}
+        </div>
+        <div class="project-gallery-grid">
+            {% for image in projekt.gallery %}
+            <div class="project-gallery-result{% if image.featured %} project-gallery-result--featured{% endif %}">
+                {% if image.title or image.description %}
+                <div class="project-gallery-result-copy">
+                    {% if image.title %}
+                    <h3>{{ image.title }}</h3>
+                    {% endif %}
+                    {% if image.description %}
+                    <p>{{ image.description }}</p>
+                    {% endif %}
+                    {% if projekt.gallery_captions_in_copy and image.caption %}
+                    <p class="project-gallery-result-caption">{{ image.caption }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                <figure class="project-gallery-item">
+                    <img src="{{ url_for('static', filename=image.filename) }}"
+                         alt="{{ image.alt }}"
+                         width="{{ image.width }}"
+                         height="{{ image.height }}"
+                         loading="lazy"
+                         decoding="async">
+                    {% if image.caption and not projekt.gallery_captions_in_copy %}
+                    <figcaption>{{ image.caption }}</figcaption>
+                    {% endif %}
+                </figure>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

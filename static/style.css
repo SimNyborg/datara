@@ -2743,15 +2743,6 @@ html {
   min-width: 0;
 }
 
-.project-eyebrow {
-  margin: 0 0 18px;
-  color: var(--primary-color);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-}
-
 .project-detail-page .project-intro h1 {
   max-width: 13ch;
   margin: 0;
@@ -2808,13 +2799,9 @@ html {
 }
 
 .project-article-layout {
-  width: min(100%, 1080px);
+  width: min(100%, 960px);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 690px) minmax(230px, 290px);
-  align-items: start;
-  justify-content: space-between;
-  gap: clamp(52px, 8vw, 96px);
+  display: block;
 }
 
 .project-story {
@@ -2822,17 +2809,21 @@ html {
 }
 
 .project-story-section {
-  padding: 0 0 42px;
+  width: min(100%, 760px);
+  margin-inline: auto;
+  padding: 0 0 clamp(40px, 5vw, 56px);
 }
 
 .project-story-section + .project-story-section {
-  border-top: 1px solid var(--border-color);
-  padding-top: 42px;
+  padding-top: 0;
+}
+
+.project-story-section:last-child {
+  padding-bottom: 0;
 }
 
 .project-detail-page .project-story h2,
 .project-note h2,
-.project-facts h2,
 .project-gallery-heading h2,
 .project-contact-inner h2 {
   margin: 0;
@@ -2852,50 +2843,42 @@ html {
   line-height: 1.82;
 }
 
-.project-facts {
-  position: sticky;
-  top: 106px;
+.project-story-section-copy {
   min-width: 0;
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-  background: var(--bg-secondary);
-  padding: 28px;
 }
 
-.project-facts h2 {
-  font-size: 1.18rem;
+.project-story-section--with-figure {
+  width: 100%;
 }
 
-.project-facts dl {
-  margin: 20px 0 0;
+.project-story-figure {
+  width: min(100%, 620px);
+  margin: 24px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(203, 213, 225, 0.86);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
 }
 
-.project-fact {
+.project-story-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+.project-story-figure figcaption {
   border-top: 1px solid var(--border-color);
-  padding: 20px 0;
-}
-
-.project-fact:last-child {
-  padding-bottom: 0;
-}
-
-.project-fact dt {
-  color: var(--primary-color);
-  font-size: clamp(1.55rem, 3vw, 2.15rem);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-}
-
-.project-fact dd {
-  margin: 7px 0 0;
+  padding: 12px 15px 14px;
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 .project-note {
-  margin-top: 6px;
+  width: min(100%, 760px);
+  margin: 6px auto 0;
   border-left: 4px solid var(--primary-color);
   border-radius: 0 14px 14px 0;
   background: var(--primary-light);
@@ -3079,8 +3062,7 @@ html {
 }
 
 @media (max-width: 900px) {
-  .project-intro-inner,
-  .project-article-layout {
+  .project-intro-inner {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -3096,18 +3078,32 @@ html {
     width: min(100%, 700px);
   }
 
-  .project-article-layout {
-    gap: 52px;
+}
+
+@media (min-width: 900px) {
+  .project-detail-page--lavtemperaturfjernvarme
+    .project-story-section:not(.project-story-section--with-figure) {
+    width: 100%;
   }
 
-  .project-facts {
-    position: static;
+  .project-detail-page--lavtemperaturfjernvarme
+    .project-story-section:not(.project-story-section--with-figure)
+    p {
+    max-width: 76ch;
   }
 
-  .project-facts dl {
+  .project-story-section--with-figure {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 28px;
+    grid-template-columns: minmax(250px, 0.74fr) minmax(380px, 1.26fr);
+    align-items: center;
+    column-gap: clamp(32px, 4vw, 46px);
+  }
+
+  .project-story-section--with-figure .project-story-figure {
+    width: 100%;
+    max-width: 520px;
+    margin: 0;
+    justify-self: end;
   }
 }
 
@@ -3156,7 +3152,7 @@ html {
   }
 
   .project-story-section + .project-story-section {
-    padding-top: 34px;
+    padding-top: 0;
   }
 
   .project-story p {
@@ -3164,11 +3160,11 @@ html {
     line-height: 1.75;
   }
 
-  .project-facts {
-    padding: 24px;
+  .project-story-figure {
+    margin-top: 20px;
+    border-radius: 12px;
   }
 
-  .project-facts dl,
   .project-gallery-grid {
     grid-template-columns: minmax(0, 1fr);
   }

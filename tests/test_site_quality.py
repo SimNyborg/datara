@@ -73,6 +73,7 @@ class SiteQualityTests(unittest.TestCase):
                     self.assertIn('class="unified-footer-links"', html)
                     self.assertIn('class="unified-footer-copyright"', html)
                     self.assertIn('href="mailto:shn@datara.dk"', html)
+                    self.assertIn('>shn@datara.dk</a>', html)
                     self.assertIn('href="tel:+4552390360"', html)
                     self.assertIn('href="/privatliv"', html)
                     self.assertIn('href="/cookies"', html)
@@ -81,13 +82,13 @@ class SiteQualityTests(unittest.TestCase):
                     self.assertNotIn('class="project-footer"', html)
 
                     if language == 'da':
-                        self.assertIn('Skriv til os', html)
+                        self.assertNotIn('Skriv til os:', html)
                         self.assertIn('Privatliv', html)
                         self.assertIn('Vilkår', html)
                         self.assertIn('Alle rettigheder forbeholdes.', html)
                         self.assertIn('aria-label="Juridiske links"', html)
                     else:
-                        self.assertIn('Email us', html)
+                        self.assertNotIn('Email us:', html)
                         self.assertIn('Privacy', html)
                         self.assertIn('Terms', html)
                         self.assertIn('All rights reserved.', html)
@@ -126,6 +127,13 @@ class SiteQualityTests(unittest.TestCase):
             header_script,
         )
         self.assertIn("navbar.classList.add('navbar-hidden')", header_script)
+        self.assertIn(
+            "if (mobileMenu.classList.contains('open'))",
+            header_script,
+        )
+        self.assertIn('event.detail > 0', header_script)
+        self.assertIn('currentScrollY > 50', header_script)
+        self.assertNotIn('currentScrollY > 120', header_script)
         self.assertIn('window.requestAnimationFrame', header_script)
         self.assertIn("{ passive: true }", header_script)
         self.assertIn('reducedMotionMedia.matches', header_script)
@@ -141,11 +149,21 @@ class SiteQualityTests(unittest.TestCase):
             '.project-detail-page .site-navbar--inner.navbar-hidden',
             css,
         )
+        self.assertRegex(
+            css,
+            r'\.content-page \.site-navbar--inner,\s+'
+            r'\.project-detail-page \.site-navbar--inner \{\s+'
+            r'position: sticky;',
+        )
+        self.assertRegex(
+            css,
+            r'\.content-page \{[\s\S]*?overflow-x: clip;',
+        )
         self.assertIn('transform: translateY(calc(-100% - 8px))', css)
         self.assertIn('.site-navbar.navbar-hidden', css)
         self.assertIn('transform: none !important', css)
 
-    def test_active_service_pages_share_complete_structure_in_both_languages(self):
+    def test_active_service_pages_render_their_intended_structure_in_both_languages(self):
         service_paths = (
             '/services/dataanalyse',
             '/services/forretningsudvikling',
@@ -160,19 +178,62 @@ class SiteQualityTests(unittest.TestCase):
                     html = self.client.get(path).get_data(as_text=True)
                     self.assertEqual(html.count('class="service-hero"'), 1)
                     self.assertEqual(
+                        html.count(
+                            'js/site-header.js?v=site-review-20260730-header-fold'
+                        ),
+                        1,
+                    )
+                    self.assertEqual(
                         html.count('class="service-benefit-card"'),
                         3,
                     )
-                    self.assertEqual(
-                        html.count('class="service-step-number"'),
-                        4,
-                    )
+                    self.assertNotIn('class="service-step-number"', html)
+                    self.assertNotIn('class="content-section-number"', html)
+                    self.assertNotIn('class="content-eyebrow"', html)
+                    expected_list_items = {
+                        '/services/dataanalyse': 4,
+                        '/services/automatisering': 8,
+                    }.get(path, 7)
                     self.assertEqual(
                         len(re.findall(r'<li(?:\s|>)', html)),
-                        7,
+                        expected_list_items,
                     )
-                    self.assertEqual(html.count('class="content-cta"'), 1)
+                    expected_story_sections = (
+                        2 if path == '/services/dataanalyse' else 3
+                    )
+                    self.assertEqual(
+                        html.count('class="service-story-section'),
+                        expected_story_sections,
+                    )
+                    self.assertNotIn('project-contact-section', html)
+                    self.assertNotIn('service-contact-section', html)
+                    self.assertNotIn('project-contact-actions', html)
+                    self.assertNotIn('class="content-cta"', html)
                     self.assertNotIn('\ufffd', html)
+                    self.assertNotIn('\u2013', html)
+                    self.assertNotIn('\u2014', html)
+
+                    hero = re.search(
+                        r'<header class="service-hero">([\s\S]*?)</header>',
+                        html,
+                    )
+                    self.assertIsNotNone(hero)
+                    self.assertNotIn('button', hero.group(1).lower())
+                    self.assertNotIn('content-primary-button', hero.group(1))
+                    self.assertNotIn('project-button', hero.group(1))
+
+                    if path == '/services/dataanalyse':
+                        self.assertNotIn('class="service-examples"', html)
+                        self.assertNotIn(
+                            'Eksempler'
+                            if language == 'da'
+                            else 'Examples',
+                            html,
+                        )
+                        self.assertNotIn(
+                            'class="content-secondary-button"',
+                            html,
+                        )
 
         data_page = self.client.get('/services/dataanalyse').get_data(as_text=True)
         automation_page = self.client.get(
@@ -185,46 +246,226 @@ class SiteQualityTests(unittest.TestCase):
             '/services/it-produktudvikling',
         ).get_data(as_text=True)
 
-        self.assertIn('href="/projekter/2"', data_page)
-        self.assertIn('href="/projekter/1"', automation_page)
+        self.assertNotIn('href="/projekter/2"', data_page)
+        self.assertNotIn('href="/projekter/', automation_page)
         self.assertNotIn('href="/projekter/', business_page)
         self.assertNotIn('href="/projekter/', product_page)
+
+    def test_service_copy_is_plain_and_consistent_in_both_languages(self):
+        self._switch_language('da')
+        danish_pages = {
+            path: self.client.get(path).get_data(as_text=True)
+            for path in (
+                '/services/dataanalyse',
+                '/services/forretningsudvikling',
+                '/services/automatisering',
+                '/services/it-produktudvikling',
+            )
+        }
+
+        self.assertIn('Indsamling og analyse af data', danish_pages['/services/dataanalyse'])
+        self.assertIn('Hvad analysen omfatter', danish_pages['/services/dataanalyse'])
+        self.assertIn('Fra spørgsmål til resultat', danish_pages['/services/dataanalyse'])
+        self.assertIn('Et resultat til videre brug', danish_pages['/services/dataanalyse'])
+        self.assertIn('grafer, tabeller, kort eller en kort rapport', danish_pages['/services/dataanalyse'])
+        self.assertNotIn('Et resultat med forbehold', danish_pages['/services/dataanalyse'])
+        self.assertNotIn('Fra data til klare valg', danish_pages['/services/dataanalyse'])
+        self.assertIn(
+            '<h1>Analyse, prioritering og planlægning</h1>',
+            danish_pages['/services/forretningsudvikling'],
+        )
+        self.assertIn('Hvad arbejdet omfatter', danish_pages['/services/forretningsudvikling'])
+        self.assertIn('Fra udfordring til plan', danish_pages['/services/forretningsudvikling'])
+        self.assertIn('Automatisering af arbejdsgange', danish_pages['/services/automatisering'])
+        self.assertIn('Mindre manuel håndtering', danish_pages['/services/automatisering'])
+        self.assertIn(
+            'kan AI indgå som et afgrænset trin',
+            danish_pages['/services/automatisering'],
+        )
+        self.assertIn(
+            'Sortering og udtræk af oplysninger fra tekst med AI',
+            danish_pages['/services/automatisering'],
+        )
+        self.assertNotIn('Fjern det gentagne arbejde', danish_pages['/services/automatisering'])
+        self.assertIn(
+            '<h1>Udvikling af software til arbejdsgange</h1>',
+            danish_pages['/services/it-produktudvikling'],
+        )
+        self.assertIn('Hvad udviklingen omfatter', danish_pages['/services/it-produktudvikling'])
+        self.assertIn('Fra behov til software', danish_pages['/services/it-produktudvikling'])
+        self.assertIn(
+            'forkorte udviklingstiden og reducere omkostningerne',
+            danish_pages['/services/it-produktudvikling'],
+        )
+        self.assertIn(
+            'Kode lavet med hjælp fra AI bliver gennemgået og testet som anden kode',
+            danish_pages['/services/it-produktudvikling'],
+        )
+        self.assertNotIn(
+            'Software, der passer til arbejdet',
+            danish_pages['/services/it-produktudvikling'],
+        )
+
+        self._switch_language('en')
+        english_pages = {
+            path: self.client.get(path).get_data(as_text=True)
+            for path in danish_pages
+        }
+        self.assertIn('Data collection and analysis', english_pages['/services/dataanalyse'])
+        self.assertIn('What the analysis includes', english_pages['/services/dataanalyse'])
+        self.assertIn('From question to result', english_pages['/services/dataanalyse'])
+        self.assertIn('A result for further use', english_pages['/services/dataanalyse'])
+        self.assertIn('charts, tables, maps or a short report', english_pages['/services/dataanalyse'])
+        self.assertNotIn('A result with caveats', english_pages['/services/dataanalyse'])
+        self.assertNotIn('From data to clear decisions', english_pages['/services/dataanalyse'])
+        self.assertIn(
+            '<h1>Analysis, prioritisation and planning</h1>',
+            english_pages['/services/forretningsudvikling'],
+        )
+        self.assertIn('What the work includes', english_pages['/services/forretningsudvikling'])
+        self.assertIn('From challenge to plan', english_pages['/services/forretningsudvikling'])
+        self.assertIn('Workflow automation', english_pages['/services/automatisering'])
+        self.assertIn('Less manual handling', english_pages['/services/automatisering'])
+        self.assertIn(
+            'AI can be used as a clearly defined step',
+            english_pages['/services/automatisering'],
+        )
+        self.assertIn(
+            'Sorting and extracting information from text with AI',
+            english_pages['/services/automatisering'],
+        )
+        self.assertNotIn('Remove repetitive work', english_pages['/services/automatisering'])
+        self.assertIn(
+            '<h1>Software development for workflows</h1>',
+            english_pages['/services/it-produktudvikling'],
+        )
+        self.assertIn('What development includes', english_pages['/services/it-produktudvikling'])
+        self.assertIn('From need to software', english_pages['/services/it-produktudvikling'])
+        self.assertIn(
+            'shorten development time and reduce costs',
+            english_pages['/services/it-produktudvikling'],
+        )
+        self.assertIn(
+            'Code produced with AI support is reviewed and tested',
+            english_pages['/services/it-produktudvikling'],
+        )
+        self.assertNotIn(
+            'Software that fits the work',
+            english_pages['/services/it-produktudvikling'],
+        )
+
+        for html in (*danish_pages.values(), *english_pages.values()):
+            self.assertNotIn('\u2013', html)
+            self.assertNotIn('\u2014', html)
 
     def test_service_layout_clears_divider_and_uses_responsive_rules(self):
         css_response = self.client.get('/static/site-refresh.css')
         css = css_response.get_data(as_text=True)
         css_response.close()
 
-        self.assertRegex(
+        self.assertIn('/* Unified editorial layout for all service articles. */', css)
+        self.assertIn(
+            '/* All four service articles share the same restrained article layout. */',
             css,
-            r'\.service-page \.content-cta \{\s+'
-            r'padding: clamp\(44px, 6vw, 76px\)',
         )
         self.assertIn(
-            'grid-template-columns: repeat(2, minmax(0, 1fr))',
+            '.service-page--it-produktudvikling .service-hero-inner,',
             css,
         )
-        self.assertRegex(
-            css,
-            r'@media \(max-width: 800px\)[\s\S]*?'
-            r'\.service-page \.service-step-list \{\s+'
-            r'grid-template-columns: minmax\(0, 1fr\)',
-        )
-        self.assertRegex(
-            css,
-            r'@media \(max-width: 700px\)[\s\S]*?'
-            r'\.service-page \.service-benefit-grid \{\s+'
-            r'grid-template-columns: minmax\(0, 1fr\)',
-        )
-        self.assertIn('padding: 28px 22px', css)
         self.assertIn(
-            'font-size: clamp(1.72rem, 8.5vw, 2.15rem)',
+            '.service-page--forretningsudvikling .service-hero-inner,',
             css,
         )
+        self.assertNotIn(
+            '/* A tighter editorial layout for the Dataanalyse service article. */',
+            css,
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page \.service-article-wrap \{[\s\S]*?'
+            r'padding: clamp\(64px, 8vw, 112px\) '
+            r'clamp\(18px, 4vw, 48px\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page \.service-article-layout \{[\s\S]*?'
+            r'width: min\(100%, 960px\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page \.service-story-section \{[\s\S]*?'
+            r'width: min\(100%, 760px\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page section \+ section::before \{\s*'
+            r'display: none;\s*content: none;',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page \.service-benefit-card::before \{\s*'
+            r'display: none;\s*content: none;',
+        )
+        self.assertIn(
+            '.service-page--dataanalyse .service-hero h1::before,',
+            css,
+        )
+        self.assertRegex(
+            css,
+            r'@media \(min-width: 760px\)[\s\S]*?'
+            r'\.service-page \.service-step-list \{\s*'
+            r'grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);',
+        )
+        self.assertRegex(
+            css,
+            r'@media \(min-width: 900px\)[\s\S]*?'
+            r'\.service-page \.service-hero-inner \{\s*display: grid;',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page--automatisering \.service-hero \{\s*'
+            r'padding-block: clamp\(40px, 5vw, 68px\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page--dataanalyse \.service-hero-inner,\s*'
+            r'\.service-page--dataanalyse \.service-article-layout,\s*'
+            r'\.service-page--automatisering \.service-hero-inner,\s*'
+            r'\.service-page--automatisering \.service-article-layout \{\s*'
+            r'width: min\(100%, 1080px\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.service-page--automatisering \.service-hero-inner,\s*'
+            r'\.service-page--automatisering \.service-article-layout \{\s*'
+            r'width: min\(100%, 1080px\);',
+        )
+        self.assertIn('border-radius: 14px', css)
         self.assertRegex(
             css,
             r'\.unified-footer \{[\s\S]*?text-align: left;',
         )
+
+    def test_article_pages_do_not_render_bottom_contact_prompts(self):
+        article_paths = (
+            '/projekter/1',
+            '/projekter/2',
+            '/services/dataanalyse',
+            '/services/forretningsudvikling',
+            '/services/automatisering',
+            '/services/it-produktudvikling',
+        )
+
+        for language in ('da', 'en'):
+            self._switch_language(language)
+            for path in article_paths:
+                with self.subTest(language=language, path=path):
+                    html = self.client.get(path).get_data(as_text=True)
+                    self.assertNotIn('project-contact-section', html)
+                    self.assertNotIn('service-contact-section', html)
+                    self.assertNotIn('project-contact-actions', html)
+                    self.assertNotIn('service-cta-title', html)
+                    self.assertNotIn('project-contact-title', html)
 
     def test_language_redirect_rejects_external_referrers(self):
         response = self.client.get(
@@ -291,18 +532,98 @@ class SiteQualityTests(unittest.TestCase):
         css = css_response.get_data(as_text=True)
         css_response.close()
         self.assertIn(
-            'grid-template-columns: repeat(4, minmax(0, 1fr))',
+            '/* Homepage services: quiet, responsive list cards inspired by '
+            'the supplied reference. */',
             css,
         )
         self.assertIn(
-            'grid-template-columns: 34px minmax(0, 1fr)',
+            'grid-template-columns: repeat(2, minmax(0, 1fr))',
             css,
         )
-        self.assertIn('#services.services-section', css)
         self.assertRegex(
             css,
-            r'\.home-page \.service-card \{\s+min-height: 0;',
+            r'\.home-page #services \.services-grid \{[\s\S]*?'
+            r'grid-auto-rows: 1fr;',
         )
+        self.assertRegex(
+            css,
+            r'\.home-page #services \.service-card \{[\s\S]*?'
+            r'grid-template-columns: 56px minmax\(0, 1fr\) 22px;[\s\S]*?'
+            r'border: 1px solid rgba\(226, 232, 240, 0\.8\);[\s\S]*?'
+            r'border-radius: 16px;[\s\S]*?'
+            r'box-shadow: 0 10px 30px rgba\(15, 23, 42, 0\.08\);[\s\S]*?'
+            r'transform: none;',
+        )
+        self.assertRegex(
+            css,
+            r'@media \(min-width: 960px\)[\s\S]*?'
+            r'\.home-page #services \.services-grid \{[\s\S]*?'
+            r'grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);',
+        )
+        self.assertRegex(
+            css,
+            r'@media \(max-width: 600px\)[\s\S]*?'
+            r'\.home-page #services \.service-card \{[\s\S]*?'
+            r'grid-template-columns: 50px minmax\(0, 1fr\) 20px;',
+        )
+        self.assertIn('.home-page #services .service-card-arrow', css)
+
+        expected_cards = {
+            'da': (
+                ('/services/automatisering', 'Automatisering'),
+                ('/services/dataanalyse', 'Dataanalyse'),
+                ('/services/forretningsudvikling', 'Forretningsudvikling'),
+                ('/services/it-produktudvikling', 'IT-produktudvikling'),
+            ),
+            'en': (
+                ('/services/automatisering', 'Automation'),
+                ('/services/forretningsudvikling', 'Business development'),
+                ('/services/dataanalyse', 'Data analysis'),
+                ('/services/it-produktudvikling', 'IT product development'),
+            ),
+        }
+        expected_summaries = {
+            'da': (
+                'Automatisering af faste og gentagne arbejdsgange.',
+                'Indsamling, strukturering og analyse af data.',
+                'Analyse af arbejdsgange, muligheder og prioriteringer.',
+                'Udvikling af software til konkrete arbejdsgange.',
+            ),
+            'en': (
+                'Automation of fixed, repetitive workflow steps.',
+                'Analysis of workflows, opportunities and priorities.',
+                'Collection, structuring and analysis of data.',
+                'Development of software for specific workflows.',
+            ),
+        }
+        card_pattern = re.compile(
+            r'<a href="([^"]+)"\s+class="service-card[^"]*">'
+            r'([\s\S]*?)</a>',
+        )
+
+        for language, expected in expected_cards.items():
+            self._switch_language(language)
+            html = self.client.get('/').get_data(as_text=True)
+            cards = card_pattern.findall(html)
+            rendered = tuple(
+                (
+                    href,
+                    re.search(r'<h3>(.*?)</h3>', body).group(1),
+                )
+                for href, body in cards
+            )
+            summaries = tuple(
+                re.search(r'<p>(.*?)</p>', body).group(1)
+                for _, body in cards
+            )
+            with self.subTest(language=language):
+                self.assertEqual(rendered, expected)
+                self.assertEqual(summaries, expected_summaries[language])
+                self.assertTrue(
+                    all(len(summary.rstrip('.').split()) == 6 for summary in summaries),
+                )
+                self.assertEqual(html.count('class="service-card-arrow"'), 4)
+                self.assertEqual(html.count('class="service-icon"'), 4)
 
     def test_homepage_hero_has_no_action_buttons_in_either_language(self):
         for language in ('da', 'en'):
@@ -311,6 +632,33 @@ class SiteQualityTests(unittest.TestCase):
             with self.subTest(language=language):
                 self.assertNotIn('home-hero-actions', html)
                 self.assertNotIn('home-hero-button', html)
+                if language == 'da':
+                    self.assertIn(
+                        'Vi automatiserer arbejdsgange, analyserer data og '
+                        'bygger digitale løsninger.',
+                        html,
+                    )
+                    self.assertNotIn('der passer til jeres hverdag', html)
+                else:
+                    self.assertIn(
+                        'We automate workflows, analyse data and build '
+                        'digital tools.',
+                        html,
+                    )
+                    self.assertNotIn('that fit the way you work', html)
+
+    def test_homepage_contact_copy_uses_plain_punctuation(self):
+        self._switch_language('da')
+        html = self.client.get('/').get_data(as_text=True)
+        self.assertIn(
+            'Har I en opgave, vi skal se på, eller et spørgsmål? '
+            'Ring, skriv eller find os på LinkedIn.',
+            html,
+        )
+        self.assertNotIn(
+            'Har I en opgave, vi skal se på – eller et spørgsmål?',
+            html,
+        )
 
     def test_about_and_contact_sections_have_compact_responsive_rules(self):
         css_response = self.client.get('/static/site-refresh.css')
@@ -443,31 +791,72 @@ class SiteQualityTests(unittest.TestCase):
         self.assertNotIn('.about-contact-path__core', refresh_css)
         self.assertNotIn('.about-path-line', legacy_css)
 
-    def test_heating_article_results_use_prominent_responsive_maps(self):
-        css_response = self.client.get('/static/site-refresh.css')
+    def test_heating_article_results_use_compact_responsive_maps(self):
+        css_response = self.client.get('/static/style.css')
         css = css_response.get_data(as_text=True)
         css_response.close()
+
+        layout_rule = re.search(
+            r'\.project-article-layout \{([^}]*)\}',
+            css,
+        )
+        self.assertIsNotNone(layout_rule)
+        self.assertIn('width: min(100%, 960px)', layout_rule.group(1))
+        self.assertIn('display: block', layout_rule.group(1))
+
+        figure_rule = re.search(
+            r'\.project-story-figure \{([^}]*)\}',
+            css,
+        )
+        self.assertIsNotNone(figure_rule)
+        self.assertIn('width: min(100%, 620px)', figure_rule.group(1))
+        self.assertIn('border-radius: 14px', figure_rule.group(1))
         self.assertIn(
-            '.project-detail-page--lavtemperaturfjernvarme '
-            '.project-gallery-grid',
-            css,
+            'box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06)',
+            figure_rule.group(1),
         )
-        self.assertIn('grid-template-columns: minmax(0, 1fr)', css)
-        self.assertNotIn(
-            '.project-detail-page--lavtemperaturfjernvarme '
-            '.project-context-figure',
-            css,
-        )
-        self.assertIn('width: min(100%, 720px)', css)
-        self.assertIn(
-            'box-shadow: 0 24px 60px rgba(15, 23, 42, 0.16)',
-            css,
-        )
-        self.assertIn('border-radius: clamp(18px, 3vw, 30px)', css)
         self.assertRegex(
             css,
-            r'\.project-gallery-item figcaption \{[\s\S]*?'
-            r'background: #fff;',
+            r'\.project-story-figure img \{[\s\S]*?height: auto;',
+        )
+        self.assertRegex(
+            css,
+            r'@media \(min-width: 900px\)[\s\S]*?'
+            r'\.project-story-section--with-figure \{[\s\S]*?'
+            r'grid-template-columns: minmax\(250px, 0\.74fr\) '
+            r'minmax\(380px, 1\.26fr\);',
+        )
+        self.assertRegex(
+            css,
+            r'\.project-story-section--with-figure '
+            r'\.project-story-figure \{[\s\S]*?max-width: 520px;',
+        )
+        self.assertRegex(
+            css,
+            r'\.project-detail-page--lavtemperaturfjernvarme\s*'
+            r'\.project-story-section:not\('
+            r'\.project-story-section--with-figure\) \{\s*'
+            r'width: 100%;',
+        )
+        self.assertRegex(
+            css,
+            r'\.project-detail-page--lavtemperaturfjernvarme\s*'
+            r'\.project-story-section:not\('
+            r'\.project-story-section--with-figure\)\s*p \{\s*'
+            r'max-width: 76ch;',
+        )
+
+        section_divider_rule = re.search(
+            r'\.project-story-section \+ \.project-story-section '
+            r'\{([^}]*)\}',
+            css,
+        )
+        self.assertIsNotNone(section_divider_rule)
+        self.assertNotIn('border', section_divider_rule.group(1))
+        self.assertRegex(
+            css,
+            r'\.project-story-section \{[\s\S]*?'
+            r'width: min\(100%, 760px\);',
         )
 
     def test_manifest_icons_resolve(self):
