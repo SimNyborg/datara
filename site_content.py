@@ -352,7 +352,7 @@ INFO_PAGES = {
                 'title': 'Privatlivspolitik',
                 'intro': 'Her kan du læse, hvilke personoplysninger vi kan modtage, når du besøger hjemmesiden eller skriver til os.',
                 'sections': [
-                    {'title': 'Hvilke oplysninger kan vi modtage?', 'items': ['Navn, e-mailadresse og de oplysninger, du selv sender til os i en e-mail', 'Tekniske oplysninger, som webserveren kan registrere for at levere og beskytte hjemmesiden, for eksempel IP-adresse, browser og tidspunkt', 'Dit valgte sprog, som gemmes i en nødvendig cookie']},
+                    {'title': 'Hvilke oplysninger kan vi modtage?', 'items': ['Navn, e-mailadresse og de oplysninger, du selv sender til os i en e-mail', 'Tekniske oplysninger, som webserveren kan registrere for at levere og beskytte hjemmesiden, for eksempel IP-adresse, browser og tidspunkt']},
                     {'title': 'Hvad bruger vi dem til?', 'items': ['At besvare din henvendelse', 'At levere, sikre og fejlfinde hjemmesiden', 'At overholde krav i lovgivningen']},
                     {'title': 'Deling', 'text': 'Oplysninger kan blive behandlet af de leverandører, der driver hjemmesiden og vores e-mail. Vi videregiver dem ikke med henblik på markedsføring og deler dem kun, når det er nødvendigt eller følger af et lovkrav.'},
                     {'title': 'Opbevaring og sikkerhed', 'text': 'Vi opbevarer kun dine oplysninger, så længe det er nødvendigt, og beskytter dem med passende tekniske og organisatoriske foranstaltninger.'},
@@ -365,7 +365,7 @@ INFO_PAGES = {
                 'title': 'Privacy policy',
                 'intro': 'Here you can read which personal data we may receive when you visit the website or email us.',
                 'sections': [
-                    {'title': 'Which information may we receive?', 'items': ['Your name, email address and any information you choose to include in an email', 'Technical information that the web server may record to deliver and protect the website, such as IP address, browser and time of visit', 'Your language choice, stored in a necessary cookie']},
+                    {'title': 'Which information may we receive?', 'items': ['Your name, email address and any information you choose to include in an email', 'Technical information that the web server may record to deliver and protect the website, such as IP address, browser and time of visit']},
                     {'title': 'What do we use it for?', 'items': ['To respond to your enquiry', 'To deliver, secure and troubleshoot the website', 'To comply with legal requirements']},
                     {'title': 'Sharing', 'text': 'Data may be processed by the providers that host our website and email service. We do not share it for marketing and disclose it only when necessary or legally required.'},
                     {'title': 'Storage and security', 'text': 'We store your data only for as long as necessary and protect it with appropriate technical and organisational measures.'},
@@ -380,10 +380,9 @@ INFO_PAGES = {
                 'seo_title': 'Cookies | Datara',
                 'meta_description': 'Læs om brugen af cookies på Dataras hjemmeside.',
                 'title': 'Cookies',
-                'intro': 'Hjemmesiden bruger én nødvendig cookie til at huske, om du har valgt dansk eller engelsk. Vi bruger ikke cookies til annoncering eller statistik.',
+                'intro': 'Hjemmesiden bruger ikke cookies. Vi bruger heller ikke cookies til annoncering eller statistik.',
                 'sections': [
-                    {'title': 'Sprogcookien', 'text': 'Cookien hedder “site_lang”, indeholder kun dit sprogvalg og gemmes i 30 dage. Den er nødvendig for, at hjemmesiden kan vise det valgte sprog på de næste sider.'},
-                    {'title': 'Sådan sletter du den', 'text': 'Du kan slette eller blokere cookien i din browsers indstillinger. Hvis du sletter den, vælger hjemmesiden dansk igen.'},
+                    {'title': 'Ingen cookies', 'text': 'Hjemmesiden sætter ingen cookies. Dit sprogvalg gemmes ikke i browseren, men fremgår af adressen, hvor de engelske sider ligger under “/en/”.'},
                     {'title': 'Eksterne links', 'text': 'Hvis du følger et link til for eksempel LinkedIn, gælder den pågældende tjenestes egen cookie- og privatlivspolitik.'},
                 ],
             },
@@ -391,10 +390,9 @@ INFO_PAGES = {
                 'seo_title': 'Cookies | Datara',
                 'meta_description': 'Read about the use of cookies on the Datara website.',
                 'title': 'Cookies',
-                'intro': 'The website uses one necessary cookie to remember whether you selected Danish or English. We do not use cookies for advertising or analytics.',
+                'intro': 'The website does not use cookies. Nor do we use cookies for advertising or analytics.',
                 'sections': [
-                    {'title': 'The language cookie', 'text': 'The cookie is named “site_lang”, contains only your language choice and is stored for 30 days. It is necessary for the website to show your chosen language on subsequent pages.'},
-                    {'title': 'How to delete it', 'text': 'You can delete or block the cookie in your browser settings. If you delete it, the website will default to Danish again.'},
+                    {'title': 'No cookies', 'text': 'The website sets no cookies. Your language choice is not stored in the browser; it is reflected in the address instead, with the English pages located under “/en/”.'},
                     {'title': 'External links', 'text': 'If you follow a link to a service such as LinkedIn, that service’s own cookie and privacy policy applies.'},
                 ],
             },

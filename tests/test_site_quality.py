@@ -482,14 +482,18 @@ class SiteQualityTests(unittest.TestCase):
             "frame-ancestors 'self'",
         )
 
-    def test_cookie_copy_is_present_in_both_languages(self):
+    def test_cookie_policy_reflects_the_cookieless_site(self):
         cookies = self.client.get('/cookies').get_data(as_text=True)
-        self.assertIn('site_lang', cookies)
-        self.assertIn('30 dage', cookies)
+        self.assertIn('bruger ikke cookies', cookies)
+        self.assertNotIn('site_lang', cookies)
 
         cookies = self.client.get('/en/cookies').get_data(as_text=True)
-        self.assertIn('site_lang', cookies)
-        self.assertIn('30 days', cookies)
+        self.assertIn('does not use cookies', cookies)
+        self.assertNotIn('site_lang', cookies)
+
+        privacy = self.client.get('/privatliv').get_data(as_text=True)
+        privacy_main = privacy.split('<main')[1].split('</main>')[0].lower()
+        self.assertNotIn('cookie', privacy_main)
 
     def test_founder_buttons_and_profile_pages_are_retired(self):
         for language in ('da', 'en'):
