@@ -26,8 +26,8 @@ Sproget styres af URL'en – sprogknappen i menuen linker til søstersiden.
 
 ## Preview uden domæne
 
-`python freeze.py --prefix /optimatix` bygger en version, der virker på
-`https://simnyborg.github.io/optimatix/` (bruges kun til test/preview —
+`python freeze.py --prefix /datara` bygger en version, der virker på
+`https://simnyborg.github.io/datara/` (bruges kun til test/preview —
 byg altid produktionsversionen med `--cname datara.dk` inden push).
 
 ## Parkeret

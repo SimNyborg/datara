@@ -473,7 +473,7 @@ p {
     overflow: hidden;
     margin: 0;
     padding: 0;
-    background: #0f172a url('/optimatix/static/K%C3%B8benhavn%20baggrundsbillede%20test.jpg') center / cover no-repeat;
+    background: #0f172a url('/datara/static/K%C3%B8benhavn%20baggrundsbillede%20test.jpg') center / cover no-repeat;
 }
 
 .video-background::before {

@@ -2,7 +2,7 @@
 
 Usage:
     python freeze.py                       Production build in docs/ (root-absolute URLs).
-    python freeze.py --prefix /optimatix   Preview build for simnyborg.github.io/optimatix/.
+    python freeze.py --prefix /datara      Preview build for simnyborg.github.io/datara/.
     python freeze.py --cname datara.dk     Also write docs/CNAME (use for the final cutover build).
 
 The Danish pages keep their exact live URLs (extensionless files, e.g.
@@ -75,7 +75,7 @@ def build(prefix: str = '', cname: str = '') -> None:
     if prefix and (not prefix.startswith('/') or ':' in prefix or prefix.endswith('/')):
         raise SystemExit(
             f'Ugyldigt prefix {prefix!r} - skal starte med "/" og ikke ende paa "/" '
-            '(brug fx --prefix /optimatix; i Git Bash kraves MSYS_NO_PATHCONV=1)'
+            '(brug fx --prefix /datara; i Git Bash kraves MSYS_NO_PATHCONV=1)'
         )
 
     if DEST_TMP.exists():
