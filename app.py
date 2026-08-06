@@ -1,6 +1,5 @@
-from flask import Flask, abort, render_template, send_from_directory, request, redirect, Response
+from flask import Flask, abort, render_template, send_from_directory, request, url_for, Response
 from datetime import datetime
-from urllib.parse import urljoin, urlparse
 
 from site_content import (
     CONTENT_UI,
@@ -69,16 +68,53 @@ translations = {
 }
 
 
+# The canonical production origin. Absolute URLs (canonical/og/hreflang and the
+# sitemap) are built from this so the frozen static output is host-independent.
+SITE_BASE = 'https://datara.dk'
+
+
 def current_language():
-    lang = request.cookies.get('site_lang', 'da')
-    return lang if lang in translations else 'da'
+    """The language is part of the URL: pages under /en/ are English."""
+    path = request.path
+    if path == '/en' or path.startswith('/en/'):
+        return 'en'
+    return 'da'
+
+
+def _alternate_path():
+    """Path of the same page in the other language."""
+    path = request.path
+    if path == '/en' or path.startswith('/en/'):
+        rest = path[3:]
+        return rest if rest else '/'
+    return '/en/' if path == '/' else '/en' + path
 
 
 @app.context_processor
 def inject_strings():
     lang = current_language()
     strings = translations.get(lang, translations['da'])
-    return dict(strings=strings, footer_ui=CONTENT_UI[lang])
+    alternate = _alternate_path()
+
+    def page_url(endpoint, **values):
+        """url_for that stays inside the current language variant."""
+        if lang == 'en':
+            endpoint = f'{endpoint}_en'
+        return url_for(endpoint, **values)
+
+    da_path = request.path if lang == 'da' else alternate
+    en_path = alternate if lang == 'da' else request.path
+    return dict(
+        strings=strings,
+        footer_ui=CONTENT_UI[lang],
+        page_url=page_url,
+        alternate_url=alternate,
+        lang_prefix='' if lang == 'da' else '/en',
+        canonical_url=SITE_BASE + request.path,
+        hreflang_da=SITE_BASE + da_path,
+        hreflang_en=SITE_BASE + en_path,
+        site_base=SITE_BASE,
+    )
 
 # Favicons are served from the project's `static/` folder and referenced
 # in templates using `url_for('static', filename=...)`. No explicit routes
@@ -90,25 +126,8 @@ def favicon():
     return send_from_directory('static', 'favicon.ico')
 
 
-@app.route('/setlang/<lang>')
-def set_language(lang):
-    target = request.referrer or '/'
-    host = urlparse(request.host_url)
-    resolved = urlparse(urljoin(request.host_url, target))
-    if resolved.scheme not in ('http', 'https') or resolved.netloc != host.netloc:
-        target = '/'
-
-    resp = redirect(target)
-    if lang in translations:
-        resp.set_cookie(
-            'site_lang',
-            lang,
-            max_age=30 * 24 * 3600,
-            samesite='Lax',
-            secure=request.is_secure,
-        )
-    return resp
 @app.route('/')
+@app.route('/en/', endpoint='index_en')
 def index():
     lang = current_language()
     homepage_services = [
@@ -124,22 +143,19 @@ def index():
         year=datetime.now().year,
     )
 
-@app.route('/founder/simon-nyborg')
-@app.route('/founder/albert-koba')
-def retired_founder_profiles():
-    """Keep old bookmarks useful without maintaining separate profile pages."""
-    return redirect('/#hvemervi', code=301)
-
 # Footer info pages
 @app.route('/privatliv')
+@app.route('/en/privatliv', endpoint='privatliv_en')
 def privatliv():
     return render_info_page('privatliv')
 
 @app.route('/cookies')
+@app.route('/en/cookies', endpoint='cookies_en')
 def cookies():
     return render_info_page('cookies')
 
 @app.route('/vilkar')
+@app.route('/en/vilkar', endpoint='vilkar_en')
 def vilkar():
     return render_info_page('vilkar')
 
@@ -158,18 +174,22 @@ def render_info_page(slug):
 
 # Service pages
 @app.route('/services/dataanalyse')
+@app.route('/en/services/dataanalyse', endpoint='service_dataanalyse_en')
 def service_dataanalyse():
     return render_service_page('dataanalyse')
 
 @app.route('/services/forretningsudvikling')
+@app.route('/en/services/forretningsudvikling', endpoint='service_forretningsudvikling_en')
 def service_forretningsudvikling():
     return render_service_page('forretningsudvikling')
 
 @app.route('/services/automatisering')
+@app.route('/en/services/automatisering', endpoint='service_automatisering_en')
 def service_automatisering():
     return render_service_page('automatisering')
 
 @app.route('/services/it-produktudvikling')
+@app.route('/en/services/it-produktudvikling', endpoint='service_it_produktudvikling_en')
 def service_it_produktudvikling():
     return render_service_page('it-produktudvikling')
 
@@ -496,6 +516,7 @@ PROJECT_UI = {
 }
 
 @app.route('/projekter/<int:projekt_id>')
+@app.route('/en/projekter/<int:projekt_id>', endpoint='projekt_detail_en')
 def projekt_detail(projekt_id):
     project = PROJECTS.get(projekt_id)
     if not project:
@@ -532,18 +553,18 @@ def not_found(_error):
 # SEO: robots.txt
 @app.route('/robots.txt')
 def robots():
-    return "User-agent: *\nAllow: /\nSitemap: https://Datara.dk/sitemap.xml", 200, {'Content-Type': 'text/plain; charset=utf-8'}
+    return f"User-agent: *\nAllow: /\nSitemap: {SITE_BASE}/sitemap.xml", 200, {'Content-Type': 'text/plain; charset=utf-8'}
 
 # SEO: sitemap.xml
 @app.route('/sitemap.xml')
 def sitemap():
-    base_url = 'https://Datara.dk'
+    base_url = SITE_BASE
     today = datetime.now().strftime('%Y-%m-%d')
-    
+
     urls = [
         ('/', 'weekly', '1.0'),
     ]
-    
+
     # Services
     services = [
         '/services/dataanalyse',
@@ -553,7 +574,7 @@ def sitemap():
     ]
     for service in services:
         urls.append((service, 'monthly', '0.8'))
-    
+
     # Projects
     for projekt_id in PROJECTS.keys():
         urls.append((f'/projekter/{projekt_id}', 'monthly', '0.7'))
@@ -566,7 +587,13 @@ def sitemap():
     ]
     for page in info_pages:
         urls.append((page, 'yearly', '0.5'))
-    
+
+    # English variants live under /en/ (the Danish homepage's twin is /en/).
+    urls += [
+        ('/en/' if path == '/' else f'/en{path}', changefreq, priority)
+        for path, changefreq, priority in list(urls)
+    ]
+
     # Build XML
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
     xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

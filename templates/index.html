@@ -14,11 +14,14 @@
 
     <meta name="description" content="{% if strings.lang_code == 'da' %}Datara automatiserer arbejdsgange, analyserer data og bygger digitale løsninger.{% else %}Datara automates workflows, analyses data and builds digital tools.{% endif %}">
 
-    <link rel="canonical" href="{{ request.base_url }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="alternate" hreflang="da" href="{{ hreflang_da }}">
+    <link rel="alternate" hreflang="en" href="{{ hreflang_en }}">
+    <link rel="alternate" hreflang="x-default" href="{{ hreflang_da }}">
     <meta property="og:type" content="website">
     <meta property="og:title" content="{% if strings.lang_code == 'da' %}Automatisering &amp; analyse for virksomheder | Datara{% else %}Automation &amp; analytics for businesses | Datara{% endif %}">
     <meta property="og:description" content="{% if strings.lang_code == 'da' %}Datara automatiserer arbejdsgange, analyserer data og bygger digitale løsninger.{% else %}Datara automates workflows, analyses data and builds digital tools.{% endif %}">
-    <meta property="og:image" content="{{ url_for('static', filename='København baggrundsbillede test.jpg', _external=True) }}">
+    <meta property="og:image" content="{{ site_base ~ url_for('static', filename='København baggrundsbillede test.jpg') }}">
 
     {% endblock %}
 
@@ -116,7 +119,7 @@
 
         <div class="projects-carousel">
 
-            <a class="project-card" href="{{ url_for('projekt_detail', projekt_id=2) }}">
+            <a class="project-card" href="{{ page_url('projekt_detail', projekt_id=2) }}">
 
                 <img class="project-card-map" src="/static/fjernvarme-vejkort.png" alt="{% if strings.lang_code == 'da' %}Vejkort med grønne, gule og røde vejstrækninger i Lyngby-Taarbæk{% else %}Street map with green, yellow and red sections in Lyngby-Taarbæk{% endif %}" width="1280" height="720" loading="lazy" decoding="async">
 
@@ -130,7 +133,7 @@
 
             </a>
 
-            <a class="project-card" href="{{ url_for('projekt_detail', projekt_id=1) }}">
+            <a class="project-card" href="{{ page_url('projekt_detail', projekt_id=1) }}">
 
                 <img src="/static/Pythonbillede.jpg" alt="{% if strings.lang_code == 'da' %}Kode fra automatiseringen af papirspørgeskemaer{% else %}Code used to automate the paper questionnaires{% endif %}" width="821" height="493" loading="lazy" decoding="async">
 
@@ -193,7 +196,7 @@
         <div class="services-grid">
 
             {% for service in homepage_services %}
-            <a href="/services/{{ service.slug }}"
+            <a href="{{ lang_prefix }}/services/{{ service.slug }}"
                class="service-card service-card--{{ service.slug }}">
                 <div class="service-icon" aria-hidden="true">
                     {% include '_home_service_icon.html' %}
@@ -994,86 +997,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
 });
-
-</script>
-
-<script>
-
-// Dansk valideringsbesked for nyhedsbrev-email
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    const emailInput = document.getElementById('newsletter-email');
-
-    if (!emailInput) return;
-
-    const newsletterMsgMissing = emailInput.dataset.msgMissing || 'Please enter your email address.';
-
-    const newsletterMsgTypeMismatch = emailInput.dataset.msgTypeMismatch || 'Please enter a valid email address.';
-
-    const newsletterMsgInvalid = emailInput.dataset.msgInvalid || 'Please enter a valid email address.';
-
-    const form = emailInput.closest('form');
-
-    // Når browseren afviser inputet, sæt en dansk meddelelse
-
-    emailInput.addEventListener('invalid', function (e) {
-
-        // Nulstil før vi sætter ny besked
-
-        emailInput.setCustomValidity('');
-
-        if (emailInput.validity.valueMissing) {
-
-            emailInput.setCustomValidity(newsletterMsgMissing);
-
-        } else if (emailInput.validity.typeMismatch) {
-
-            emailInput.setCustomValidity(newsletterMsgTypeMismatch);
-
-        } else {
-
-            emailInput.setCustomValidity(newsletterMsgInvalid);
-
-        }
-
-    }, false);
-
-
-
-    // Fjern custom validity når brugeren skriver, så browseren kan validere igen
-
-    emailInput.addEventListener('input', function () {
-
-        emailInput.setCustomValidity('');
-
-    });
-
-
-
-    // Ved submit: hvis ugyldigt, vis meddelelse og forhindre send
-
-    if (form) {
-
-        form.addEventListener('submit', function (ev) {
-
-            if (!emailInput.checkValidity()) {
-
-                // reportValidity viser browserens tooltip med vores custom message
-
-                emailInput.reportValidity();
-
-                ev.preventDefault();
-
-            }
-
-        });
-
-    }
-
-});
-
-
 
 </script>
 

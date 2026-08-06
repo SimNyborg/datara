@@ -1,210 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Analysis & Data-Driven Solutions | Datara</title>
-    <meta name="description" content="Get actionable insights from your data. We help companies with data analysis and data-driven decisions for sustainable growth.">
-    
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-    <link rel="shortcut icon" href="/favicon.ico">
-    
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        .service-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 80px 24px;
-        }
-        .service-section {
-            margin-bottom: 80px;
-        }
-        .service-section h2 {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #222;
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .service-section h3 {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        .service-section p {
-            font-size: 1.1em;
-            line-height: 1.7;
-            color: #444;
-            margin-bottom: 24px;
-        }
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin: 48px 0;
-        }
-        .benefit-card {
-            background: var(--primary-light);
-            border-radius: 12px;
-            padding: 32px;
-            border-left: 4px solid var(--primary-color);
-        }
-        .benefit-card h4 {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-        .benefit-card p {
-            color: var(--text-light);
-            margin: 0;
-        }
-        .cta-section {
-            background: var(--primary-light);
-            border-radius: 16px;
-            padding: 60px 40px;
-            text-align: center;
-            margin-top: 60px;
-        }
-        .cta-section h3 {
-            font-size: 2em;
-            color: var(--text-primary);
-            margin-bottom: 24px;
-        }
-        .cta-section p {
-            font-size: 1.2em;
-            color: var(--text-light);
-            margin-bottom: 32px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .cta-button {
-            display: inline-block;
-            background: var(--primary-color);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: background 0.2s, transform 0.2s;
-        }
-        .cta-button:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        @media (max-width: 768px) {
-            .service-section h2 {
-                font-size: 2em;
-            }
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <a href="/#services" class="founder-back-link">&larr; Back</a>
-    
-    <div class="service-content" style="padding-top: 60px;">
-        <div class="service-section">
-            <h2>Why Data Analysis?</h2>
-            <p>In today�??s digital landscape, organisations generate large volumes of data, but many fail to unlock their full potential. Our data analysis services help you identify patterns, optimise processes and create a competitive advantage through data-informed decisions.</p>
-            
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <h4>Strategic Insights</h4>
-                    <p>Detect hidden patterns and trends in your data that can guide strategic decision-making and business direction.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Process Optimisation</h4>
-                    <p>Identify inefficiencies and bottlenecks in your workflows and receive actionable recommendations for improvement.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Customer Understanding</h4>
-                    <p>Gain deeper insight into customer behaviour and preferences to create more targeted and effective initiatives.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="service-section">
-            <h2>Our Approach</h2>
-            <h3>1. Data Collection and Integration</h3>
-            <p>We begin by gathering and integrating data from all relevant sources across your organisation, including CRM systems, website analytics, social channels, transaction records and more. We ensure the data is clean, complete and ready for analysis.</p>
-            
-            <h3>2. Exploratory Data Analysis</h3>
-            <p>Through rigorous exploratory analysis we uncover patterns, outliers and potential insights. We use advanced statistical methods and visualisation techniques to build a deep understanding of your data.</p>
-            
-            <h3>3. Modelling and Prediction</h3>
-            <p>We develop predictive models that help forecast future trends, customer behaviour and business outcomes. These models provide a competitive edge by enabling proactive responses to market changes.</p>
-            
-            <h3>4. Implementation and Monitoring</h3>
-            <p>We support the implementation of insights and set up systems for continuous monitoring and optimisation, ensuring that your investment in data analysis delivers sustained value.</p>
-        </div>
-
-        <div class="service-section">
-            <h2>Expected Results</h2>
-            <p>Our clients typically see the following improvements within 3�??6 months:</p>
-            
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <h4>Improved Decision Quality</h4>
-                    <p>Data-informed decisions lead to better outcomes and reduce the risk of costly mistakes.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Increased Efficiency</h4>
-                    <p>Identification and removal of process inefficiencies and workflow bottlenecks.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Higher Customer Satisfaction</h4>
-                    <p>A deeper understanding of customer needs results in more relevant products and services.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <h3>Ready to Unlock the Value in Your Data?</h3>
-            <p>Let�??s discuss how data analysis can help your organisation reach new heights. We offer a free consultation to assess your current data strategy and recommend practical improvements.</p>
-            <a href="/#kontakt" class="cta-button">Contact Us Today</a>
-        </div>
-    </div>
-
-    <div style="text-align: center; margin: 60px 0 40px 0;">
-        <a href="/#services" class="founder-back-link">&larr; Back</a>
-    </div>
-
-    <footer class="site-footer" id="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <div class="footer-copyright">&copy; {{ year }} Datara I/S. All rights reserved.</div>
-            </div>
-            <div class="footer-center">
-                <form class="footer-newsletter" action="/newsletter-signup" method="post">
-                    <label for="newsletter-email"><strong>Subscribe to our newsletter</strong></label>
-                    <p>Receive news and insights directly to your inbox</p>
-                    <div class="newsletter-row">
-                        <input type="email" id="newsletter-email" name="email" placeholder="Email address" required>
-                        <button type="submit">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-            <div class="footer-right">
-                <div class="footer-links">
-                    <a href="/privatliv">Privacy</a>
-                    <a href="/cookies">Cookies</a>
-                    <a href="/vilkar">Terms</a>
-                </div>
-                <div class="footer-social">
-                </div>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-

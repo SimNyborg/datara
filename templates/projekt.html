@@ -8,8 +8,11 @@
     <meta property="og:type" content="article">
     <meta property="og:title" content="{{ projekt.seo_title }}">
     <meta property="og:description" content="{{ projekt.meta_description }}">
-    <meta property="og:image" content="{{ url_for('static', filename=projekt.image, _external=True) }}">
-    <link rel="canonical" href="{{ url_for('projekt_detail', projekt_id=projekt_id, _external=True) }}">
+    <meta property="og:image" content="{{ site_base ~ url_for('static', filename=projekt.image) }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    <link rel="alternate" hreflang="da" href="{{ hreflang_da }}">
+    <link rel="alternate" hreflang="en" href="{{ hreflang_en }}">
+    <link rel="alternate" hreflang="x-default" href="{{ hreflang_da }}">
 
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">

@@ -23,18 +23,17 @@ class SiteQualityTests(unittest.TestCase):
         app.config.update(TESTING=True)
         self.client = app.test_client()
 
-    def _switch_language(self, language, return_path='/'):
-        return self.client.get(
-            f'/setlang/{language}',
-            headers={'Referer': f'http://localhost{return_path}'},
-        )
+    @staticmethod
+    def _lang_path(language, path):
+        if language == 'da':
+            return path
+        return '/en/' if path == '/' else f'/en{path}'
 
     def test_every_public_page_has_a_responsive_semantic_shell_in_both_languages(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
             for path in PUBLIC_ROUTES:
                 with self.subTest(language=language, path=path):
-                    response = self.client.get(path)
+                    response = self.client.get(self._lang_path(language, path))
                     self.assertEqual(response.status_code, 200)
                     html = response.get_data(as_text=True)
                     self.assertIn(f'<html lang="{language}">', html)
@@ -55,11 +54,11 @@ class SiteQualityTests(unittest.TestCase):
 
     def test_every_live_page_uses_the_same_footer_in_both_languages(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
+            prefix = '' if language == 'da' else '/en'
             paths = (*PUBLIC_ROUTES, '/denne-side-findes-ikke')
             for path in paths:
                 with self.subTest(language=language, path=path):
-                    response = self.client.get(path)
+                    response = self.client.get(self._lang_path(language, path))
                     expected_status = 404 if path == '/denne-side-findes-ikke' else 200
                     self.assertEqual(response.status_code, expected_status)
                     html = response.get_data(as_text=True)
@@ -75,9 +74,9 @@ class SiteQualityTests(unittest.TestCase):
                     self.assertIn('href="mailto:shn@datara.dk"', html)
                     self.assertIn('>shn@datara.dk</a>', html)
                     self.assertIn('href="tel:+4552390360"', html)
-                    self.assertIn('href="/privatliv"', html)
-                    self.assertIn('href="/cookies"', html)
-                    self.assertIn('href="/vilkar"', html)
+                    self.assertIn(f'href="{prefix}/privatliv"', html)
+                    self.assertIn(f'href="{prefix}/cookies"', html)
+                    self.assertIn(f'href="{prefix}/vilkar"', html)
                     self.assertNotIn('class="site-footer"', html)
                     self.assertNotIn('class="project-footer"', html)
 
@@ -96,10 +95,9 @@ class SiteQualityTests(unittest.TestCase):
 
     def test_every_page_uses_the_same_navigation_system(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
             for path in PUBLIC_ROUTES:
                 with self.subTest(language=language, path=path):
-                    html = self.client.get(path).get_data(as_text=True)
+                    html = self.client.get(self._lang_path(language, path)).get_data(as_text=True)
                     self.assertIn('class="navbar site-navbar', html)
                     self.assertIn('id="navbar-burger"', html)
                     self.assertIn('id="navbar-mobile-menu"', html)
@@ -172,10 +170,9 @@ class SiteQualityTests(unittest.TestCase):
         )
 
         for language in ('da', 'en'):
-            self._switch_language(language)
             for path in service_paths:
                 with self.subTest(language=language, path=path):
-                    html = self.client.get(path).get_data(as_text=True)
+                    html = self.client.get(self._lang_path(language, path)).get_data(as_text=True)
                     self.assertEqual(html.count('class="service-hero"'), 1)
                     self.assertEqual(
                         html.count(
@@ -252,7 +249,6 @@ class SiteQualityTests(unittest.TestCase):
         self.assertNotIn('href="/projekter/', product_page)
 
     def test_service_copy_is_plain_and_consistent_in_both_languages(self):
-        self._switch_language('da')
         danish_pages = {
             path: self.client.get(path).get_data(as_text=True)
             for path in (
@@ -306,9 +302,8 @@ class SiteQualityTests(unittest.TestCase):
             danish_pages['/services/it-produktudvikling'],
         )
 
-        self._switch_language('en')
         english_pages = {
-            path: self.client.get(path).get_data(as_text=True)
+            path: self.client.get(f'/en{path}').get_data(as_text=True)
             for path in danish_pages
         }
         self.assertIn('Data collection and analysis', english_pages['/services/dataanalyse'])
@@ -457,24 +452,22 @@ class SiteQualityTests(unittest.TestCase):
         )
 
         for language in ('da', 'en'):
-            self._switch_language(language)
             for path in article_paths:
                 with self.subTest(language=language, path=path):
-                    html = self.client.get(path).get_data(as_text=True)
+                    html = self.client.get(self._lang_path(language, path)).get_data(as_text=True)
                     self.assertNotIn('project-contact-section', html)
                     self.assertNotIn('service-contact-section', html)
                     self.assertNotIn('project-contact-actions', html)
                     self.assertNotIn('service-cta-title', html)
                     self.assertNotIn('project-contact-title', html)
 
-    def test_language_redirect_rejects_external_referrers(self):
-        response = self.client.get(
-            '/setlang/en',
-            headers={'Referer': 'https://example.org/not-datara'},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], '/')
-        self.assertIn('SameSite=Lax', response.headers.get('Set-Cookie', ''))
+    def test_language_variants_live_on_their_own_urls(self):
+        response = self.client.get('/en/')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('<html lang="en">', response.get_data(as_text=True))
+        self.assertIsNone(response.headers.get('Set-Cookie'))
+        self.assertEqual(self.client.get('/setlang/en').status_code, 404)
+        self.assertEqual(self.client.get('/setlang/da').status_code, 404)
 
     def test_security_headers_are_present(self):
         response = self.client.get('/')
@@ -489,29 +482,25 @@ class SiteQualityTests(unittest.TestCase):
             "frame-ancestors 'self'",
         )
 
-    def test_cookie_copy_matches_the_language_cookie(self):
+    def test_cookie_copy_is_present_in_both_languages(self):
         cookies = self.client.get('/cookies').get_data(as_text=True)
         self.assertIn('site_lang', cookies)
         self.assertIn('30 dage', cookies)
 
-        self._switch_language('en')
-        cookies = self.client.get('/cookies').get_data(as_text=True)
+        cookies = self.client.get('/en/cookies').get_data(as_text=True)
         self.assertIn('site_lang', cookies)
         self.assertIn('30 days', cookies)
 
     def test_founder_buttons_and_profile_pages_are_retired(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
-            html = self.client.get('/').get_data(as_text=True)
+            html = self.client.get(self._lang_path(language, '/')).get_data(as_text=True)
             for text in ('Mød Simon', 'Mød Albert', 'Meet Simon', 'Meet Albert'):
                 self.assertNotIn(text, html)
             self.assertNotIn('/founder/', html)
 
         for path in ('/founder/simon-nyborg', '/founder/albert-koba'):
             with self.subTest(path=path):
-                response = self.client.get(path)
-                self.assertEqual(response.status_code, 301)
-                self.assertEqual(response.headers['Location'], '/#hvemervi')
+                self.assertEqual(self.client.get(path).status_code, 404)
 
         sitemap = self.client.get('/sitemap.xml').get_data(as_text=True)
         self.assertNotIn('/founder/', sitemap)
@@ -576,10 +565,10 @@ class SiteQualityTests(unittest.TestCase):
                 ('/services/it-produktudvikling', 'IT-produktudvikling'),
             ),
             'en': (
-                ('/services/automatisering', 'Automation'),
-                ('/services/forretningsudvikling', 'Business development'),
-                ('/services/dataanalyse', 'Data analysis'),
-                ('/services/it-produktudvikling', 'IT product development'),
+                ('/en/services/automatisering', 'Automation'),
+                ('/en/services/forretningsudvikling', 'Business development'),
+                ('/en/services/dataanalyse', 'Data analysis'),
+                ('/en/services/it-produktudvikling', 'IT product development'),
             ),
         }
         expected_summaries = {
@@ -602,8 +591,7 @@ class SiteQualityTests(unittest.TestCase):
         )
 
         for language, expected in expected_cards.items():
-            self._switch_language(language)
-            html = self.client.get('/').get_data(as_text=True)
+            html = self.client.get(self._lang_path(language, '/')).get_data(as_text=True)
             cards = card_pattern.findall(html)
             rendered = tuple(
                 (
@@ -627,8 +615,7 @@ class SiteQualityTests(unittest.TestCase):
 
     def test_homepage_hero_has_no_action_buttons_in_either_language(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
-            html = self.client.get('/').get_data(as_text=True)
+            html = self.client.get(self._lang_path(language, '/')).get_data(as_text=True)
             with self.subTest(language=language):
                 self.assertNotIn('home-hero-actions', html)
                 self.assertNotIn('home-hero-button', html)
@@ -648,7 +635,6 @@ class SiteQualityTests(unittest.TestCase):
                     self.assertNotIn('that fit the way you work', html)
 
     def test_homepage_contact_copy_uses_plain_punctuation(self):
-        self._switch_language('da')
         html = self.client.get('/').get_data(as_text=True)
         self.assertIn(
             'Har I en opgave, vi skal se på, eller et spørgsmål? '
@@ -677,8 +663,7 @@ class SiteQualityTests(unittest.TestCase):
 
     def test_about_contact_connector_is_decorative_in_both_languages(self):
         for language in ('da', 'en'):
-            self._switch_language(language)
-            html = self.client.get('/').get_data(as_text=True)
+            html = self.client.get(self._lang_path(language, '/')).get_data(as_text=True)
             connector = re.search(
                 r'<svg\b[^>]*class="about-contact-path"[^>]*>'
                 r'[\s\S]*?</svg>',

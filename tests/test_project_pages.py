@@ -17,14 +17,6 @@ class ProjectPageTests(unittest.TestCase):
         response.close()
         return html
 
-    def _switch_to_english(self, return_path='/projekter/1'):
-        response = self.client.get(
-            '/setlang/en',
-            headers={'Referer': f'http://localhost{return_path}'},
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.headers['Location'], f'http://localhost{return_path}')
-
     def test_homepage_cards_link_to_different_articles(self):
         html = self._html('/')
         heating_card = re.search(
@@ -167,14 +159,13 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIn('Fra bygninger til veje', heating)
         self.assertNotIn('projekt-automatisering.svg', automation)
         self.assertNotIn('projekt-fjernvarme.svg', heating)
-        self.assertIn('href="/setlang/en"', heating)
+        self.assertIn('href="/en/projekter/2"', heating)
         self.assertNotEqual(automation, heating)
         self.assertNotIn('\ufffd', automation + heating)
 
     def test_english_articles_and_image_paths(self):
-        self._switch_to_english('/projekter/2')
-        automation = self._html('/projekter/1')
-        heating = self._html('/projekter/2')
+        automation = self._html('/en/projekter/1')
+        heating = self._html('/en/projekter/2')
 
         self.assertIn('<html lang="en">', heating)
         self.assertIn('8,000', automation)
@@ -268,10 +259,10 @@ class ProjectPageTests(unittest.TestCase):
             heating,
         )
         self.assertNotIn('/static/fjernvarme.jpg', heating)
-        self.assertIn('href="/setlang/da"', heating)
+        self.assertIn('href="/projekter/2"', heating)
         self.assertNotIn('\ufffd', automation + heating)
 
-        for path, html in (('/projekter/1', automation), ('/projekter/2', heating)):
+        for path, html in (('/en/projekter/1', automation), ('/en/projekter/2', heating)):
             image_urls = re.findall(r'<img[^>]+src="([^"]+)"', html)
             self.assertTrue(image_urls, path)
             for image_url in image_urls:

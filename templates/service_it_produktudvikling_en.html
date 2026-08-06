@@ -1,210 +1,0 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT Product Development & Custom Solutions | Datara</title>
-    <meta name="description" content="Develop custom IT products and systems. We deliver software solutions tailored to your unique business needs.">
-    
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
-    <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest') }}">
-    <link rel="shortcut icon" href="/favicon.ico">
-    
-    <link rel="stylesheet" href="/static/style.css">
-    <style>
-        .service-content {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 80px 24px;
-        }
-        .service-section {
-            margin-bottom: 80px;
-        }
-        .service-section h2 {
-            font-size: 2.5em;
-            font-weight: 700;
-            color: #222;
-            margin-bottom: 32px;
-            text-align: center;
-        }
-        .service-section h3 {
-            font-size: 1.5em;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        .service-section p {
-            font-size: 1.1em;
-            line-height: 1.7;
-            color: #444;
-            margin-bottom: 24px;
-        }
-        .benefits-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin: 48px 0;
-        }
-        .benefit-card {
-            background: var(--primary-light);
-            border-radius: 12px;
-            padding: 32px;
-            border-left: 4px solid var(--primary-color);
-        }
-        .benefit-card h4 {
-            font-size: 1.3em;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 16px;
-        }
-        .benefit-card p {
-            color: var(--text-light);
-            margin: 0;
-        }
-        .cta-section {
-            background: var(--primary-light);
-            border-radius: 16px;
-            padding: 60px 40px;
-            text-align: center;
-            margin-top: 60px;
-        }
-        .cta-section h3 {
-            font-size: 2em;
-            color: var(--text-primary);
-            margin-bottom: 24px;
-        }
-        .cta-section p {
-            font-size: 1.2em;
-            color: var(--text-light);
-            margin-bottom: 32px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .cta-button {
-            display: inline-block;
-            background: var(--primary-color);
-            color: white;
-            padding: 16px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1em;
-            transition: background 0.2s, transform 0.2s;
-        }
-        .cta-button:hover {
-            background: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-        @media (max-width: 768px) {
-            .service-section h2 {
-                font-size: 2em;
-            }
-            .benefits-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
-</head>
-<body>
-    <a href="/#services" class="founder-back-link">&larr; Back</a>
-    
-    <div class="service-content" style="padding-top: 60px;">
-        <div class="service-section">
-            <h2>Why IT Product Development?</h2>
-            <p>In today�??s digital economy, having the right technology stack and product approach is critical to compete and grow. Our IT product development services help you design and build tailored digital products that solve your specific challenges and drive business forward.</p>
-            
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <h4>Custom Solutions</h4>
-                    <p>Digital products designed specifically for your needs and workflows�??not one-size-fits-all solutions.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Competitive Advantage</h4>
-                    <p>Create unique digital offerings that differentiate you in the market and strengthen your position.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Scalable Growth</h4>
-                    <p>Build products that scale with your business and adapt to future requirements.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="service-section">
-            <h2>Our Approach</h2>
-            <h3>1. Needs Analysis and Strategy</h3>
-            <p>We begin by understanding your business needs, challenges and goals. We analyse current processes and identify opportunities for digital transformation and improvement.</p>
-            
-            <h3>2. Design and Prototyping</h3>
-            <p>We develop user-centred designs and interactive prototypes to ensure the final product meets the needs of your users and stakeholders. We validate designs through user testing to ensure optimal usability.</p>
-            
-            <h3>3. Development and Implementation</h3>
-            <p>We build your digital product using modern technologies and best practices. We ensure the product is robust, scalable and maintainable in the long term.</p>
-            
-            <h3>4. Testing and Launch</h3>
-            <p>We conduct comprehensive testing and ensure the product performs flawlessly before launch. We also set up systems for continuous monitoring and maintenance.</p>
-        </div>
-
-        <div class="service-section">
-            <h2>Expected Results</h2>
-            <p>Our clients typically experience the following improvements within 6�??12 months:</p>
-            
-            <div class="benefits-grid">
-                <div class="benefit-card">
-                    <h4>Increased Efficiency</h4>
-                    <p>Custom digital solutions streamline workflows and reduce manual processes.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Better Customer Experience</h4>
-                    <p>Innovative digital products improve customer experience and drive loyalty.</p>
-                </div>
-                <div class="benefit-card">
-                    <h4>Higher Revenue</h4>
-                    <p>Digital products open new business opportunities and strengthen your market position.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="cta-section">
-            <h3>Ready to Build Your Digital Product?</h3>
-            <p>Let�??s discuss how IT product development can help your organisation reach new heights. We offer a free consultation to assess your current situation and recommend practical digital solutions.</p>
-            <a href="/#kontakt" class="cta-button">Contact Us Today</a>
-        </div>
-    </div>
-
-    <div style="text-align: center; margin: 60px 0 40px 0;">
-        <a href="/#services" class="founder-back-link">&larr; Back</a>
-    </div>
-
-    <footer class="site-footer" id="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <div class="footer-copyright">&copy; {{ year }} Datara I/S. All rights reserved.</div>
-            </div>
-            <div class="footer-center">
-                <form class="footer-newsletter" action="/newsletter-signup" method="post">
-                    <label for="newsletter-email"><strong>Subscribe to our newsletter</strong></label>
-                    <p>Receive news and insights directly to your inbox</p>
-                    <div class="newsletter-row">
-                        <input type="email" id="newsletter-email" name="email" placeholder="Email address" required>
-                        <button type="submit">Subscribe</button>
-                    </div>
-                </form>
-            </div>
-            <div class="footer-right">
-                <div class="footer-links">
-                    <a href="/privatliv">Privacy</a>
-                    <a href="/cookies">Cookies</a>
-                    <a href="/vilkar">Terms</a>
-                </div>
-                <div class="footer-social">
-                </div>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
-
