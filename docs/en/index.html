@@ -42,7 +42,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260802-home-services-concise">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260827-uniform-nav">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -66,6 +66,13 @@
 <style>
   @media (min-width: 1121px) {
     .navbar-logo .wordmark { height: 1.14em !important; }
+  }
+  /* Same hover marking as the front page on every page: the solid navbar's
+     !important link colors would otherwise swallow the global hover rule. */
+  .navbar.site-navbar .navbar-links a:hover,
+  .navbar.site-navbar .navbar-mobile-menu a:hover,
+  .navbar.site-navbar a.navbar-logo:hover {
+    color: var(--primary-color) !important;
   }
 </style>
 
@@ -179,7 +186,7 @@
 
         <div class="projects-carousel">
 
-            <a class="project-card" href="/en/projekter/2">
+            <a class="project-card" href="/en/projekter/lavtemperaturfjernvarme">
 
                 <img class="project-card-map" src="/static/fjernvarme-vejkort.png" alt="Street map with green, yellow and red sections in Lyngby-Taarbæk" width="1280" height="720" loading="lazy" decoding="async">
 
@@ -193,7 +200,7 @@
 
             </a>
 
-            <a class="project-card" href="/en/projekter/1">
+            <a class="project-card" href="/en/projekter/automatisering">
 
                 <img src="/static/Pythonbillede.jpg" alt="Code used to automate the paper questionnaires" width="821" height="493" loading="lazy" decoding="async">
 

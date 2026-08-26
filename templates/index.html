@@ -42,7 +42,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260721">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260802-home-services-concise">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260827-uniform-nav">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -119,7 +119,7 @@
 
         <div class="projects-carousel">
 
-            <a class="project-card" href="{{ page_url('projekt_detail', projekt_id=2) }}">
+            <a class="project-card" href="{{ page_url('projekt_detail', slug='lavtemperaturfjernvarme') }}">
 
                 <img class="project-card-map" src="/static/fjernvarme-vejkort.png" alt="{% if strings.lang_code == 'da' %}Vejkort med grønne, gule og røde vejstrækninger i Lyngby-Taarbæk{% else %}Street map with green, yellow and red sections in Lyngby-Taarbæk{% endif %}" width="1280" height="720" loading="lazy" decoding="async">
 
@@ -133,7 +133,7 @@
 
             </a>
 
-            <a class="project-card" href="{{ page_url('projekt_detail', projekt_id=1) }}">
+            <a class="project-card" href="{{ page_url('projekt_detail', slug='automatisering') }}">
 
                 <img src="/static/Pythonbillede.jpg" alt="{% if strings.lang_code == 'da' %}Kode fra automatiseringen af papirspørgeskemaer{% else %}Code used to automate the paper questionnaires{% endif %}" width="821" height="493" loading="lazy" decoding="async">
 

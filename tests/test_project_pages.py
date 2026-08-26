@@ -1,4 +1,4 @@
-import re
+﻿import re
 import unittest
 from urllib.parse import urlsplit
 
@@ -20,12 +20,12 @@ class ProjectPageTests(unittest.TestCase):
     def test_homepage_cards_link_to_different_articles(self):
         html = self._html('/')
         heating_card = re.search(
-            r'<a class="project-card" href="/projekter/2">.*?Fjernvarmekortlægning',
+            r'<a class="project-card" href="/projekter/lavtemperaturfjernvarme">.*?Fjernvarmekortlægning',
             html,
             re.DOTALL,
         )
         automation_card = re.search(
-            r'<a class="project-card" href="/projekter/1">.*?Automatisering',
+            r'<a class="project-card" href="/projekter/automatisering">.*?Automatisering',
             html,
             re.DOTALL,
         )
@@ -33,8 +33,8 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIsNotNone(automation_card)
 
     def test_danish_articles_are_distinct_and_complete(self):
-        automation = self._html('/projekter/1')
-        heating = self._html('/projekter/2')
+        automation = self._html('/projekter/automatisering')
+        heating = self._html('/projekter/lavtemperaturfjernvarme')
 
         self.assertIn('<html lang="da">', automation)
         self.assertIn('8.000', automation)
@@ -159,13 +159,13 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIn('Fra bygninger til veje', heating)
         self.assertNotIn('projekt-automatisering.svg', automation)
         self.assertNotIn('projekt-fjernvarme.svg', heating)
-        self.assertIn('href="/en/projekter/2"', heating)
+        self.assertIn('href="/en/projekter/lavtemperaturfjernvarme"', heating)
         self.assertNotEqual(automation, heating)
         self.assertNotIn('\ufffd', automation + heating)
 
     def test_english_articles_and_image_paths(self):
-        automation = self._html('/en/projekter/1')
-        heating = self._html('/en/projekter/2')
+        automation = self._html('/en/projekter/automatisering')
+        heating = self._html('/en/projekter/lavtemperaturfjernvarme')
 
         self.assertIn('<html lang="en">', heating)
         self.assertIn('8,000', automation)
@@ -259,10 +259,10 @@ class ProjectPageTests(unittest.TestCase):
             heating,
         )
         self.assertNotIn('/static/fjernvarme.jpg', heating)
-        self.assertIn('href="/projekter/2"', heating)
+        self.assertIn('href="/projekter/lavtemperaturfjernvarme"', heating)
         self.assertNotIn('\ufffd', automation + heating)
 
-        for path, html in (('/en/projekter/1', automation), ('/en/projekter/2', heating)):
+        for path, html in (('/en/projekter/automatisering', automation), ('/en/projekter/lavtemperaturfjernvarme', heating)):
             image_urls = re.findall(r'<img[^>]+src="([^"]+)"', html)
             self.assertTrue(image_urls, path)
             for image_url in image_urls:
@@ -275,8 +275,8 @@ class ProjectPageTests(unittest.TestCase):
 
     def test_sitemap_only_lists_published_projects(self):
         sitemap = self._html('/sitemap.xml')
-        self.assertIn('/projekter/1</loc>', sitemap)
-        self.assertIn('/projekter/2</loc>', sitemap)
+        self.assertIn('/projekter/automatisering</loc>', sitemap)
+        self.assertIn('/projekter/lavtemperaturfjernvarme</loc>', sitemap)
         self.assertNotIn('/projekter/3</loc>', sitemap)
         self.assertNotIn('/projekter/4</loc>', sitemap)
 
@@ -288,7 +288,7 @@ class ProjectPageTests(unittest.TestCase):
         homepage = self._html('/')
         self.assertRegex(
             homepage,
-            r'<a class="project-card" href="/projekter/2">\s*'
+            r'<a class="project-card" href="/projekter/lavtemperaturfjernvarme">\s*'
             r'<img class="project-card-map" '
             r'src="/static/fjernvarme-vejkort\.png"',
         )

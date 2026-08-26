@@ -29,8 +29,8 @@ DA_PAGES = [
     '/services/forretningsudvikling',
     '/services/automatisering',
     '/services/it-produktudvikling',
-    '/projekter/1',
-    '/projekter/2',
+    '/projekter/automatisering',
+    '/projekter/lavtemperaturfjernvarme',
     '/privatliv',
     '/cookies',
     '/vilkar',
@@ -118,6 +118,25 @@ def build(prefix: str = '', cname: str = '') -> None:
         da_404.replace('</head>', redirect + '\n</head>', 1), encoding='utf-8', newline=''
     )
     (DEST_TMP / 'en' / '404.html').write_text(en_404, encoding='utf-8', newline='')
+
+    # Old numeric project URLs live on as instant-redirect stubs so shared
+    # links keep working (GitHub Pages cannot do real 301s).
+    redirects = {
+        '/projekter/1': '/projekter/automatisering',
+        '/projekter/2': '/projekter/lavtemperaturfjernvarme',
+        '/en/projekter/1': '/en/projekter/automatisering',
+        '/en/projekter/2': '/en/projekter/lavtemperaturfjernvarme',
+    }
+    for old, new in redirects.items():
+        target = f'{prefix}{new}' if prefix else new
+        stub = ('<!doctype html><html lang="da"><head><meta charset="utf-8">'
+                f'<meta http-equiv="refresh" content="0; url={target}">'
+                f'<link rel="canonical" href="https://datara.dk{new}">'
+                '<title>Datara</title></head><body>'
+                f'<a href="{target}">Videre til datara.dk{new}</a></body></html>')
+        stub_path = DEST_TMP / Path(old.strip('/') + '.html')
+        stub_path.parent.mkdir(parents=True, exist_ok=True)
+        stub_path.write_text(stub, encoding='utf-8', newline='')
 
     (DEST_TMP / 'robots.txt').write_bytes(fetch('/robots.txt'))
     (DEST_TMP / 'sitemap.xml').write_bytes(fetch('/sitemap.xml'))

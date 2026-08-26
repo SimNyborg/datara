@@ -1,4 +1,4 @@
-from flask import Flask, abort, render_template, send_from_directory, request, url_for, Response
+from flask import Flask, abort, redirect, render_template, send_from_directory, request, url_for, Response
 from datetime import datetime
 
 from site_content import (
@@ -515,12 +515,27 @@ PROJECT_UI = {
     },
 }
 
+PROJECT_SLUGS = {project['slug']: pid for pid, project in PROJECTS.items()}
+
+
 @app.route('/projekter/<int:projekt_id>')
-@app.route('/en/projekter/<int:projekt_id>', endpoint='projekt_detail_en')
-def projekt_detail(projekt_id):
+@app.route('/en/projekter/<int:projekt_id>', endpoint='projekt_detail_id_en')
+def projekt_detail_by_id(projekt_id):
+    """Old numeric URLs redirect permanently to the slug URLs."""
     project = PROJECTS.get(projekt_id)
     if not project:
         abort(404)
+    prefix = '/en' if current_language() == 'en' else ''
+    return redirect(f"{prefix}/projekter/{project['slug']}", code=301)
+
+
+@app.route('/projekter/<slug>')
+@app.route('/en/projekter/<slug>', endpoint='projekt_detail_en')
+def projekt_detail(slug):
+    projekt_id = PROJECT_SLUGS.get(slug)
+    if projekt_id is None:
+        abort(404)
+    project = PROJECTS[projekt_id]
 
     lang = current_language()
 
@@ -576,8 +591,8 @@ def sitemap():
         urls.append((service, 'monthly', '0.8'))
 
     # Projects
-    for projekt_id in PROJECTS.keys():
-        urls.append((f'/projekter/{projekt_id}', 'monthly', '0.7'))
+    for project in PROJECTS.values():
+        urls.append((f"/projekter/{project['slug']}", 'monthly', '0.7'))
 
     # Legal/Info pages
     info_pages = [

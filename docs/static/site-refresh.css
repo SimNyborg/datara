@@ -167,6 +167,7 @@ input:focus-visible,
 }
 
 .home-page .navbar-logo,
+.site-navbar--inner .navbar-logo,
 .content-brand,
 .project-site-nav .navbar-logo.project-brand {
   font-family: 'Times New Roman', Times, serif;
@@ -1206,7 +1207,8 @@ input:focus-visible,
     padding: 0 14px;
   }
 
-  .home-page .navbar-logo {
+  .home-page .navbar-logo,
+  .site-navbar--inner .navbar-logo {
     margin: 0;
     font-size: 2rem !important;
   }
@@ -1493,6 +1495,7 @@ input:focus-visible,
   }
 
   .home-page .navbar-logo,
+  .site-navbar--inner .navbar-logo,
   .content-brand,
   .project-site-nav .navbar-logo.project-brand {
     font-size: 2rem !important;

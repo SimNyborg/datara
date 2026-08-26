@@ -6,6 +6,13 @@
   @media (min-width: 1121px) {
     .navbar-logo .wordmark { height: 1.14em !important; }
   }
+  /* Same hover marking as the front page on every page: the solid navbar's
+     !important link colors would otherwise swallow the global hover rule. */
+  .navbar.site-navbar .navbar-links a:hover,
+  .navbar.site-navbar .navbar-mobile-menu a:hover,
+  .navbar.site-navbar a.navbar-logo:hover {
+    color: var(--primary-color) !important;
+  }
 </style>
 
 <nav class="navbar site-navbar{% if not is_home_header %} site-navbar--inner navbar-solid{% endif %}"

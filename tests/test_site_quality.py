@@ -1,4 +1,4 @@
-import re
+﻿import re
 import unittest
 
 from app import app
@@ -6,8 +6,8 @@ from app import app
 
 PUBLIC_ROUTES = (
     '/',
-    '/projekter/1',
-    '/projekter/2',
+    '/projekter/automatisering',
+    '/projekter/lavtemperaturfjernvarme',
     '/services/dataanalyse',
     '/services/forretningsudvikling',
     '/services/automatisering',
@@ -244,7 +244,7 @@ class SiteQualityTests(unittest.TestCase):
             '/services/it-produktudvikling',
         ).get_data(as_text=True)
 
-        self.assertNotIn('href="/projekter/2"', data_page)
+        self.assertNotIn('href="/projekter/lavtemperaturfjernvarme"', data_page)
         self.assertNotIn('href="/projekter/', automation_page)
         self.assertNotIn('href="/projekter/', business_page)
         self.assertNotIn('href="/projekter/', product_page)
@@ -444,8 +444,8 @@ class SiteQualityTests(unittest.TestCase):
 
     def test_article_pages_do_not_render_bottom_contact_prompts(self):
         article_paths = (
-            '/projekter/1',
-            '/projekter/2',
+            '/projekter/automatisering',
+            '/projekter/lavtemperaturfjernvarme',
             '/services/dataanalyse',
             '/services/forretningsudvikling',
             '/services/automatisering',

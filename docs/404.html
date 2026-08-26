@@ -18,7 +18,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon-16x16.png">
     <link rel="manifest" href="/static/site.webmanifest">
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260802-software-article">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260802-software-article">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260827-uniform-nav">
     <script defer src="/static/js/site-header.js?v=site-review-20260730-header-fold"></script>
 <script>(function () {var p = '';var path = location.pathname;if (path !== p + '/en' && path.indexOf(p + '/en/') !== 0) return;if (path === p + '/en/404') return;location.replace(p + '/en/404');})();</script>
 </head>
@@ -31,6 +31,13 @@
 <style>
   @media (min-width: 1121px) {
     .navbar-logo .wordmark { height: 1.14em !important; }
+  }
+  /* Same hover marking as the front page on every page: the solid navbar's
+     !important link colors would otherwise swallow the global hover rule. */
+  .navbar.site-navbar .navbar-links a:hover,
+  .navbar.site-navbar .navbar-mobile-menu a:hover,
+  .navbar.site-navbar a.navbar-logo:hover {
+    color: var(--primary-color) !important;
   }
 </style>
 
