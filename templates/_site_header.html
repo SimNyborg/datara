@@ -2,10 +2,16 @@
 {% set section_prefix = '' if is_home_header else page_url('index') %}
 {% set alternate_language = 'en' if strings.lang_code == 'da' else 'da' %}
 
+<style>
+  @media (min-width: 1121px) {
+    .navbar-logo .wordmark { height: 1.14em !important; }
+  }
+</style>
+
 <nav class="navbar site-navbar{% if not is_home_header %} site-navbar--inner navbar-solid{% endif %}"
      aria-label="{% if strings.lang_code == 'da' %}Hovedmenu{% else %}Main navigation{% endif %}">
     <div class="navbar-section navbar-left navbar-logo-mobile">
-        <a href="{{ page_url('index') }}" class="navbar-logo">Datara</a>
+        <a href="{{ page_url('index') }}" class="navbar-logo" aria-label="Datara">{% include '_wordmark.html' %}</a>
     </div>
 
     <div class="navbar-section navbar-left navbar-links">
@@ -14,7 +20,7 @@
     </div>
 
     <div class="navbar-section navbar-center navbar-logo-desktop">
-        <a href="{{ page_url('index') }}" class="navbar-logo">Datara</a>
+        <a href="{{ page_url('index') }}" class="navbar-logo" aria-label="Datara">{% include '_wordmark.html' %}</a>
     </div>
 
     <div class="navbar-section navbar-right navbar-links">
