@@ -29,7 +29,7 @@ def add_security_headers(response):
 translations = {
     'da': {
         'nav_projekter': 'Projekter',
-        'nav_services': 'Services',
+        'nav_services': 'Ydelser',
         'nav_om': 'Om os',
         'nav_kontakt': 'Kontakt',
         'hero_h1': 'Mindre manuelt arbejde. Bedre beslutninger.',
