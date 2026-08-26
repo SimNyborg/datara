@@ -13,6 +13,17 @@
   .navbar.site-navbar a.navbar-logo:hover {
     color: var(--primary-color) !important;
   }
+  /* Discreet DTR -> DATARA intro in the navbar logo on page load.
+     Scoped to .navbar-logo so the footer wordmark stays static. */
+  @keyframes wm-glide { from { transform: translateX(var(--wm-from, 0)); } to { transform: translateX(0); } }
+  @keyframes wm-drop { from { opacity: 0; transform: translateY(-90px); } to { opacity: 1; transform: translateY(0); } }
+  .navbar-logo .wm-c { animation: wm-glide 420ms cubic-bezier(0.22, 1, 0.36, 1) 150ms both; }
+  .navbar-logo .wm-a { animation: wm-drop 300ms cubic-bezier(0.34, 1.4, 0.5, 1) 380ms both; }
+  .navbar-logo .wm-i3 { animation-delay: 460ms; }
+  .navbar-logo .wm-i5 { animation-delay: 540ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .navbar-logo .wm-c, .navbar-logo .wm-a { animation: none; }
+  }
 </style>
 
 <nav class="navbar site-navbar{% if not is_home_header %} site-navbar--inner navbar-solid{% endif %}"
