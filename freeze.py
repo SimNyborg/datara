@@ -31,11 +31,16 @@ DA_PAGES = [
     '/services/it-produktudvikling',
     '/projekter/automatisering',
     '/projekter/lavtemperaturfjernvarme',
+    '/projekter/affaldsdebatten',
     '/privatliv',
     '/cookies',
     '/vilkar',
 ]
 EN_PAGES = ['/en/' if p == '/' else '/en' + p for p in DA_PAGES]
+
+# Interactive tools that are published as-is (static files, Danish only).
+# apps/affaldskort/ is written by the Affaldskort pipeline (publish_datara.py).
+APPS = {'affaldskort': 'affaldskort'}
 
 # The parked "Indsigt" feature (vendor libs + insights.js) stays in the repo
 # but is not referenced by any live page, so it is left out of the build.
@@ -164,6 +169,11 @@ def build(prefix: str = '', cname: str = '') -> None:
             )
         else:
             shutil.copyfile(source, target)
+
+    for app_name, url_dir in APPS.items():
+        source_dir = ROOT / 'apps' / app_name
+        if source_dir.is_dir():
+            shutil.copytree(source_dir, DEST_TMP / url_dir)
 
     (DEST_TMP / '.nojekyll').write_text('', encoding='utf-8')
     if cname:

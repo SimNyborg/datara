@@ -2596,3 +2596,21 @@ input:focus-visible,
     transition: none !important;
   }
 }
+
+/* Project pages with an interactive tool (the waste-debate map) */
+.project-app-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 26px;
+}
+
+.project-hero-link {
+  display: block;
+  border-radius: inherit;
+}
+
+.project-hero-link:focus-visible {
+  outline: 3px solid var(--primary-color);
+  outline-offset: 4px;
+}

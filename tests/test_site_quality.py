@@ -8,6 +8,7 @@ PUBLIC_ROUTES = (
     '/',
     '/projekter/automatisering',
     '/projekter/lavtemperaturfjernvarme',
+    '/projekter/affaldsdebatten',
     '/services/dataanalyse',
     '/services/forretningsudvikling',
     '/services/automatisering',
@@ -446,6 +447,7 @@ class SiteQualityTests(unittest.TestCase):
         article_paths = (
             '/projekter/automatisering',
             '/projekter/lavtemperaturfjernvarme',
+            '/projekter/affaldsdebatten',
             '/services/dataanalyse',
             '/services/forretningsudvikling',
             '/services/automatisering',

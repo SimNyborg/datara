@@ -30,6 +30,25 @@ Sproget styres af URL'en – sprogknappen i menuen linker til søstersiden.
 `https://simnyborg.github.io/datara/` (bruges kun til test/preview —
 byg altid produktionsversionen med `--cname datara.dk` inden push).
 
+## Affaldskortet (/affaldskort/)
+
+Projektet om affaldsdebatten har to dele:
+
+- Projektsiden `/projekter/affaldsdebatten` (tekst i `affaldskort_content.py`).
+  Nøgletallene læses fra `apps/affaldskort/stats.json`.
+- Det interaktive kort i `apps/affaldskort/`, som `freeze.py` kopierer til
+  `docs/affaldskort/`. Filerne her er genereret: ret dem ikke i hånden.
+
+Begge opdateres fra Affaldskort-pipelinen (OneDrive, `Affaldskort/pipeline`):
+
+```powershell
+python publish_datara.py            # byg offentlig udgave, kopiér, frys, test, commit og push
+python publish_datara.py --no-push  # samme, men uden commit/push
+```
+
+Den offentlige udgave viser ikke nyhedsartiklernes egen tekst (kun titel,
+kilde og link) og udelader de interne arbejdsnoter fra dashboardet.
+
 ## Parkeret
 
 "Indsigt"-sektionen (Chart.js/Leaflet, `static/vendor/`, `static/js/insights.js`)

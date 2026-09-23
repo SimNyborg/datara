@@ -120,6 +120,20 @@
 
         <div class="projects-carousel">
 
+            <a class="project-card" href="{{ page_url('projekt_detail', slug='affaldsdebatten') }}">
+
+                <img class="project-card-map" src="/static/affaldskort-debatkort.jpg" alt="{{ affaldskort_card.image_alt }}" width="1600" height="1000" loading="lazy" decoding="async">
+
+                <div class="project-info">
+
+                    <h3>{{ affaldskort_card.title }}</h3>
+
+                    <p>{{ affaldskort_card.text }}</p>
+
+                </div>
+
+            </a>
+
             <a class="project-card" href="{{ page_url('projekt_detail', slug='lavtemperaturfjernvarme') }}">
 
                 <img class="project-card-map" src="/static/fjernvarme-vejkort.png" alt="{% if strings.lang_code == 'da' %}Vejkort med grønne, gule og røde vejstrækninger i Lyngby-Taarbæk{% else %}Street map with green, yellow and red sections in Lyngby-Taarbæk{% endif %}" width="1280" height="720" loading="lazy" decoding="async">

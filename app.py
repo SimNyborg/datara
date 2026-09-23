@@ -1,6 +1,7 @@
 from flask import Flask, abort, redirect, render_template, send_from_directory, request, url_for, Response
 from datetime import datetime
 
+import affaldskort_content
 from site_content import (
     CONTENT_UI,
     HOME_SERVICE_CARDS,
@@ -140,8 +141,19 @@ def index():
     return render_template(
         'index.html',
         homepage_services=homepage_services,
+        affaldskort_card=affaldskort_content.CARD[lang],
         year=datetime.now().year,
     )
+
+
+# Det interaktive kort over affaldsdebatten er statiske filer i apps/affaldskort/
+# (freeze.py kopierer dem til docs/affaldskort/). Ruten her bruges kun lokalt.
+@app.route('/affaldskort/')
+@app.route('/affaldskort/<path:filename>')
+def affaldskort_app(filename='index.html'):
+    if not (affaldskort_content.APP_DIR / filename).is_file():
+        abort(404)
+    return send_from_directory(affaldskort_content.APP_DIR, filename)
 
 # Footer info pages
 @app.route('/privatliv')
@@ -488,6 +500,10 @@ PROJECTS = {
     },
 }
 
+# Projekt 3: kortlægningen af affaldsdebatten. Teksten og nøgletallene bor i
+# affaldskort_content.py, som læser apps/affaldskort/stats.json.
+PROJECTS[3] = affaldskort_content.PROJECT
+
 PROJECT_UI = {
     'da': {
         'skip_label': 'Gå til artiklen',
@@ -608,6 +624,9 @@ def sitemap():
         ('/en/' if path == '/' else f'/en{path}', changefreq, priority)
         for path, changefreq, priority in list(urls)
     ]
+
+    # The interactive waste-debate map exists in Danish only.
+    urls.append((affaldskort_content.APP_URL, 'weekly', '0.7'))
 
     # Build XML
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n'

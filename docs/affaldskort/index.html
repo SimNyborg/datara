@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="da">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Affaldskort: debatten om affald i Danmark | Datara</title>
+<meta name="description" content="Interaktivt kort over 33.259 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<link rel="canonical" href="https://datara.dk/affaldskort/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Affaldskort: debatten om affald i Danmark">
+<meta property="og:description" content="Interaktivt kort over 33.259 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta property="og:image" content="https://datara.dk/static/affaldskort-debatkort.jpg">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f2f4f0; --surface:#ffffff; --surface-2:#e9eee9; --ink:#17232b; --ink-2:#4a5860; --muted:#7f8d94; --line:#d8dfda;
+  --accent:#0f6e56; --accent-ink:#ffffff; --mark:#118a66; --mark-soft:#cfe8dd; --mark-dim:#b9c6bf; --rust:#b5461a; --focus:#1d6fd6;
+  --shadow:0 1px 2px rgba(23,35,43,.06),0 6px 20px rgba(23,35,43,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121a18; --surface:#1b2623; --surface-2:#22302c; --ink:#e7ede9; --ink-2:#b5c1bb; --muted:#7f8d87; --line:#2c3934;
+    --accent:#4fc4a0; --accent-ink:#0f1a16; --mark:#3dbb93; --mark-soft:#1e4a3c; --mark-dim:#3a4a44; --rust:#e8825a; --focus:#6aa8ff;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121a18; --surface:#1b2623; --surface-2:#22302c; --ink:#e7ede9; --ink-2:#b5c1bb; --muted:#7f8d87; --line:#2c3934;
+  --accent:#4fc4a0; --accent-ink:#0f1a16; --mark:#3dbb93; --mark-soft:#1e4a3c; --mark-dim:#3a4a44; --rust:#e8825a; --focus:#6aa8ff;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14.5px;line-height:1.5}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;text-wrap:balance;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(30px,4vw,44px);font-weight:800;line-height:1.02}
+h2{font-size:22px;font-weight:700;line-height:1.15}
+h3{font-size:15.5px;font-weight:700}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.wrap{max-width:1280px;margin:0 auto;padding:0 22px}
+/* masthead */
+.mast{border-bottom:1px solid var(--line);background:var(--surface)}
+.mast .wrap{display:grid;grid-template-columns:1fr auto;gap:18px 32px;align-items:end;padding-top:26px;padding-bottom:0}
+.mast p.lede{margin:8px 0 0;max-width:62ch;color:var(--ink-2);font-size:15px}
+.status{display:flex;gap:22px;flex-wrap:wrap;padding-bottom:14px}
+.status div{display:flex;flex-direction:column;gap:1px}
+.status b{font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:700;line-height:1.05;font-variant-numeric:tabular-nums}
+.status span{font-size:11.5px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+nav.tabs{grid-column:1/-1;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav.tabs button{appearance:none;border:0;background:none;padding:12px 14px 11px;font:inherit;font-weight:500;color:var(--ink-2);border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+nav.tabs button:hover{color:var(--ink)}
+main .wrap{padding-top:26px;padding-bottom:60px}
+section.tab>header{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:16px}
+section.tab>header p{margin:4px 0 0;color:var(--ink-2);max-width:70ch}
+/* KPI */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 12px}
+.kpi .v{font-family:"Bricolage Grotesque",sans-serif;font-size:32px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .l{font-size:12px;color:var(--muted);margin-top:6px}
+.kpi .d{font-size:12px;color:var(--ink-2);margin-top:4px}
+/* panels */
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px 14px;min-width:0}
+.panel>header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
+.panel>header small{color:var(--muted);font-size:12px}
+.panel .tools{display:flex;gap:6px;align-items:center}
+button.ghost{appearance:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:6px;padding:3px 8px;cursor:pointer}
+button.ghost[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.stack{display:grid;gap:16px;margin-top:16px}
+svg.chart{width:100%;height:auto;display:block;font-family:"IBM Plex Mono",monospace;font-size:11px}
+svg.chart text{fill:var(--ink-2)}
+svg.chart .grid line{stroke:var(--line);stroke-width:1}
+svg.chart .axis line{stroke:var(--line)}
+svg.chart .bar{fill:var(--mark)}
+svg.chart .bar.dim{fill:var(--mark-dim)}
+svg.chart .bar:hover{fill:var(--accent)}
+svg.chart .area{fill:var(--mark-soft)}
+svg.chart .lineP{fill:none;stroke:var(--mark);stroke-width:2;stroke-linejoin:round}
+svg.chart .end{fill:var(--mark);stroke:var(--surface);stroke-width:2}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--bg);padding:6px 9px;border-radius:6px;font-size:12px;line-height:1.35;box-shadow:var(--shadow);z-index:50;max-width:320px;opacity:0;transition:opacity .08s}
+.tip b{display:block}
+.tip.show{opacity:1}
+table.data{width:100%;border-collapse:collapse;font-size:13px}
+table.data th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;padding:8px 8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.data td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.data td.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tablewrap{overflow-x:auto}
+.smalls{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.small{border:1px solid var(--line);border-radius:8px;padding:10px 10px 6px;background:var(--surface)}
+.small h4{margin:0 0 2px;font-size:12.5px;font-weight:600;line-height:1.25;min-height:2.5em}
+.small .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+.hbars .row{display:grid;grid-template-columns:minmax(120px,38%) 1fr 44px;gap:10px;align-items:center;padding:3px 0}
+.hbars .lab{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hbars .trk{height:14px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.hbars .fil{height:100%;background:var(--mark);border-radius:0 3px 3px 0;min-width:2px}
+.hbars .val{font-family:"IBM Plex Mono",monospace;font-size:12px;text-align:right;font-variant-numeric:tabular-nums}
+.chip{display:inline-block;font-size:11px;padding:1px 7px;border-radius:10px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap;line-height:1.5}
+.chip.v{background:var(--mark-soft);color:var(--ink)}
+.dots{font-family:"IBM Plex Mono",monospace;letter-spacing:1px;color:var(--accent)}
+/* filters */
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.filters input,.filters select{font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);min-width:150px}
+.filters label{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.count{font-size:12px;color:var(--muted);margin-left:auto}
+/* actor table */
+tr.exp td{background:var(--surface-2)}
+.exp-body{font-size:13px;color:var(--ink-2);display:grid;gap:6px}
+.exp-body ul{margin:0;padding-left:18px}
+.linkrow a{margin-right:10px;font-size:12px}
+/* iframes */
+.frame{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);height:calc(100vh - 150px);min-height:560px}
+.frame iframe{width:100%;height:100%;border:0;display:block}
+.frame .fallback{position:absolute;inset:auto 12px 12px auto;font-size:12px;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+/* timeline */
+.month{margin:22px 0 8px;display:flex;align-items:baseline;gap:12px}
+.month h3{font-size:16px}
+.month .rule{flex:1;height:1px;background:var(--line)}
+.doc{display:grid;grid-template-columns:88px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.doc .dt{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);padding-top:2px}
+.doc .t{font-weight:600}
+.doc .m{font-size:12px;color:var(--muted);margin:1px 0 3px}
+.doc .s{color:var(--ink-2);font-size:13.5px;max-width:80ch}
+.doc .acts{font-size:12px;color:var(--accent)}
+/* debat-drivere og tone */
+.measures{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:14px}
+.measure{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.measure b{display:block;color:var(--ink);font-family:"Bricolage Grotesque",sans-serif;font-size:14.5px;margin-bottom:2px}
+svg.quad text{font-family:"IBM Plex Sans",sans-serif}
+svg.quad .cap{font-size:11px;fill:var(--muted);font-style:italic}
+svg.quad .lab{font-size:10.5px;fill:var(--ink)}
+svg.quad .axis text{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--ink-2)}
+svg.quad .axis line, svg.quad .axis path{stroke:var(--line)}
+svg.quad .med{stroke:var(--muted);stroke-dasharray:4 4}
+.bridges{display:grid;gap:6px}
+.bridge{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:center;font-size:13px;padding:5px 0;border-bottom:1px solid var(--line)}
+.bridge .rk{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;color:var(--accent)}
+.bridge .to{font-size:12px;color:var(--ink-2)}
+.bridge .val{font-family:"IBM Plex Mono",monospace;font-size:12px}
+.sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:middle}
+table.adj{border-collapse:collapse;font-size:10px}
+table.adj td,table.adj th{padding:0;border:1px solid var(--surface)}
+table.adj td.cell{width:15px;height:15px;min-width:15px}
+table.adj td.zero{background:var(--surface-2)}
+table.adj td.gap{outline:2px solid var(--rust);outline-offset:-2px}
+table.adj th.rowh{text-align:right;padding-right:6px;white-space:nowrap;font-weight:500;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis}
+table.adj th.colh{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-weight:500;font-size:10.5px;padding:4px 0;text-align:left}
+svg.tone text{font-family:"IBM Plex Sans",sans-serif;font-size:11.5px;fill:var(--ink-2)}
+svg.tone .neg{fill:#e34948}svg.tone .neu{fill:#c9cdc8}svg.tone .pos{fill:#2a78d6}
+svg.tone .lbl{fill:var(--ink);font-size:12px}
+svg.tone .mono{font-family:"IBM Plex Mono",monospace;font-size:10.5px}
+.dumb{display:grid;grid-template-columns:minmax(150px,32%) 1fr;gap:8px;align-items:center;padding:3px 0;font-size:12.5px}
+.dumb .trk{position:relative;height:16px}
+.dumb .zero{position:absolute;left:50%;top:0;bottom:0;width:1px;background:var(--muted)}
+.dumb .bar{position:absolute;top:6px;height:4px;background:var(--line)}
+.dumb .dot{position:absolute;top:3px;width:10px;height:10px;border-radius:50%;border:2px solid var(--surface)}
+.dumb .own{background:var(--accent)} .dumb .about{background:var(--rust)}
+.tonelegend{display:flex;gap:14px;font-size:12px;color:var(--ink-2);margin:6px 0 10px;flex-wrap:wrap}
+.tonelegend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:middle}
+/* markdown */
+.md{max-width:78ch;font-size:14.5px}
+.md h1{font-size:26px;margin:22px 0 10px}.md h2{font-size:20px;margin:24px 0 8px}.md h3{font-size:16px;margin:18px 0 6px}
+.md p{margin:8px 0}.md ul,.md ol{padding-left:22px}.md li{margin:3px 0}
+.md table{border-collapse:collapse;font-size:13px;margin:10px 0}.md th,.md td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.md pre{background:var(--surface-2);padding:10px 12px;border-radius:8px;overflow-x:auto;font-size:12.5px}
+.md code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);padding:1px 4px;border-radius:4px}
+.md pre code{background:none;padding:0}
+.md hr{border:0;border-top:1px solid var(--line);margin:18px 0}
+details.md-block{border:1px solid var(--line);border-radius:10px;background:var(--surface);padding:10px 16px;margin-top:14px}
+details.md-block summary{cursor:pointer;font-weight:600;font-family:"Bricolage Grotesque",sans-serif;font-size:16px}
+.note{border-left:3px solid var(--rust);padding:8px 12px;background:var(--surface);color:var(--ink-2);font-size:13.5px;border-radius:0 8px 8px 0}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 10px}
+.legend button{appearance:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:14px;padding:3px 10px;cursor:pointer}
+.legend button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.steps{counter-reset:s;display:grid;gap:10px;padding:0;margin:0;list-style:none;max-width:78ch}
+.steps li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+.steps li::before{counter-increment:s;content:counter(s);font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;color:var(--accent);line-height:1.1}
+.steps code{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:4px}
+
+.datara-bar{background:#0f2744;color:#dbe6f3;font:500 13px/1.2 "IBM Plex Sans",system-ui,sans-serif}
+.datara-bar .wrap{display:flex;align-items:center;gap:14px;padding-top:9px;padding-bottom:9px;flex-wrap:wrap}
+.datara-bar a{color:#fff;text-decoration:none}
+.datara-bar a:hover,.datara-bar a:focus-visible{text-decoration:underline}
+.datara-bar .brand{font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.datara-bar .sep{opacity:.45}
+.datara-bar .right{margin-left:auto;opacity:.8}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 24. september 2026</span></div></div>
+<header class="mast">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Løbende kortlægning af affaldsdebatten</div>
+      <h1>Affaldskort</h1>
+      <p class="lede">Hvem taler om affaldsbranchen, hvad taler de om, og hvordan flytter debatten sig? Hvert punkt på kortene er et dokument eller en aktør, placeret tæt på dem det ligner.</p>
+    </div>
+    <div class="status" id="status"></div>
+    <nav class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-tab="overblik" aria-selected="true">Overblik</button>
+      <button role="tab" data-tab="debatkort">Debatkort</button>
+      <button role="tab" data-tab="aktoerkort">Aktørkort</button>
+      <button role="tab" data-tab="aktoerer">Aktører</button>
+      <button role="tab" data-tab="netvaerk">Netværk</button>
+      <button role="tab" data-tab="centrale">Hvem driver debatten</button>
+      <button role="tab" data-tab="tone">Tone</button>
+      <button role="tab" data-tab="tidslinje">Tidslinje</button>
+      <button role="tab" data-tab="metode">Kilder &amp; metode</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<section class="tab" id="tab-overblik">
+  <div class="kpis" id="kpis"></div>
+  <div class="grid2">
+    <div class="panel">
+      <header><div><h3>Dokumenter pr. måned</h3><small id="months-sub"></small></div>
+        <div class="tools"><button class="ghost" data-toggle="months-table" aria-pressed="false">Vis som tabel</button></div></header>
+      <div id="months-chart"></div>
+      <div id="months-table" class="tablewrap" hidden></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Mest omtalte aktører</h3><small>antal dokumenter aktøren optræder i</small></div></header>
+      <div class="hbars" id="top-actors"></div>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="panel">
+      <header><div><h3>Temaer over tid</h3><small>dokumenter pr. kvartal, samme skala i alle felter</small></div></header>
+      <div class="smalls" id="themes-small"></div>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <header><div><h3>Klynger på debatkortet</h3><small>automatiske overskrifter (HDBSCAN + nøgleord) indtil de er navngivet</small></div></header>
+        <div class="hbars" id="clusters"></div>
+      </div>
+      <div class="panel">
+        <header><div><h3>Aktørregistret</h3><small>fordelt på type</small></div></header>
+        <div class="hbars" id="actor-types"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Sådan læser du kortene</h3></div></header>
+      <div class="md" id="howto"></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-debatkort" hidden>
+  <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Farvelæg og filtrér i panelet til højre, søg i feltet øverst til venstre, og træk i tidshistogrammet nederst for at afgrænse perioden. Klik på et punkt for at åbne kilden.</p></div>
+    <a class="chip" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
+  <div class="frame"><iframe data-src="debatkort.html" title="Debatkort"></iframe><a class="fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
+</section>
+
+<section class="tab" id="tab-aktoerkort" hidden>
+  <header><div><h2>Aktørkort</h2><p>Hvert punkt er én aktør, placeret efter hvad de laver og mener. Størrelsen viser hvor mange dokumenter aktøren optræder i. Klik åbner aktørens hjemmeside.</p></div>
+    <a class="chip" href="aktoerkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
+  <div class="frame"><iframe data-src="aktoerkort.html" title="Aktørkort"></iframe><a class="fallback" href="aktoerkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
+</section>
+
+<section class="tab" id="tab-aktoerer" hidden>
+  <header><div><h2>Aktørregister</h2><p>Alle aktører der er fundet indtil nu. Klik på en række for beskrivelse, nøglepersoner, holdning og seneste udtalelser.</p></div></header>
+  <div class="filters">
+    <input id="a-q" type="search" placeholder="Søg navn, beskrivelse, person …">
+    <select id="a-type"><option value="">Alle typer</option></select>
+    <select id="a-sort"><option value="n">Sortér: flest dokumenter</option><option value="rel">Sortér: relevans</option><option value="name">Sortér: navn</option></select>
+    <input type="checkbox" id="a-ver" hidden>
+    <span class="count" id="a-count"></span>
+  </div>
+  <div class="tablewrap"><table class="data" id="a-table"><thead><tr><th>Aktør</th><th>Type</th><th>Beskrivelse</th><th>Nøglepersoner</th><th>Links</th><th class="num">Dok.</th><th>Rel.</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section class="tab" id="tab-netvaerk" hidden>
+  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i samme dokument. Tykkere streg = flere fælles dokumenter. Vælg en aktørgruppe for at fremhæve den; hold musen over en node for navn og antal. Klik på en node for at slå den op i registret.</p></div></header>
+  <div class="legend" id="net-legend"></div>
+  <div class="filters"><label>Min. fælles dokumenter <input type="range" id="net-min" min="1" max="10" value="1" style="min-width:120px"> <span class="mono" id="net-min-v">1</span></label><span class="count" id="net-count"></span></div>
+  <canvas id="net" width="1200" height="640"></canvas>
+</section>
+
+<section class="tab" id="tab-centrale" hidden>
+  <header><div><h2>Hvem driver debatten</h2><p>Fire spørgsmål, fire mål. Grundlaget er de dokumenter, hvor aktørerne optræder sammen: hvem der selv ytrer sig, hvem der bliver omtalt, hvem der optræder med hvem, og hvem der forbinder grupper, der ellers ikke deler dokumenter.</p></div></header>
+  <div class="measures">
+    <div class="measure"><b>Bidrag</b>Antal egne ytringer: pressemeddelelser, debatindlæg, høringssvar, opslag. Hvem taler mest?</div>
+    <div class="measure"><b>Omtale</b>Antal dokumenter, hvor andre nævner aktøren. Hvem tales der mest om?</div>
+    <div class="measure"><b>Bindeled</b>Betweenness-centralitet: hvor ofte aktøren ligger på korteste vej mellem to andre. Hvem holder debatten sammen?</div>
+    <div class="measure"><b>Lejre</b>Grupper af aktører, der oftere optræder sammen end med andre (Louvain). Hvem taler ikke sammen?</div>
+  </div>
+  <div class="grid2">
+    <div class="panel">
+      <header><div><h3>Bidrag og bindeled</h3><small>x: egne ytringer · y: bindeled-centralitet · størrelse: omtale · farve: lejr</small></div></header>
+      <div id="quad"></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Bindeled mellem lejre</h3><small>aktører med højest betweenness, og hvilke lejre de forbinder</small></div></header>
+      <div class="bridges" id="bridges"></div>
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="panel">
+      <header><div><h3>Lejrene, og hvor meget de taler sammen</h3><small>båndets tykkelse = fælles dokumenter mellem lejrene; tynde eller manglende bånd = lejre, der sjældent mødes</small></div></header>
+      <div id="chord"></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Rangliste</h3><small>sortér ved at klikke på kolonnen</small></div></header>
+      <div class="tablewrap"><table class="data" id="c-table"><thead><tr><th>#</th><th>Aktør</th><th>Type</th><th class="num" data-k="own">Bidrag</th><th class="num" data-k="mentioned">Omtale</th><th class="num" data-k="betweenness">Bindeled</th><th class="num" data-k="pagerank">Indflydelse</th><th class="num" data-k="degree">Forb.</th><th>Lejr</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="panel">
+      <header><div><h3>Hvem optræder sammen, og hvem gør ikke</h3><small>de 40 mest indflydelsesrige, ordnet efter lejr; mørkere = flere fælles dokumenter; grå = aldrig i samme dokument</small></div>
+        <div class="tools"><button class="ghost" id="adj-gaps" aria-pressed="false">Markér manglende samspil blandt de 20 mest centrale</button></div></header>
+      <div class="tablewrap" id="adj"></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Netværkskort efter lejr</h3><small>hold musen over en knude; klik slår aktøren op</small></div></header>
+      <div class="legend" id="c-legend"></div>
+      <canvas id="cnet" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
+    </div>
+    <div class="panel">
+      <header><div><h3>Hvem taler om hvad</h3><small>aktør × tema: temaer som firkanter, aktører som cirkler; kanttykkelse = antal dokumenter</small></div></header>
+      <div class="filters"><label>Min. dokumenter pr. kant <input type="range" id="bip-min" min="1" max="8" value="3" style="min-width:120px"> <span class="mono" id="bip-min-v">3</span></label><span class="count" id="bip-count"></span></div>
+      <canvas id="bip" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
+    </div>
+    <div class="panel">
+      <header><div><h3>Hvem får taletid hvor</h3><small>kilde × aktør: antal dokumenter fra kilden, hvor aktøren optræder</small></div></header>
+      <div class="tablewrap" id="matrix"></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-tone" hidden>
+  <header><div><h2>Tone</h2><p>Hvordan tales der om emnerne? Hvert dokument er scoret af en dansk sprogmodel (Alexandra Instituttets <i>da-sentiment-base</i>) som negativt, neutralt eller positivt ud fra titel og resumé. Tone er ikke holdning: en kritisk pressemeddelelse er negativ i tone, uanset hvad afsenderen mener om liberalisering. Nyheder om konflikter trækker naturligt mod det negative, så læs forskellene mellem emner og aktører, ikke niveauet.</p></div></header>
+  <div class="grid2">
+    <div class="panel">
+      <header><div><h3>Tonen pr. emne</h3><small>andel negative, neutrale og positive dokumenter; sorteret efter mest negative</small></div></header>
+      <div class="tonelegend"><span><i style="background:#e34948"></i>negativ</span><span><i style="background:#c9cdc8"></i>neutral</span><span><i style="background:#2a78d6"></i>positiv</span></div>
+      <div id="tone-themes"></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Sådan taler de, sådan tales der om dem</h3><small>gennemsnitlig tone i aktørens egne ytringer (grøn) og i dokumenter, der omtaler aktøren (rust); mindst 5 dokumenter</small></div></header>
+      <div class="tonelegend"><span><i style="background:var(--accent)"></i>egne ytringer</span><span><i style="background:var(--rust)"></i>omtale af andre</span><span class="mono">−1 negativ · 0 · +1 positiv</span></div>
+      <div id="tone-actors"></div>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="panel">
+      <header><div><h3>Tonen over tid</h3><small>gennemsnit pr. kvartal pr. emne; over stregen = mere positivt end nul, under = mere negativt</small></div></header>
+      <div class="smalls" id="tone-time"></div>
+    </div>
+    <div class="panel">
+      <header><div><h3>Hvem er mest kritiske om hvad</h3><small>gennemsnitlig tone for aktør × emne (mindst 3 dokumenter); rød = negativ, blå = positiv</small></div></header>
+      <div class="tablewrap" id="tone-matrix"></div>
+    </div>
+  </div>
+</section>
+
+<section class="tab" id="tab-tidslinje" hidden>
+  <header><div><h2>Tidslinje</h2><p>Alle dokumenter i korpus, nyeste først. Filtrér på tema, type eller aktør.</p></div></header>
+  <div class="filters">
+    <input id="t-q" type="search" placeholder="Søg titel, resumé, aktør …">
+    <select id="t-theme"><option value="">Alle temaer</option></select>
+    <select id="t-type"><option value="">Alle typer</option></select>
+    <select id="t-year"><option value="">Alle år</option></select>
+    <span class="count" id="t-count"></span>
+  </div>
+  <div id="t-list"></div>
+  <details class="md-block" id="t-md" hidden><summary>Debattens hovedtemaer og milepæle (redaktionel tidslinje)</summary><div class="md" id="t-md-body"></div></details>
+</section>
+
+<section class="tab" id="tab-metode" hidden>
+  <header><div><h2>Kilder &amp; metode</h2><p>Hvordan kortet er lavet, og hvor dokumenterne kommer fra.</p></div></header>
+  <div class="grid2">
+    <div class="panel"><header><div><h3>Metode</h3></div></header><div class="md" id="method"></div></div>
+    <div class="panel"><header><div><h3>Om kortet</h3><small>opdateres løbende</small></div></header>
+      <div class="md">
+        <p>Kortet er lavet af <a href="../">Datara</a>. Nye dokumenter bliver høstet løbende og lagt ind på det eksisterende kort, så punkterne bliver, hvor de er, og nye emner får deres egne klynger.</p>
+        <p>Mangler der noget, eller er en aktør beskrevet forkert, hører vi gerne fra dig på <a href="mailto:shn@datara.dk">shn@datara.dk</a>.</p>
+        <p><a href="../projekter/affaldsdebatten">Læs om projektet på datara.dk</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="stack">
+    <div class="panel"><header><div><h3>Faste nyhedskilder</h3><small id="src-sub"></small></div></header><div class="tablewrap" id="sources"></div></div>
+    <div id="arch-wrap"></div>
+    <div id="docs-wrap"></div>
+  </div>
+</section>
+
+</div>
+</main>
+<div class="tip" id="tip"></div>
+
+<script src="data/summary.js"></script>
+<script src="data/actors.js"></script>
+<script src="data/documents.js"></script>
+<script src="data/documents_2.js"></script>
+<script src="data/documents_3.js"></script>
+<script src="data/network.js"></script>
+<script src="data/docs.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+(function(){
+const S = window.AK_SUMMARY, A = window.AK_ACTORS || [], D = window.AK_DOCUMENTS || [], N = window.AK_NETWORK || {nodes:[],links:[]}, X = window.AK_DOCS || {docs:{},sources:[]};
+const fmt = n => (n==null?'–':Number(n).toLocaleString('da-DK'));
+const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const byId = {}; A.forEach(a => byId[a.id] = a);
+const TL = (S && S.actor_type_labels) || {}; const IL = (S && S.item_type_labels) || {};
+const daMonth = m => { const [y,mo] = m.split('-'); return ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+mo-1] + ' ' + y; };
+const dateDa = d => { if(!d) return ''; const [y,m,dd] = d.split('-'); return `${+dd}. ${['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+m-1]} ${y}`; };
+
+/* ---------- tabs ---------- */
+const tabs = document.getElementById('tabs');
+function show(name){
+  tabs.querySelectorAll('button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab===name ? 'true':'false'));
+  document.querySelectorAll('section.tab').forEach(s => s.hidden = s.id !== 'tab-'+name);
+  document.querySelectorAll('#tab-'+name+' iframe[data-src]').forEach(f => { f.src = f.dataset.src; f.removeAttribute('data-src'); });   // kortene indlæses først når fanen vises (ellers beregnes zoom fra bredde 0)
+  try{ localStorage.setItem('ak-tab', name); }catch(e){}
+  if(name==='netvaerk') setTimeout(startNet, 30);
+  if(name==='centrale') setTimeout(startCentral, 30);
+  if(name==='tone' && !toneStarted){ toneStarted = true; setTimeout(renderTone, 30); }
+}
+tabs.addEventListener('click', e => { const b = e.target.closest('button'); if(b) show(b.dataset.tab); });
+let initial='overblik'; try{ initial = localStorage.getItem('ak-tab') || 'overblik'; }catch(e){}
+if(!document.getElementById('tab-'+initial)) initial='overblik';
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById('tip');
+function showTip(html, x, y){ tip.innerHTML = html; tip.classList.add('show'); const w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(x+14, window.innerWidth - w - 8) + 'px'; tip.style.top = (y+14+h > window.innerHeight ? y-h-10 : y+14) + 'px'; }
+function hideTip(){ tip.classList.remove('show'); }
+
+if(!S){
+  document.getElementById('kpis').innerHTML = '<div class="note">Ingen data endnu. Kør <code>python build_map.py</code> i pipeline-mappen.</div>';
+  show(initial); return;
+}
+
+/* ---------- status + KPIs ---------- */
+const nVer = S.n_actors_verified || 0;
+document.getElementById('status').innerHTML = [
+  [fmt(S.n_docs),'dokumenter'],[fmt(S.n_actors),'aktører'],[(S.debate_map&&S.debate_map.n_clusters)||'–','klynger'],[(S.generated_at||'').slice(0,10),'opdateret']
+].map(([v,l]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`).join('');
+const years = {}; D.forEach(d => { const y = (d.date||'').slice(0,4); if(y) years[y]=(years[y]||0)+1; });
+const yrs = Object.keys(years).sort();
+const last90 = D.filter(d => d.date && (new Date(S.generated_at) - new Date(d.date)) < 90*864e5).length;
+document.getElementById('kpis').innerHTML = [
+  {v:fmt(S.n_docs), l:'dokumenter i korpus', d:`${dateDa(S.date_min)} – ${dateDa(S.date_max)}`},
+  {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
+  {v:fmt(Object.keys(S.by_theme||{}).length), l:'temaer', d:`${(S.debate_map&&S.debate_map.n_clusters)||'–'} klynger på debatkortet`},
+  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'1.683 kilder i alt'},
+].map(k => `<div class="kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="d">${k.d}</div></div>`).join('');
+
+/* ---------- months chart (single series column) ---------- */
+(function(){
+  const M = S.by_month_theme || {};
+  const keys = Object.keys(M).sort();
+  if(!keys.length) return;
+  // fyld manglende måneder ud
+  const [y0,m0] = keys[0].split('-').map(Number), [y1,m1] = keys[keys.length-1].split('-').map(Number);
+  const months = []; for(let y=y0,m=m0; y<y1 || (y===y1 && m<=m1); ){ months.push(`${y}-${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;} }
+  const vals = months.map(k => Object.values(M[k]||{}).reduce((a,b)=>a+b,0));
+  const max = Math.max(...vals, 1);
+  const W = 720, H = 220, pl = 34, pr = 8, pt = 12, pb = 28;
+  const iw = W-pl-pr, ih = H-pt-pb, bw = iw/months.length;
+  const yTicks = niceTicks(max, 4);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dokumenter pr. måned"><g class="grid">`;
+  yTicks.forEach(t => { const y = pt+ih - t/max*ih; s += `<line x1="${pl}" x2="${W-pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${pl-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${t}</text>`; });
+  s += `</g>`;
+  months.forEach((k,i) => { const v = vals[i]; const h = v/max*ih; const x = pl+i*bw+1, y = pt+ih-h; const w = Math.max(bw-2, 1.5);
+    s += `<path class="bar" data-i="${i}" d="${roundTop(x, y, w, h, Math.min(3, w/2))}"><title>${daMonth(k)}: ${v}</title></path>`; });
+  months.forEach((k,i) => { if(k.endsWith('-01') || months.length < 14){ const x = pl+i*bw+bw/2; s += `<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${k.slice(0,4)}</text>`; } });
+  s += `<line class="axis" x1="${pl}" x2="${W-pr}" y1="${pt+ih}" y2="${pt+ih}" stroke="var(--line)"/></svg>`;
+  const el = document.getElementById('months-chart'); el.innerHTML = s;
+  el.querySelectorAll('.bar').forEach(b => { b.addEventListener('mousemove', e => { const i = +b.dataset.i; const themes = Object.entries(M[months[i]]||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t,n])=>`${t}: ${n}`).join('<br>'); showTip(`<b>${daMonth(months[i])} · ${vals[i]} dok.</b>${themes}`, e.clientX, e.clientY); }); b.addEventListener('mouseleave', hideTip); });
+  document.getElementById('months-sub').textContent = `${months[0].slice(0,4)}–${months[months.length-1].slice(0,4)} · maks. ${max}/md.`;
+  document.getElementById('months-table').innerHTML = `<table class="data"><thead><tr><th>Måned</th><th class="num">Dokumenter</th><th>Største tema</th></tr></thead><tbody>` + months.map((k,i) => { const top = Object.entries(M[k]||{}).sort((a,b)=>b[1]-a[1])[0]; return `<tr><td class="mono">${k}</td><td class="num">${vals[i]}</td><td>${top?esc(top[0])+' ('+top[1]+')':''}</td></tr>`; }).reverse().join('') + '</tbody></table>';
+})();
+function niceTicks(max, n){ const raw = max/n; const p = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1,2,5,10].map(m=>m*p).find(v => v >= raw) || p*10; const out=[]; for(let t=step;t<=max;t+=step) out.push(t); return out; }
+function roundTop(x,y,w,h,r){ if(h<=0) return ''; r = Math.min(r, h); return `M${x},${y+h} V${y+r} Q${x},${y} ${x+r},${y} H${x+w-r} Q${x+w},${y} ${x+w},${y+r} V${y+h} Z`; }
+document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => { const t = document.getElementById(b.dataset.toggle); const on = b.getAttribute('aria-pressed')!=='true'; b.setAttribute('aria-pressed', on); t.hidden = !on; }));
+
+/* ---------- horizontal bars ---------- */
+function hbars(el, rows, opts={}){
+  const max = Math.max(...rows.map(r=>r.v), 1);
+  el.innerHTML = rows.map(r => `<div class="row" ${r.title?`title="${esc(r.title)}"`:''}><div class="lab">${esc(r.l)}${r.chip?` <span class="chip">${esc(r.chip)}</span>`:''}</div><div class="trk"><div class="fil" style="width:${(r.v/max*100).toFixed(1)}%"></div></div><div class="val">${fmt(r.v)}</div></div>`).join('');
+}
+hbars(document.getElementById('top-actors'), (S.top_actors||[]).slice(0,18).map(a => ({l:a.name, v:a.n, chip:TL[a.type]||a.type})));
+hbars(document.getElementById('actor-types'), Object.entries(S.by_actor_type||{}).sort((a,b)=>b[1]-a[1]).map(([t,n]) => ({l:TL[t]||t, v:n})));
+hbars(document.getElementById('clusters'), ((S.debate_map&&S.debate_map.clusters)||[]).slice().sort((a,b)=>b.n-a.n).map(c => ({l:c.label||'(uden navn)', v:c.n})));
+
+/* ---------- small multiples per theme (quarters) ---------- */
+(function(){
+  const M = S.by_month_theme || {}; const themes = Object.entries(S.by_theme||{}).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+  const qs = {}; Object.entries(M).forEach(([m, obj]) => { const q = m.slice(0,4)+'-K'+(Math.floor((+m.slice(5,7)-1)/3)+1); qs[q] = qs[q]||{}; Object.entries(obj).forEach(([t,n]) => qs[q][t]=(qs[q][t]||0)+n); });
+  const qkeys = Object.keys(qs).sort(); if(!qkeys.length) return;
+  const gmax = Math.max(1, ...qkeys.flatMap(q => Object.values(qs[q])));
+  const W=200,H=70,pl=4,pr=4,pt=8,pb=14, iw=W-pl-pr, ih=H-pt-pb;
+  document.getElementById('themes-small').innerHTML = themes.map(t => {
+    const v = qkeys.map(q => qs[q][t]||0); const n = v.reduce((a,b)=>a+b,0);
+    const pts = v.map((y,i) => [pl + (qkeys.length===1?iw/2:i/(qkeys.length-1)*iw), pt+ih - y/gmax*ih]);
+    const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+    const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${pt+ih} L${pts[0][0].toFixed(1)},${pt+ih} Z`;
+    const last = pts[pts.length-1]; const peak = v.indexOf(Math.max(...v));
+    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t)}: ${n} dokumenter"><path class="area" d="${area}"/><path class="lineP" d="${line}"/><circle class="end" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/><text x="${pl}" y="${H-3}">${qkeys[0].replace('-K',' K')}</text><text x="${W-pr}" y="${H-3}" text-anchor="end">${qkeys[qkeys.length-1].replace('-K',' K')}</text></svg><div class="n">${n} dok. · top ${qkeys[peak].replace('-K',' K')} (${v[peak]})</div></div>`;
+  }).join('');
+})();
+
+/* ---------- howto ---------- */
+document.getElementById('howto').innerHTML = md(`
+**Debatkortet** viser dokumenter. Vi måler den semantiske lighed mellem teksterne med en sprogmodel (embedding, *multilingual-e5*), finder klynger af beslægtede dokumenter (HDBSCAN) og reducerer til to dimensioner (UMAP), så nærhed på kortet betyder lignende indhold. Klyngerne får overskrifter, først automatisk ud fra nøgleord, derefter navngivet af Claude og rettet manuelt.
+
+**Aktørkortet** gør det samme for aktørerne: placeringen bygger på beskrivelsen af hvad de laver og mener, størrelsen på hvor ofte de optræder i korpus.
+
+**Farver** kan skiftes i kortets panel: dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
+
+**Tiden** styres med histogrammet nederst på debatkortet: træk hen over en periode for at se kun dokumenter derfra. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
+`);
+
+/* ---------- actors table ---------- */
+(function(){
+  const sel = document.getElementById('a-type');
+  Object.entries(S.by_actor_type||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o = document.createElement('option'); o.value=t; o.textContent=`${TL[t]||t} (${n})`; sel.appendChild(o); });
+  const q = document.getElementById('a-q'), sort = document.getElementById('a-sort'), ver = document.getElementById('a-ver'), tbody = document.querySelector('#a-table tbody'), cnt = document.getElementById('a-count');
+  function links(a){ return ['website','linkedin','x','facebook','instagram','youtube','news_url','rss'].filter(k=>a[k]).map(k => `<a href="${esc(a[k])}" target="_blank" rel="noopener">${{website:'web',linkedin:'LinkedIn',x:'X',facebook:'Facebook',instagram:'Instagram',youtube:'YouTube',news_url:'nyheder',rss:'RSS'}[k]}</a>`).join(''); }
+  function render(){
+    const s = q.value.toLowerCase().trim(), t = sel.value, v = ver.checked;
+    let rows = A.filter(a => (!t || a.type===t) && (!v || a.verified) && (!s || `${a.name} ${a.description||''} ${a.subtype||''} ${(a.key_people||[]).map(p=>p.name).join(' ')} ${(a.aliases||[]).join(' ')}`.toLowerCase().includes(s)));
+    const key = sort.value; rows.sort((x,y) => key==='name' ? x.name.localeCompare(y.name,'da') : key==='rel' ? ((y.relevance||0)-(x.relevance||0) || (y.doc_count||0)-(x.doc_count||0)) : ((y.doc_count||0)-(x.doc_count||0) || (y.relevance||0)-(x.relevance||0)));
+    cnt.textContent = `${rows.length} af ${A.length} aktører`;
+    tbody.innerHTML = rows.slice(0,400).map(a => `<tr data-id="${a.id}" tabindex="0"><td><b>${esc(a.name)}</b>${a.party?` <span class="chip">${esc(a.party)}</span>`:''}${a.verified?` <span class="chip v">verificeret</span>`:''}</td><td><span class="chip">${esc(TL[a.type]||a.type)}</span><div style="font-size:11.5px;color:var(--muted)">${esc(a.subtype||'')}</div></td><td style="max-width:420px;color:var(--ink-2)">${esc((a.description||'').slice(0,160))}${(a.description||'').length>160?'…':''}</td><td style="font-size:12.5px">${(a.key_people||[]).slice(0,2).map(p=>esc(p.name)).join('<br>')}</td><td class="linkrow">${links(a)}</td><td class="num">${fmt(a.doc_count||0)}</td><td class="dots">${'●'.repeat(a.relevance||0)}${'○'.repeat(Math.max(0,5-(a.relevance||0)))}</td></tr>`).join('') + (rows.length>400?`<tr><td colspan="7" style="color:var(--muted)">… ${rows.length-400} flere – indsnævr søgningen</td></tr>`:'');
+  }
+  tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if(!tr || e.target.closest('a')) return; toggleRow(tr); });
+  tbody.addEventListener('keydown', e => { if(e.key==='Enter'){ const tr = e.target.closest('tr[data-id]'); if(tr) toggleRow(tr); } });
+  function toggleRow(tr){
+    const next = tr.nextElementSibling; if(next && next.classList.contains('exp')){ next.remove(); return; }
+    const a = byId[tr.dataset.id]; if(!a) return;
+    const people = (a.key_people||[]).map(p => `<li><b>${esc(p.name)}</b> – ${esc(p.role||'')}${p.linkedin?` · <a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`:''}${p.note?` <span style="color:var(--muted)">(${esc(p.note)})</span>`:''}</li>`).join('');
+    const st = (a.recent_statements||[]).map(r => `<li>${r.date?`<span class="mono">${esc(r.date)}</span> `:''}<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${r.summary?` – ${esc(r.summary)}`:''}</li>`).join('');
+    const docs = D.filter(d => (d.actor_ids||[]).includes(a.id)).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,6).map(d => `<li><span class="mono">${esc(d.date)}</span> <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a> <span style="color:var(--muted)">(${esc(d.source)})</span></li>`).join('');
+    const row = document.createElement('tr'); row.className='exp';
+    row.innerHTML = `<td colspan="7"><div class="exp-body"><div>${esc(a.description||'')}</div>${a.stance?`<div><b>Holdning:</b> ${esc(a.stance)}</div>`:''}${(a.themes||[]).length?`<div><b>Temaer:</b> ${a.themes.map(t=>`<span class="chip">${esc(t)}</span>`).join(' ')}</div>`:''}${(a.aliases||[]).length?`<div><b>Også kendt som:</b> ${esc(a.aliases.join(', '))}</div>`:''}${people?`<div><b>Nøglepersoner</b><ul>${people}</ul></div>`:''}${st?`<div><b>Seneste udtalelser</b><ul>${st}</ul></div>`:''}${docs?`<div><b>Optræder i</b><ul>${docs}</ul></div>`:''}${a.verified?'':'<div style="color:var(--rust)">Endnu ikke verificeret mod aktørens egen hjemmeside.</div>'}</div></td>`;
+    tr.after(row);
+  }
+  [q,sel,sort,ver].forEach(el => el.addEventListener('input', render));
+  render();
+  window.akFindActor = name => { show('aktoerer'); q.value = name; sel.value=''; render(); window.scrollTo({top:0}); };
+})();
+
+/* ---------- network (canvas + d3-force) ---------- */
+const GROUPS = [
+  {k:'erhverv', l:'Erhverv', types:['privat_virksomhed','producentansvar','raadgiver']},
+  {k:'offentlig', l:'Offentlige selskaber og kommuner', types:['kommunalt_selskab','kommune']},
+  {k:'myndighed', l:'Myndigheder og EU', types:['myndighed','eu_aktoer']},
+  {k:'politik', l:'Politikere og partier', types:['politiker','parti']},
+  {k:'org', l:'Organisationer og NGO\'er', types:['interesseorganisation','taenketank_ngo','fagforening']},
+  {k:'medie', l:'Medier', types:['medie','journalist']},
+  {k:'viden', l:'Forskning', types:['forskning']},
+  {k:'andet', l:'Personer og andet', types:['person','andet']},
+];
+const groupOf = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).k;
+let netStarted = false, netHighlight = null, netMin = 1, sim = null;
+document.getElementById('net-legend').innerHTML = GROUPS.map(g => { const n = N.nodes.filter(x => groupOf(x.type)===g.k).length; return n ? `<button data-g="${g.k}" aria-pressed="false">${g.l} <span class="mono">${n}</span></button>` : ''; }).join('');
+document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); drawNet(); });
+document.getElementById('net-min').addEventListener('input', e => { netMin = +e.target.value; document.getElementById('net-min-v').textContent = netMin; restartNet(); });
+let nodes=[], links=[], canvas, ctx, transform = {k:1,x:0,y:0}, hover=null;
+function startNet(){
+  if(netStarted || typeof d3==='undefined' || !N.nodes.length) { if(netStarted) drawNet(); return; }
+  netStarted = true; canvas = document.getElementById('net'); ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1; const w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
+  restartNet();
+  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { transform = ev.transform; drawNet(); }));
+  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x = (e.clientX-r.left-transform.x)/transform.k, y = (e.clientY-r.top-transform.y)/transform.k; let best=null, bd=1e9; nodes.forEach(n => { const d = (n.x-x)**2+(n.y-y)**2; if(d<bd && d < (n.r+4)**2){ bd=d; best=n; } }); if(best!==hover){ hover=best; drawNet(); } if(best) showTip(`<b>${esc(best.name)}</b>${TL[best.type]||best.type} · ${best.n} dok. · ${best.deg} forbindelser`, e.clientX, e.clientY); else hideTip(); });
+  canvas.addEventListener('mouseleave', () => { hover=null; hideTip(); drawNet(); });
+  canvas.addEventListener('click', () => { if(hover) window.akFindActor(hover.name); });
+}
+function restartNet(){
+  if(!canvas) return;
+  const w = canvas.clientWidth, h = 640;
+  links = N.links.filter(l => l.w >= netMin).map(l => ({source:l.source, target:l.target, w:l.w}));
+  const deg = {}; links.forEach(l => { deg[l.source]=(deg[l.source]||0)+1; deg[l.target]=(deg[l.target]||0)+1; });
+  const keep = new Set(links.flatMap(l => [l.source,l.target]));
+  const old = {}; nodes.forEach(n => old[n.id] = n);
+  nodes = N.nodes.filter(n => keep.has(n.id) || netMin===1).map(n => Object.assign({}, n, {r: 3 + Math.sqrt(n.n||1)*2.2, deg: deg[n.id]||0, g: groupOf(n.type), x: old[n.id]?old[n.id].x:undefined, y: old[n.id]?old[n.id].y:undefined}));
+  document.getElementById('net-count').textContent = `${nodes.length} aktører · ${links.length} forbindelser`;
+  if(sim) sim.stop();
+  sim = d3.forceSimulation(nodes).force('link', d3.forceLink(links).id(d=>d.id).distance(l => 40 + 60/Math.sqrt(l.w)).strength(l => Math.min(1, 0.2 + l.w*0.08)))
+    .force('charge', d3.forceManyBody().strength(-90)).force('center', d3.forceCenter(w/2, h/2)).force('collide', d3.forceCollide(d => d.r+3))
+    .alphaDecay(0.03).on('tick', drawNet);
+}
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+function drawNet(){
+  if(!ctx) return;
+  const w = canvas.clientWidth, h = 640; ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(transform.x, transform.y); ctx.scale(transform.k, transform.k);
+  const mark = css('--mark'), dim = css('--mark-dim'), ink = css('--ink'), line = css('--line'), accent = css('--accent'), surface = css('--surface');
+  const hl = netHighlight; const hn = hover;
+  const neigh = new Set(); if(hn) links.forEach(l => { if(l.source.id===hn.id) neigh.add(l.target.id); if(l.target.id===hn.id) neigh.add(l.source.id); });
+  ctx.lineCap='round';
+  links.forEach(l => { const on = hn ? (l.source.id===hn.id || l.target.id===hn.id) : true; ctx.strokeStyle = on ? line : line; ctx.globalAlpha = hn ? (on?0.9:0.12) : 0.7; ctx.lineWidth = Math.min(6, 0.6 + l.w*0.7)/transform.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
+  ctx.globalAlpha = 1;
+  nodes.forEach(n => { const emph = hl ? n.g===hl : true; const hovered = hn && (n.id===hn.id || neigh.has(n.id)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fillStyle = (hn ? hovered : emph) ? (hovered && hn && n.id===hn.id ? accent : mark) : dim; ctx.fill(); ctx.lineWidth = 1.5/transform.k; ctx.strokeStyle = surface; ctx.stroke(); });
+  ctx.fillStyle = ink; ctx.font = `${11/Math.sqrt(transform.k)}px "IBM Plex Sans", sans-serif`; ctx.textAlign='center';
+  nodes.forEach(n => { const emph = hl ? n.g===hl : true; if((n.r >= 8 || (hn && (n.id===hn.id || neigh.has(n.id)))) && (!hn || n.id===hn.id || neigh.has(n.id)) && emph){ ctx.globalAlpha = 1; ctx.fillText(n.name.length>28?n.name.slice(0,26)+'…':n.name, n.x, n.y - n.r - 4); } });
+  ctx.restore();
+}
+
+/* ---------- centrale aktører: rangliste, lejr-kort, bipartit, matrix ---------- */
+const COMM_PAL = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
+let centralStarted = false, cHighlight = null;
+function commColor(c){ return c < 0 ? css('--mark-dim') : (c < COMM_PAL.length ? COMM_PAL[c] : '#8a9299'); }
+function startCentral(){
+  if(centralStarted){ return; }
+  centralStarted = true;
+  if(!N.nodes.length || typeof d3==='undefined') return;
+  const nodesC = N.nodes.slice().sort((a,b) => (b.betweenness||0)-(a.betweenness||0));
+  // rangliste
+  const tbody = document.querySelector('#c-table tbody');
+  let sortKey = 'betweenness';
+  function renderRank(){
+    const rows = N.nodes.slice().sort((a,b) => (b[sortKey]||0)-(a[sortKey]||0)).slice(0,60);
+    tbody.innerHTML = rows.map((n,i) => `<tr data-id="${n.id}" tabindex="0"><td class="num">${i+1}</td><td><b>${esc(n.name)}</b></td><td><span class="chip">${esc(TL[n.type]||n.type)}</span></td><td class="num">${n.own||0}</td><td class="num">${n.mentioned||0}</td><td class="num">${(n.betweenness||0).toFixed(3)}</td><td class="num">${(n.pagerank||0).toFixed(3)}</td><td class="num">${n.degree||0}</td><td><span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${commColor(n.community)}"></span> ${esc(commName(n.community, 26))}</td></tr>`).join('');
+  }
+  document.querySelectorAll('#c-table th[data-k]').forEach(th => th.addEventListener('click', () => { sortKey = th.dataset.k; renderRank(); }));
+  tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if(tr){ const n = N.nodes.find(x=>x.id===tr.dataset.id); if(n) window.akFindActor(n.name); } });
+  renderRank();
+  // lejr-legend
+  const comms = Object.entries(N.communities||{}).map(([k,v]) => [Number(k), v]).sort((a,b)=>a[0]-b[0]);
+  const leg = document.getElementById('c-legend');
+  leg.innerHTML = comms.map(([k,v]) => { const n = N.nodes.filter(x=>x.community===k).length; return `<button data-c="${k}" aria-pressed="false" style="border-left:6px solid ${commColor(k)}">${esc(v)} <span class="mono">${n}</span></button>`; }).join('');
+  leg.addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; leg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false')); cHighlight = on ? Number(b.dataset.c) : null; b.setAttribute('aria-pressed', on); drawC(); });
+  // lejr-kort
+  const canvas = document.getElementById('cnet'), ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1, w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
+  const maxB = Math.max(1e-6, ...N.nodes.map(n => n.betweenness||0));
+  const cn = N.nodes.map(n => Object.assign({}, n, { r: 3 + Math.sqrt((n.betweenness||0)/maxB)*22 }));
+  const idx = {}; cn.forEach(n => idx[n.id] = n);
+  const cl = N.links.filter(l => l.w >= 1).map(l => ({source:l.source, target:l.target, w:l.w}));
+  let tr = {k:1,x:0,y:0}, hov = null;
+  const sim = d3.forceSimulation(cn).force('link', d3.forceLink(cl).id(d=>d.id).distance(l => 30 + 50/Math.sqrt(l.w)).strength(l => Math.min(1, 0.15 + l.w*0.06)))
+    .force('charge', d3.forceManyBody().strength(-70)).force('center', d3.forceCenter(w/2, h/2)).force('collide', d3.forceCollide(d => d.r+2)).alphaDecay(0.03).on('tick', drawC);
+  function drawC(){
+    ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
+    const line = css('--line'), ink = css('--ink'), surface = css('--surface');
+    const neigh = new Set(); if(hov) cl.forEach(l => { if(l.source.id===hov.id) neigh.add(l.target.id); if(l.target.id===hov.id) neigh.add(l.source.id); });
+    cl.forEach(l => { const on = hov ? (l.source.id===hov.id||l.target.id===hov.id) : (cHighlight===null || (l.source.community===cHighlight && l.target.community===cHighlight)); ctx.globalAlpha = on ? 0.55 : 0.06; ctx.strokeStyle = on && cHighlight!==null && !hov ? commColor(cHighlight) : line; ctx.lineWidth = Math.min(5, 0.5+l.w*0.5)/tr.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
+    ctx.globalAlpha = 1;
+    cn.forEach(n => { const dim = (cHighlight!==null && n.community!==cHighlight) || (hov && n.id!==hov.id && !neigh.has(n.id)); ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle = dim ? css('--mark-dim') : commColor(n.community); ctx.globalAlpha = dim ? 0.35 : 1; ctx.fill(); ctx.globalAlpha = 1; ctx.lineWidth = 1.2/tr.k; ctx.strokeStyle = surface; ctx.stroke(); });
+    ctx.fillStyle = ink; ctx.font = `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.textAlign = 'center';
+    cn.forEach(n => { const show = (n.r >= 11 || (hov && (n.id===hov.id || neigh.has(n.id)))) && !(cHighlight!==null && n.community!==cHighlight) && (!hov || n.id===hov.id || neigh.has(n.id)); if(show) ctx.fillText(n.name.length>26?n.name.slice(0,24)+'…':n.name, n.x, n.y-n.r-4); });
+    ctx.restore();
+  }
+  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { tr = ev.transform; drawC(); }));
+  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x=(e.clientX-r.left-tr.x)/tr.k, y=(e.clientY-r.top-tr.y)/tr.k; let best=null, bd=1e9; cn.forEach(n => { const d=(n.x-x)**2+(n.y-y)**2; if(d<bd && d<(n.r+4)**2){bd=d;best=n;} }); if(best!==hov){ hov=best; drawC(); } if(best) showTip(`<b>${esc(best.name)}</b>${TL[best.type]||best.type} · brobygger ${(best.betweenness||0).toFixed(3)} · indflydelse ${(best.pagerank||0).toFixed(3)} · ${best.n} dok.<br>Lejr: ${esc((N.communities||{})[best.community]||'')}`, e.clientX, e.clientY); else hideTip(); });
+  canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); drawC(); });
+  canvas.addEventListener('click', () => { if(hov) window.akFindActor(hov.name); });
+  startBipartite();
+  renderMatrix();
+  renderQuad();
+  renderBridges();
+  renderChord();
+  renderAdjacency();
+}
+function commName(c, max){ const v = (N.communities||{})[c] || ''; return max && v.length > max ? v.slice(0, max-1) + '…' : v; }
+function renderQuad(){
+  const el = document.getElementById('quad'); if(!el) return;
+  const pts = N.nodes.filter(n => (n.own||0) + (n.mentioned||0) >= 3);
+  const W = 720, H = 460, pl = 46, pr = 14, pt = 18, pb = 40, iw = W-pl-pr, ih = H-pt-pb;
+  const sx = v => pl + Math.sqrt(v) / Math.sqrt(Math.max(1, ...pts.map(p => p.own||0))) * iw;
+  const sy = v => pt + ih - Math.sqrt(v) / Math.sqrt(Math.max(1e-6, ...pts.map(p => p.betweenness||0))) * ih;
+  const medX = d3.median(pts, p => p.own||0), medY = d3.median(pts, p => p.betweenness||0);
+  let s = `<svg class="chart quad" viewBox="0 0 ${W} ${H}" role="img" aria-label="Bidrag og bindeled">`;
+  s += `<g class="axis"><line x1="${pl}" x2="${W-pr}" y1="${pt+ih}" y2="${pt+ih}"/><line x1="${pl}" x2="${pl}" y1="${pt}" y2="${pt+ih}"/>`;
+  [0, 10, 40, 90, 160].forEach(v => { if(sx(v) <= W-pr) s += `<text x="${sx(v).toFixed(1)}" y="${H-24}" text-anchor="middle">${v}</text>`; });
+  s += `<text x="${(pl+iw/2).toFixed(1)}" y="${H-8}" text-anchor="middle">egne ytringer (bidrag)</text>`;
+  s += `<text transform="translate(12,${(pt+ih/2).toFixed(1)}) rotate(-90)" text-anchor="middle">bindeled (betweenness)</text></g>`;
+  s += `<line class="med" x1="${sx(medX).toFixed(1)}" x2="${sx(medX).toFixed(1)}" y1="${pt}" y2="${pt+ih}"/><line class="med" x1="${pl}" x2="${W-pr}" y1="${sy(medY).toFixed(1)}" y2="${sy(medY).toFixed(1)}"/>`;
+  s += `<text class="cap" x="${W-pr-4}" y="${pt+12}" text-anchor="end">taler meget og binder sammen</text><text class="cap" x="${pl+4}" y="${pt+12}">taler lidt, men er bindeled</text><text class="cap" x="${W-pr-4}" y="${pt+ih-6}" text-anchor="end">taler meget, mest i eget hjørne</text><text class="cap" x="${pl+4}" y="${pt+ih-6}">perifer</text>`;
+  const sorted = pts.slice().sort((a,b) => (b.mentioned||0)-(a.mentioned||0));
+  sorted.forEach(p => { const r = 3 + Math.sqrt(p.mentioned||0)*0.9; s += `<circle data-id="${p.id}" cx="${sx(p.own||0).toFixed(1)}" cy="${sy(p.betweenness||0).toFixed(1)}" r="${r.toFixed(1)}" fill="${commColor(p.community)}" fill-opacity="0.75" stroke="var(--surface)" stroke-width="1"><title>${esc(p.name)}: ${p.own||0} egne ytringer, omtalt i ${p.mentioned||0}, bindeled ${(p.betweenness||0).toFixed(3)}</title></circle>`; });
+  const top = pts.slice().sort((a,b) => ((b.betweenness||0)*3 + Math.sqrt(b.own||0)*0.01) - ((a.betweenness||0)*3 + Math.sqrt(a.own||0)*0.01)).slice(0, 16);
+  top.forEach(p => { s += `<text class="lab" x="${(sx(p.own||0)+6).toFixed(1)}" y="${(sy(p.betweenness||0)-5).toFixed(1)}">${esc(p.name.length>24?p.name.slice(0,22)+'…':p.name)}</text>`; });
+  s += '</svg>'; el.innerHTML = s;
+  el.querySelectorAll('circle[data-id]').forEach(c => c.addEventListener('click', () => { const n = N.nodes.find(x => x.id===c.dataset.id); if(n) window.akFindActor(n.name); }));
+}
+function renderBridges(){
+  const el = document.getElementById('bridges'); if(!el) return;
+  const B = (N.bridges||[]).slice(0, 12);
+  if(!B.length){ el.innerHTML = '<p style="color:var(--muted)">Ingen bindeled beregnet.</p>'; return; }
+  el.innerHTML = B.map((b,i) => `<div class="bridge"><span class="rk">${i+1}</span><div><b>${esc(b.name)}</b> <span class="chip">${esc(TL[b.type]||b.type)}</span><div class="to"><span class="sw" style="background:${commColor(b.community)}"></span>${esc(commName(b.community, 30))} ↔ ${b.to.map(t => `<span class="sw" style="background:${commColor(t.community)}"></span>${esc(commName(t.community, 26))}`).join(', ')}</div></div><span class="val">${b.betweenness.toFixed(3)}</span></div>`).join('');
+}
+function renderChord(){
+  const el = document.getElementById('chord'); if(!el || typeof d3==='undefined') return;
+  const M = N.comm_matrix || []; const k = M.length; if(!k){ el.innerHTML = '<p style="color:var(--muted)">Ingen lejr-data.</p>'; return; }
+  const names = Object.keys(N.communities||{}).sort((a,b)=>a-b).map(c => (((N.communities||{})[c]||'').split(' · ')[0] || '').slice(0, 24));
+  const W = 560, H = 560, R = 200, r = R - 18;
+  const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('class', 'chart').style('font', '11px "IBM Plex Sans", sans-serif');
+  const g = svg.append('g').attr('transform', `translate(${W/2},${H/2})`);
+  const chord = d3.chord().padAngle(0.05).sortSubgroups(d3.descending)(M);
+  const arc = d3.arc().innerRadius(r).outerRadius(R);
+  const ribbon = d3.ribbon().radius(r - 2);
+  g.append('g').selectAll('path').data(chord).join('path').attr('d', ribbon).attr('fill', d => commColor(d.source.index)).attr('fill-opacity', d => d.source.index===d.target.index ? 0.15 : 0.55).attr('stroke', 'var(--surface)').attr('stroke-width', 0.5)
+    .append('title').text(d => `${names[d.source.index]} ↔ ${names[d.target.index]}: ${d.source.value} fælles dokumenter`);
+  const grp = g.append('g').selectAll('g').data(chord.groups).join('g');
+  grp.append('path').attr('d', arc).attr('fill', d => commColor(d.index)).attr('stroke', 'var(--surface)');
+  grp.append('text').each(d => { d.angle = (d.startAngle + d.endAngle) / 2; }).attr('dy', '0.35em')
+    .attr('transform', d => `rotate(${(d.angle*180/Math.PI - 90)}) translate(${R + 6}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`)
+    .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null).attr('fill', 'var(--ink)').text(d => names[d.index]);
+  el.innerHTML = ''; el.appendChild(svg.node());
+}
+function renderAdjacency(){
+  const el = document.getElementById('adj'); if(!el) return;
+  const A = N.adjacency; if(!A || !A.actors.length){ el.innerHTML = '<p style="color:var(--muted)">Ingen matrix.</p>'; return; }
+  const acts = A.actors, cells = A.cells; const max = Math.max(1, ...cells.flat());
+  const byPr = {}; N.nodes.forEach(n => byPr[n.id] = n.pagerank||0);
+  const top20 = new Set(acts.slice().sort((a,b) => byPr[b.id]-byPr[a.id]).slice(0,20).map(a => a.id));
+  let gaps = false;
+  function draw(){
+    let h = '<table class="adj"><tr><th></th><th></th>' + acts.map(a => `<th class="colh" style="border-bottom:3px solid ${commColor(a.community)}">${esc(a.name.length>26?a.name.slice(0,24)+'…':a.name)}</th>`).join('') + '</tr>';
+    acts.forEach((a,i) => { h += `<tr><th class="rowh">${esc(a.name)}</th><td style="width:4px;background:${commColor(a.community)}"></td>` + acts.map((b,j) => { const v = cells[i][j]; if(i===j) return '<td class="cell" style="background:var(--line)"></td>'; if(!v){ const g = gaps && top20.has(a.id) && top20.has(b.id); return `<td class="cell zero${g?' gap':''}" title="${esc(a.name)} og ${esc(b.name)}: ingen fælles dokumenter"></td>`; } const t = Math.log1p(v)/Math.log1p(max); return `<td class="cell" style="background:rgba(17,138,102,${(0.15+0.85*t).toFixed(2)})" title="${esc(a.name)} × ${esc(b.name)}: ${v} fælles dokumenter"></td>`; }).join('') + '</tr>'; });
+    el.innerHTML = h + '</table>';
+  }
+  document.getElementById('adj-gaps').addEventListener('click', e => { gaps = !gaps; e.currentTarget.setAttribute('aria-pressed', gaps); draw(); });
+  draw();
+}
+/* ---------- tone ---------- */
+function renderTone(){
+  const T = N.tone; if(!T || !T.n_scored){ document.getElementById('tone-themes').innerHTML = '<p style="color:var(--muted)">Tone er ikke beregnet endnu. Kør <code>python sentiment.py</code> og byg kortene igen.</p>'; return; }
+  // 1) pr. emne: divergerende stablede søjler
+  const th = T.by_theme.filter(t => t.n >= 10).map(t => Object.assign({}, t, {negS: t.neg/t.n, neuS: t.neu/t.n, posS: t.pos/t.n})).sort((a,b) => b.negS - a.negS);
+  const W = 700, rowH = 26, pl = 210, pr = 120, H = th.length*rowH + 30, iw = W-pl-pr;
+  let s = `<svg class="chart tone" viewBox="0 0 ${W} ${H}">`;
+  th.forEach((t,i) => { const y = 8 + i*rowH; let x = pl; [['neg',t.negS],['neu',t.neuS],['pos',t.posS]].forEach(([c,v]) => { const w = v*iw; s += `<rect class="${c}" x="${x.toFixed(1)}" y="${y}" width="${Math.max(0,w-1).toFixed(1)}" height="${rowH-8}" rx="2"><title>${esc(t.theme)}: ${c==='neg'?'negativ':c==='neu'?'neutral':'positiv'} ${(v*100).toFixed(0)} %</title></rect>`; x += w; });
+    s += `<text class="lbl" x="${pl-8}" y="${y+13}" text-anchor="end">${esc(t.theme.length>30?t.theme.slice(0,28)+'…':t.theme)}</text><text class="mono" x="${pl+iw+6}" y="${y+13}">${(t.negS*100).toFixed(0)} % neg · n=${t.n}</text>`; });
+  s += '</svg>'; document.getElementById('tone-themes').innerHTML = s;
+  // 2) aktører: dumbbell egne vs. omtale
+  const acts = N.nodes.filter(n => (n.tone_own_n||0) >= 5 && (n.tone_about_n||0) >= 5).sort((a,b) => (a.tone_about||0) - (b.tone_about||0)).slice(0, 30);
+  document.getElementById('tone-actors').innerHTML = acts.map(n => { const px = v => ((v+1)/2*100).toFixed(1); const lo = Math.min(n.tone_own, n.tone_about), hi = Math.max(n.tone_own, n.tone_about); return `<div class="dumb" title="${esc(n.name)}: egne ${n.tone_own} (n=${n.tone_own_n}), omtale ${n.tone_about} (n=${n.tone_about_n})"><div class="lab">${esc(n.name.length>30?n.name.slice(0,28)+'…':n.name)}</div><div class="trk"><div class="zero"></div><div class="bar" style="left:${px(lo)}%;width:${(px(hi)-px(lo)).toFixed(1)}%"></div><div class="dot own" style="left:calc(${px(n.tone_own)}% - 5px)"></div><div class="dot about" style="left:calc(${px(n.tone_about)}% - 5px)"></div></div></div>`; }).join('') || '<p style="color:var(--muted)">For få dokumenter pr. aktør endnu.</p>';
+  // 3) over tid: småfigurer pr. emne (kvartaler)
+  const byT = {}; T.by_theme_quarter.forEach(r => { (byT[r.theme] = byT[r.theme] || []).push(r); });
+  const quarters = [...new Set(T.by_theme_quarter.map(r => r.quarter))].sort();
+  const themes = th.map(t => t.theme);
+  const Ws=200, Hs=80, plS=4, prS=4, ptS=10, pbS=14, iws=Ws-plS-prS, ihs=Hs-ptS-pbS;
+  document.getElementById('tone-time').innerHTML = themes.map(t => { const rows = (byT[t]||[]).filter(r => r.n >= 3).sort((a,b) => a.quarter.localeCompare(b.quarter)); if(rows.length < 2) return ''; const xs = q => plS + quarters.indexOf(q)/(quarters.length-1)*iws; const ys = v => ptS + ihs/2 - v*(ihs/2); const zero = ys(0);
+    const pts = rows.map(r => [xs(r.quarter), ys(r.mean)]); const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
+    const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${zero.toFixed(1)} L${pts[0][0].toFixed(1)},${zero.toFixed(1)} Z`;
+    const last = rows[rows.length-1];
+    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart tone" viewBox="0 0 ${Ws} ${Hs}"><line x1="${plS}" x2="${Ws-prS}" y1="${zero.toFixed(1)}" y2="${zero.toFixed(1)}" stroke="var(--muted)" stroke-dasharray="3 3"/><path d="${area}" fill="${last.mean<0?'#e34948':'#2a78d6'}" fill-opacity="0.18"/><path d="${line}" fill="none" stroke="var(--ink-2)" stroke-width="1.6"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3" fill="${last.mean<0?'#e34948':'#2a78d6'}"/><text x="${plS}" y="${Hs-3}" class="mono">${rows[0].quarter.replace('-K',' K')}</text><text x="${Ws-prS}" y="${Hs-3}" text-anchor="end" class="mono">${last.quarter.replace('-K',' K')}</text></svg><div class="n">seneste: ${last.mean>0?'+':''}${last.mean.toFixed(2)} (n=${last.n})</div></div>`; }).join('');
+  // 4) aktør × emne
+  const AT = T.actor_theme || []; const byId = {}; N.nodes.forEach(n => byId[n.id] = n);
+  const actorIds = [...new Set(AT.map(r => r.actor))].filter(a => byId[a]).sort((a,b) => (byId[b].n||0)-(byId[a].n||0)).slice(0, 22);
+  const cols = themes.filter(t => AT.some(r => r.theme===t));
+  const cell = {}; AT.forEach(r => cell[r.actor+'|'+r.theme] = r);
+  let h = '<table class="data" style="font-size:12px"><thead><tr><th>Aktør</th>' + cols.map(c => `<th style="writing-mode:vertical-rl;transform:rotate(180deg);text-transform:none;letter-spacing:0;font-size:11px;padding:6px 2px">${esc(c.length>26?c.slice(0,24)+'…':c)}</th>`).join('') + '</tr></thead><tbody>';
+  actorIds.forEach(a => { h += `<tr><td style="white-space:nowrap">${esc(byId[a].name.length>32?byId[a].name.slice(0,30)+'…':byId[a].name)}</td>` + cols.map(c => { const r = cell[a+'|'+c]; if(!r) return '<td></td>'; const v = r.mean; const bg = v < 0 ? `rgba(227,73,72,${(Math.min(1,-v)*0.85+0.1).toFixed(2)})` : `rgba(42,120,214,${(Math.min(1,v)*0.85+0.1).toFixed(2)})`; return `<td class="num" style="background:${bg};color:${Math.abs(v)>0.45?'#fff':'var(--ink)'};text-align:center" title="${esc(byId[a].name)} × ${esc(c)}: ${v.toFixed(2)} (n=${r.n})">${v>0?'+':''}${v.toFixed(1)}</td>`; }).join('') + '</tr>'; });
+  document.getElementById('tone-matrix').innerHTML = h + '</tbody></table>';
+}
+let toneStarted = false;
+function startBipartite(){
+  const canvas = document.getElementById('bip'), ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio||1, w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
+  const themeColor = (S.item_colors && S.theme_order) ? null : null;
+  let minW = 3, sim = null, nodes = [], links = [], tr = {k:1,x:0,y:0}, hov = null;
+  const byId = {}; N.nodes.forEach(n => byId[n.id] = n);
+  const TP = {}; (S.theme_order||[]).forEach((t,i) => TP[t] = ['#1f77b4','#d62728','#2ca02c','#9467bd','#ff7f0e','#8c564b','#e377c2','#17becf','#bcbd22','#7f7f7f','#003399','#c49c94','#aec7e8','#ffbb78','#98df8a','#f7b6d2'][i%16]);
+  function build(){
+    const bl = (N.bipartite||[]).filter(b => b.w >= minW && byId[b.actor]);
+    const themes = [...new Set(bl.map(b => b.theme))];
+    const actorIds = [...new Set(bl.map(b => b.actor))];
+    const tn = themes.map(t => ({id:'t:'+t, name:t, kind:'theme', r: Math.min(30, 12 + Math.sqrt(bl.filter(b=>b.theme===t).reduce((a,b)=>a+b.w,0))*0.6) }));
+    const an = actorIds.map(a => ({id:a, name:byId[a].name, type:byId[a].type, kind:'actor', r: 2.5 + Math.sqrt(byId[a].n||1)*1.1 }));
+    const old = {}; nodes.forEach(n => old[n.id]=n);
+    nodes = tn.concat(an).map(n => Object.assign(n, old[n.id] ? {x:old[n.id].x, y:old[n.id].y} : {}));
+    links = bl.map(b => ({source:'t:'+b.theme, target:b.actor, w:b.w}));
+    document.getElementById('bip-count').textContent = `${themes.length} temaer · ${actorIds.length} aktører · ${links.length} kanter`;
+    if(sim) sim.stop();
+    sim = d3.forceSimulation(nodes).force('link', d3.forceLink(links).id(d=>d.id).distance(l => 60 + 80/Math.sqrt(l.w)).strength(l => Math.min(1, 0.1 + l.w*0.05)))
+      .force('charge', d3.forceManyBody().strength(d => d.kind==='theme' ? -1400 : -35)).force('center', d3.forceCenter(w/2,h/2)).force('collide', d3.forceCollide(d => d.r+3)).alphaDecay(0.03).on('tick', draw);
+  }
+  function draw(){
+    ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
+    const line = css('--line'), ink = css('--ink'), surface = css('--surface');
+    const neigh = new Set(); if(hov) links.forEach(l => { if(l.source.id===hov.id) neigh.add(l.target.id); if(l.target.id===hov.id) neigh.add(l.source.id); });
+    links.forEach(l => { const on = !hov || l.source.id===hov.id || l.target.id===hov.id; ctx.globalAlpha = on ? 0.5 : 0.05; ctx.strokeStyle = TP[l.source.name] || line; ctx.lineWidth = Math.min(8, 0.4 + l.w*0.6)/tr.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
+    ctx.globalAlpha = 1;
+    nodes.forEach(n => { const dim = hov && n.id!==hov.id && !neigh.has(n.id); ctx.globalAlpha = dim ? 0.3 : 1; ctx.fillStyle = n.kind==='theme' ? (TP[n.name]||css('--accent')) : css('--mark'); if(n.kind==='theme'){ ctx.fillRect(n.x-n.r, n.y-n.r, n.r*2, n.r*2); ctx.strokeStyle = surface; ctx.lineWidth = 2/tr.k; ctx.strokeRect(n.x-n.r, n.y-n.r, n.r*2, n.r*2); } else { ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill(); ctx.strokeStyle = surface; ctx.lineWidth = 1/tr.k; ctx.stroke(); } });
+    ctx.globalAlpha = 1; ctx.textAlign='center';
+    nodes.forEach(n => { if(n.kind==='theme'){ ctx.fillStyle = ink; ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.fillText(n.name, n.x, n.y - n.r - 6); } else if(n.r >= 9.5 || (hov && (n.id===hov.id || neigh.has(n.id)))){ if(hov && n.id!==hov.id && !neigh.has(n.id)) return; ctx.fillStyle = ink; ctx.font = `${10.5/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.fillText(n.name.length>24?n.name.slice(0,22)+'…':n.name, n.x, n.y - n.r - 3); } });
+    ctx.restore();
+  }
+  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { tr = ev.transform; draw(); }));
+  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x=(e.clientX-r.left-tr.x)/tr.k, y=(e.clientY-r.top-tr.y)/tr.k; let best=null, bd=1e9; nodes.forEach(n => { const d=(n.x-x)**2+(n.y-y)**2; if(d<bd && d<(n.r+4)**2){bd=d;best=n;} }); if(best!==hov){ hov=best; draw(); } if(best){ const deg = links.filter(l => l.source.id===best.id || l.target.id===best.id); showTip(`<b>${esc(best.name)}</b>${best.kind==='theme' ? deg.length+' aktører' : (TL[best.type]||best.type)+' · '+deg.map(l => (l.source.id===best.id?l.target:l.source).name.replace('t:','')+' ('+l.w+')').join(', ')}`, e.clientX, e.clientY); } else hideTip(); });
+  canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); draw(); });
+  canvas.addEventListener('click', () => { if(hov && hov.kind==='actor') window.akFindActor(hov.name); });
+  document.getElementById('bip-min').addEventListener('input', e => { minW = +e.target.value; document.getElementById('bip-min-v').textContent = minW; build(); });
+  build();
+}
+function renderMatrix(){
+  const M = N.matrix; if(!M || !M.sources || !M.sources.length){ document.getElementById('matrix').innerHTML = '<p style="color:var(--muted)">Ingen matrixdata endnu.</p>'; return; }
+  const max = Math.max(1, ...M.cells.flat());
+  const head = '<tr><th style="min-width:160px">Kilde \\ aktør</th>' + M.actors.map(a => `<th style="writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-size:11px;padding:6px 3px;text-transform:none;letter-spacing:0">${esc(a.name.length>28?a.name.slice(0,26)+'…':a.name)}</th>`).join('') + '</tr>';
+  const rows = M.sources.map((s,i) => '<tr><td style="white-space:nowrap;font-size:12.5px">' + esc(s) + '</td>' + M.cells[i].map((v,j) => { const t = v/max; const bg = v ? `rgba(17,138,102,${(0.12+0.88*Math.sqrt(t)).toFixed(2)})` : 'transparent'; const fg = t>0.45 ? '#fff' : 'var(--ink)'; return `<td class="num" style="background:${bg};color:${fg};padding:3px 5px;font-size:11.5px;text-align:center" title="${esc(s)} × ${esc(M.actors[j].name)}: ${v}">${v||''}</td>`; }).join('') + '</tr>').join('');
+  document.getElementById('matrix').innerHTML = `<table class="data" style="font-variant-numeric:tabular-nums">${head}${rows}</table>`;
+}
+
+/* ---------- timeline ---------- */
+(function(){
+  const tq = document.getElementById('t-q'), tt = document.getElementById('t-theme'), ty = document.getElementById('t-type'), tyr = document.getElementById('t-year'), list = document.getElementById('t-list'), cnt = document.getElementById('t-count');
+  Object.entries(S.by_theme||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${t} (${n})`; tt.appendChild(o); });
+  Object.entries(S.by_item_type||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${IL[t]||t} (${n})`; ty.appendChild(o); });
+  yrs.slice().reverse().forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=`${y} (${years[y]})`; tyr.appendChild(o); });
+  function render(){
+    const s = tq.value.toLowerCase().trim();
+    const rows = D.filter(d => (!tt.value || d.theme===tt.value) && (!ty.value || d.item_type===ty.value) && (!tyr.value || (d.date||'').startsWith(tyr.value)) && (!s || `${d.title} ${d.summary||''} ${d.source||''} ${(d.actor_ids||[]).map(i=>byId[i]?byId[i].name:'').join(' ')}`.toLowerCase().includes(s))).sort((a,b) => b.date.localeCompare(a.date));
+    cnt.textContent = `${rows.length} af ${D.length} dokumenter`;
+    let out = '', cur = ''; rows.slice(0,500).forEach(d => { const m = d.date.slice(0,7); if(m!==cur){ cur=m; out += `<div class="month"><h3>${daMonth(m)}</h3><div class="rule"></div></div>`; }
+      const acts = (d.actor_ids||[]).map(i => byId[i]).filter(Boolean).slice(0,5).map(a => `<a href="#" data-actor="${esc(a.name)}">${esc(a.name)}</a>`).join(', ');
+      out += `<div class="doc"><div class="dt">${esc(d.date)}</div><div><div class="t"><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div><div class="m">${esc(d.source||'')} · ${esc(IL[d.item_type]||d.item_type||'')} · ${esc(d.theme||'')}</div><div class="s">${esc(d.summary||'')}${d.stance_summary?` <span style="color:var(--muted)">— ${esc(d.stance_summary)}</span>`:''}</div>${acts?`<div class="acts">${acts}</div>`:''}</div></div>`; });
+    if(rows.length>500) out += `<p style="color:var(--muted)">… ${rows.length-500} flere. Indsnævr søgningen.</p>`;
+    list.innerHTML = out || '<p style="color:var(--muted)">Ingen dokumenter matcher.</p>';
+  }
+  list.addEventListener('click', e => { const a = e.target.closest('a[data-actor]'); if(a){ e.preventDefault(); window.akFindActor(a.dataset.actor); } });
+  [tq,tt,ty,tyr].forEach(el => el.addEventListener('input', render));
+  render();
+  const tl = X.docs && X.docs.DEBAT_TIDSLINJE; if(tl){ document.getElementById('t-md').hidden=false; document.getElementById('t-md-body').innerHTML = md(tl); }
+})();
+
+/* ---------- method, sources, docs ---------- */
+document.getElementById('method').innerHTML = md(`
+Kortet er bygget efter samme opskrift som DTU ECHO Labs kort over folketingsvalget 2026, men med et andet korpus: i stedet for kandidaters opslag på sociale medier dækker det **alle offentlige spor af debatten om affaldsbranchen**: nyhedsartikler, pressemeddelelser, debatindlæg, høringssvar, folketingsdokumenter, rapporter og (hvor de kan findes offentligt) opslag på LinkedIn og X.
+
+1. **Indsamling.** Dokumenterne findes ad flere veje: RSS-feeds fra fagmedier, myndigheder og TV 2-regionerne, Folketingets åbne data (oda.ft.dk: alle spørgsmål, svar og sager om affald siden 2010 med spørgerens navn og parti), Altingets åbne artikel-API, sitemaps og WordPress-API'er hos medier, myndigheder, organisationer, partier og aktørernes egne websteder (hele arkiver tilbage til 2007 hos Ingeniøren, 2009 hos Kommunen.dk, 2019 hos WasteTech), Ritzaus pressemeddelelser, kommunernes dagsordener og referater (FirstAgenda-portalernes åbne API: hvert udvalgs- og byrådspunkt om affald med indstilling og beslutning), Bluesky og YouTube, Wayback Machine for ældre årgange, og research-agenter, der løser opgaver fra en kø (kommune for kommune, politiker for politiker, organisation for organisation, tema for tema) og finder offentlige opslag via søgemaskiner. Et relevansfilter (afstand til debattens temaer i embedding-rummet) sorterer dokumenter fra, der ikke handler om affald.
+2. **Aktørregister.** Hver aktør har type, beskrivelse, links, nøglepersoner, aliaser og holdning. Aktører matches i dokumenterne via navne og aliaser; nye navne, der dukker op gentagne gange, lægges til gennemsyn som kandidater (snowballing).
+3. **Embeddings.** Titel, resumé og citat embeddes med *intfloat/multilingual-e5-base* (god på dansk, kører lokalt på CPU).
+4. **Kort.** UMAP reducerer til to dimensioner; HDBSCAN finder klynger; klyngerne navngives. Nye dokumenter projiceres ind på det frosne kort, og når korpus er vokset meget, tilpasses kortet igen og roteres på plads (Procrustes), så det ligner sig selv.
+5. **Visualisering.** DataMapPlot (samme bibliotek som ECHO) genererer kortene med deck.gl; panelet med filtre og tidshistogram er tilføjet oven på.
+
+**Forbehold.** På datara.dk viser kortet ikke nyhedsartiklernes egen tekst. Klik på et punkt for at læse artiklen hos mediet. Aktørernes beskrivelser og holdninger er skrevet ud fra offentlige kilder og er ikke gennemgået af aktørerne selv. Dækningen er skæv mod kilder uden betalingsmur; Infomedia ville give fuld mediedækning. LinkedIn og Facebook har ingen åben API, så opslag derfra kommer kun med, når de findes via søgning eller lægges ind manuelt.
+`);
+(function(){
+  const src = X.sources || [];
+  document.getElementById('src-sub').textContent = src.length ? `${src.length} kilder` : '';
+  document.getElementById('sources').innerHTML = src.length ? `<table class="data"><thead><tr><th>Kilde</th><th>Type</th><th>Dækning</th></tr></thead><tbody>` + src.map(s => `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></td><td><span class="chip">${esc(s.kind||'')}</span></td><td style="max-width:520px">${esc(s.coverage||'')}</td></tr>`).join('') + '</tbody></table>' : '<p style="color:var(--muted)">Standardkilder: Altinget (miljø, forsyning, klima), Ingeniøren, Folketingets ODA-API og Claude-høsteren.</p>';
+  const arch = X.docs && X.docs.ANBEFALET_ARKITEKTUR; if(arch) document.getElementById('arch-wrap').innerHTML = `<details class="md-block" open><summary>Anbefalet arkitektur (fra arkitekturpanelet)</summary><div class="md">${md(arch)}</div></details>`;
+  const others = Object.entries((X.docs)||{}).filter(([k]) => !['ANBEFALET_ARKITEKTUR','DEBAT_TIDSLINJE'].includes(k));
+  document.getElementById('docs-wrap').innerHTML = others.map(([k,v]) => `<details class="md-block"><summary>${esc(k.replace(/_/g,' '))}</summary><div class="md">${md(v)}</div></details>`).join('');
+})();
+
+/* ---------- tiny markdown ---------- */
+function md(src){
+  const lines = String(src||'').replace(/\r/g,'').split('\n'); let out=[], i=0, inList=null, para=[];
+  const inline = s => esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>').replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g,'$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  const flushP = () => { if(para.length){ out.push('<p>'+inline(para.join(' '))+'</p>'); para=[]; } };
+  const closeList = () => { if(inList){ out.push(inList==='ul'?'</ul>':'</ol>'); inList=null; } };
+  while(i<lines.length){
+    let l = lines[i];
+    if(/^```/.test(l)){ flushP(); closeList(); let code=[]; i++; while(i<lines.length && !/^```/.test(lines[i])) code.push(lines[i++]); out.push('<pre><code>'+esc(code.join('\n'))+'</code></pre>'); i++; continue; }
+    if(/^\|/.test(l) && i+1<lines.length && /^\|?\s*:?-{2,}/.test(lines[i+1])){ flushP(); closeList(); const head = l.split('|').slice(1,-1); i+=2; let rows=[]; while(i<lines.length && /^\|/.test(lines[i])){ rows.push(lines[i].split('|').slice(1,-1)); i++; } out.push('<table><thead><tr>'+head.map(h=>'<th>'+inline(h.trim())+'</th>').join('')+'</tr></thead><tbody>'+rows.map(r=>'<tr>'+r.map(c=>'<td>'+inline(c.trim())+'</td>').join('')+'</tr>').join('')+'</tbody></table>'); continue; }
+    let m;
+    if((m = l.match(/^(#{1,6})\s+(.*)/))){ flushP(); closeList(); const n = Math.min(3, m[1].length); out.push(`<h${n}>${inline(m[2].trim())}</h${n}>`); i++; continue; }
+    if(/^\s*(-{3,}|\*{3,})\s*$/.test(l)){ flushP(); closeList(); out.push('<hr>'); i++; continue; }
+    if((m = l.match(/^\s*[-*•]\s+(.*)/))){ flushP(); if(inList!=='ul'){ closeList(); out.push('<ul>'); inList='ul'; } out.push('<li>'+inline(m[1])+'</li>'); i++; continue; }
+    if((m = l.match(/^\s*\d+[.)]\s+(.*)/))){ flushP(); if(inList!=='ol'){ closeList(); out.push('<ol>'); inList='ol'; } out.push('<li>'+inline(m[1])+'</li>'); i++; continue; }
+    if(!l.trim()){ flushP(); closeList(); i++; continue; }
+    para.push(l.trim()); i++;
+  }
+  flushP(); closeList(); return out.join('\n');
+}
+
+show(initial);
+})();
+</script>
+</html>
