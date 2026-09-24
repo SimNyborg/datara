@@ -3,11 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affaldskort: debatten om affald i Danmark | Datara</title>
-<meta name="description" content="Interaktivt kort over 33.259 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta name="description" content="Interaktivt kort over 47.390 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <link rel="canonical" href="https://datara.dk/affaldskort/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Affaldskort: debatten om affald i Danmark">
-<meta property="og:description" content="Interaktivt kort over 33.259 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta property="og:description" content="Interaktivt kort over 47.390 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <meta property="og:image" content="https://datara.dk/static/affaldskort-debatkort.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
@@ -458,7 +458,7 @@ document.getElementById('kpis').innerHTML = [
   {v:fmt(S.n_docs), l:'dokumenter i korpus', d:`${dateDa(S.date_min)} – ${dateDa(S.date_max)}`},
   {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
   {v:fmt(Object.keys(S.by_theme||{}).length), l:'temaer', d:`${(S.debate_map&&S.debate_map.n_clusters)||'–'} klynger på debatkortet`},
-  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'1.683 kilder i alt'},
+  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'1.822 kilder i alt'},
 ].map(k => `<div class="kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="d">${k.d}</div></div>`).join('');
 
 /* ---------- months chart (single series column) ---------- */
