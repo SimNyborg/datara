@@ -28,7 +28,7 @@ class AffaldskortProjectTests(unittest.TestCase):
                 self.assertRegex(
                     html,
                     rf'<a class="project-card" href="{prefix}/projekter/affaldsdebatten">\s*'
-                    r'<img class="project-card-map" src="/static/affaldskort-debatkort\.jpg"[\s\S]*?' + title,
+                    r'<img class="project-card-map" src="/static/affaldskort-kort\.jpg"[\s\S]*?' + title,
                 )
 
     def test_article_renders_in_both_languages_with_links_to_the_map(self):
@@ -51,6 +51,15 @@ class AffaldskortProjectTests(unittest.TestCase):
                 self.assertEqual(len(re.findall(r'<h1(?:\s|>)', html)), 1)
                 self.assertNotIn('–', html)
                 self.assertNotIn('—', html)
+
+    def test_no_mention_of_the_inspiration_from_dtu(self):
+        # Simon 25-09-2026: kortet og siden må ikke omtale, at de er inspireret af DTU/ECHO Lab
+        for path in ('/projekter/affaldsdebatten', '/en/projekter/affaldsdebatten', '/', '/en/'):
+            with self.subTest(path=path):
+                html = self._html(path)
+                self.assertNotIn('ECHO', html)
+        if (affaldskort_content.APP_DIR / 'index.html').is_file():
+            self.assertNotIn('ECHO', self._html('/affaldskort/'))
 
     def test_article_mentions_the_latest_update(self):
         html = self._html('/projekter/affaldsdebatten')

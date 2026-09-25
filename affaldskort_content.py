@@ -121,8 +121,7 @@ PROJECT = {
                         'forstår dansk. UMAP lægger vektorerne ud i to dimensioner, og HDBSCAN finder klyngerne, som '
                         'vi derefter har navngivet. Tonen i dokumenterne er vurderet med Alexandra Instituttets '
                         'danske sentimentmodel.',
-                        'Metoden bygger på DTU ECHO Labs kort over folketingsvalget i 2026, og kortet er lavet med '
-                        'DataMapPlot ligesom ECHO Labs.',
+                        'Selve kortet er bygget med open source-biblioteket DataMapPlot.',
                     ],
                 },
                 {
@@ -206,8 +205,7 @@ PROJECT = {
                         'that understands Danish. UMAP lays the vectors out in two dimensions, and HDBSCAN finds the '
                         "clusters, which we have then named. The tone of each document is scored with the Alexandra "
                         "Institute's Danish sentiment model.",
-                        "The method follows DTU ECHO Lab's map of the 2026 Danish general election, and the map is "
-                        'built with DataMapPlot, as ECHO Lab\'s is.',
+                        'The map itself is built with the open-source library DataMapPlot.',
                     ],
                 },
                 {

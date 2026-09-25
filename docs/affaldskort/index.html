@@ -836,13 +836,13 @@ function renderMatrix(){
 
 /* ---------- method, sources, docs ---------- */
 document.getElementById('method').innerHTML = md(`
-Kortet er bygget efter samme opskrift som DTU ECHO Labs kort over folketingsvalget 2026, men med et andet korpus: i stedet for kandidaters opslag på sociale medier dækker det **alle offentlige spor af debatten om affaldsbranchen**: nyhedsartikler, pressemeddelelser, debatindlæg, høringssvar, folketingsdokumenter, rapporter og (hvor de kan findes offentligt) opslag på LinkedIn og X.
+Kortet dækker **alle offentlige spor af debatten om affaldsbranchen**: nyhedsartikler, pressemeddelelser, debatindlæg, høringssvar, folketingsdokumenter, rapporter og (hvor de kan findes offentligt) opslag på LinkedIn og X.
 
 1. **Indsamling.** Dokumenterne findes ad flere veje: RSS-feeds fra fagmedier, myndigheder og TV 2-regionerne, Folketingets åbne data (oda.ft.dk: alle spørgsmål, svar og sager om affald siden 2010 med spørgerens navn og parti), Altingets åbne artikel-API, sitemaps og WordPress-API'er hos medier, myndigheder, organisationer, partier og aktørernes egne websteder (hele arkiver tilbage til 2007 hos Ingeniøren, 2009 hos Kommunen.dk, 2019 hos WasteTech), Ritzaus pressemeddelelser, kommunernes dagsordener og referater (FirstAgenda-portalernes åbne API: hvert udvalgs- og byrådspunkt om affald med indstilling og beslutning), Bluesky og YouTube, Wayback Machine for ældre årgange, og research-agenter, der løser opgaver fra en kø (kommune for kommune, politiker for politiker, organisation for organisation, tema for tema) og finder offentlige opslag via søgemaskiner. Et relevansfilter (afstand til debattens temaer i embedding-rummet) sorterer dokumenter fra, der ikke handler om affald.
 2. **Aktørregister.** Hver aktør har type, beskrivelse, links, nøglepersoner, aliaser og holdning. Aktører matches i dokumenterne via navne og aliaser; nye navne, der dukker op gentagne gange, lægges til gennemsyn som kandidater (snowballing).
 3. **Embeddings.** Titel, resumé og citat embeddes med *intfloat/multilingual-e5-base* (god på dansk, kører lokalt på CPU).
 4. **Kort.** UMAP reducerer til to dimensioner; HDBSCAN finder klynger; klyngerne navngives. Nye dokumenter projiceres ind på det frosne kort, og når korpus er vokset meget, tilpasses kortet igen og roteres på plads (Procrustes), så det ligner sig selv.
-5. **Visualisering.** DataMapPlot (samme bibliotek som ECHO) genererer kortene med deck.gl; panelet med filtre og tidshistogram er tilføjet oven på.
+5. **Visualisering.** Open source-biblioteket DataMapPlot genererer kortene med deck.gl; panelet med filtre og tidshistogram er tilføjet oven på.
 
 **Forbehold.** På datara.dk viser kortet ikke nyhedsartiklernes egen tekst. Klik på et punkt for at læse artiklen hos mediet. Aktørernes beskrivelser og holdninger er skrevet ud fra offentlige kilder og er ikke gennemgået af aktørerne selv. Dækningen er skæv mod kilder uden betalingsmur; Infomedia ville give fuld mediedækning. LinkedIn og Facebook har ingen åben API, så opslag derfra kommer kun med, når de findes via søgning eller lægges ind manuelt.
 `);
