@@ -32,11 +32,22 @@
     --gradient-end: #1e3a8a;            /* Gradient slut */
 
     /* Margin-linje styling */
-    --page-margin-line-color: var(--primary-color);
+    /* Stregen dæmpes i farvens alfa, ikke i --page-margin-line-opacity: den sættes
+       tilbage til 1 i fire media queries, der tilsammen dækker alle skærmbredder.
+       Tykkelsen er målt uden effekt mellem 1px og 1.1px - browseren snapper altid til
+       hele device-pixels, også ved 125 % og 150 % Windows-skalering. */
+    --page-margin-line-color: rgba(30, 64, 175, 0.68);   /* #1e40af */
     --page-margin-line-opacity: 1;
     --page-margin-line-thickness: 1.1px;
     --page-margin-line-offset: clamp(4px, 0.9vw, 10px);
     --page-margin-line-start: 0px;
+}
+
+/* Har brugeren bedt om mere kontrast, får kantstregen sin fulde styrke tilbage. */
+@media (prefers-contrast: more) {
+    :root {
+        --page-margin-line-color: var(--primary-color);
+    }
 }
 
 @media (min-width: 1200px) {
