@@ -138,12 +138,6 @@ PROJECT = {
                     ],
                 },
             ],
-            'note_title': 'Forbehold',
-            'note': (
-                'Dækningen er bedst for kilder uden betalingsmur. Opslag fra Facebook og LinkedIn er kun med, når de '
-                'er offentlige og er blevet fundet ved søgning. For nyhedsartikler viser kortet titel, kilde og link, '
-                'men ikke artiklens tekst.'
-            ),
         },
         'en': {
             'seo_title': 'Mapping the Danish waste debate | Datara',
@@ -226,12 +220,6 @@ PROJECT = {
                     ],
                 },
             ],
-            'note_title': 'Limitations',
-            'note': (
-                'Coverage is best for sources without a paywall. Facebook and LinkedIn posts are only included when '
-                'they are public and have been found through search. For news articles the map shows the title, '
-                "source and link, but not the article's text."
-            ),
         },
     },
 }
