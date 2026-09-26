@@ -2758,7 +2758,7 @@ html {
   max-width: 13ch;
   margin: 0;
   color: var(--text-primary);
-  font-size: clamp(2.25rem, 5.4vw, 4.8rem);
+  font-size: clamp(2.25rem, 5.4vw, 3.6rem);   /* loftet holder overskriften fra at gøre tekstsøjlen højere end billedet på brede skærme */
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.98;

@@ -45,8 +45,9 @@ class AffaldskortProjectTests(unittest.TestCase):
                 self.assertIn(title, html)
                 self.assertIn(number, html)
                 self.assertIn('class="project-app-links"', html)
-                self.assertIn('href="/affaldskort/"', html)
+                # kun én knap: den åbner kortet i fuld skærm
                 self.assertIn('href="/affaldskort/debatkort.html"', html)
+                self.assertNotIn('href="/affaldskort/"', html)
                 self.assertIn('/static/affaldskort-debatkort.jpg', html)
                 self.assertEqual(len(re.findall(r'<h1(?:\s|>)', html)), 1)
                 self.assertNotIn('–', html)

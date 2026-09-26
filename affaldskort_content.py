@@ -66,9 +66,10 @@ PROJECT = {
             ),
             'title': 'Hvem fører debatten om affald, og hvad handler den om?',
             'lead': (
-                'Affald bliver diskuteret i Folketinget, i byrådene, i fag- og lokalmedier og på sociale medier. '
-                f'Vi har samlet {_da(_n)} offentlige dokumenter fra debatten i ét kort. '
-                'Kortet viser, hvilke emner der fylder, og hvem der deltager i dem.'
+                'Den danske affaldsbranche bliver diskuteret af mange forskellige aktører. '
+                f'Vi har samlet {_da(_n)} offentlige dokumenter i ét kort: artikler, debatindlæg, '
+                'opslag på sociale medier og meget mere. '
+                'Kortet viser, hvilke emner der fylder, og hvem der deltager i debatten.'
             ),
             'image_alt': 'Debatkortet med tusindvis af farvede punkter samlet i navngivne klynger',
             'image_caption': (
@@ -76,8 +77,7 @@ PROJECT = {
                 'og hver klynge har fået et navn efter sit emne.'
             ),
             'app_links': [
-                {'label': 'Åbn kortet', 'href': APP_URL, 'primary': True},
-                {'label': 'Debatkortet i fuld skærm', 'href': APP_URL + 'debatkort.html', 'primary': False},
+                {'label': 'Åbn kortet', 'href': APP_URL + 'debatkort.html', 'primary': True},
             ],
             'sections': [
                 {
@@ -149,9 +149,10 @@ PROJECT = {
             ),
             'title': 'Who leads the debate on waste, and what is it about?',
             'lead': (
-                'Waste is debated in the Danish Parliament, in city councils, in trade and local media and on social '
-                f'media. We have gathered {_en(_n)} public documents from the debate into one map. It shows which '
-                'topics take up space and who takes part in them.'
+                'The Danish waste sector is debated by many different actors. '
+                f'We have gathered {_en(_n)} public documents into one map: news articles, opinion pieces, '
+                'social media posts and much more. '
+                'The map shows which topics take up space and who takes part in the debate.'
             ),
             'image_alt': 'The debate map with thousands of coloured points grouped into named clusters',
             'image_caption': (
@@ -159,8 +160,7 @@ PROJECT = {
                 'named after its topic.'
             ),
             'app_links': [
-                {'label': 'Open the map (in Danish)', 'href': APP_URL, 'primary': True},
-                {'label': 'Debate map in full screen', 'href': APP_URL + 'debatkort.html', 'primary': False},
+                {'label': 'Open the map (in Danish)', 'href': APP_URL + 'debatkort.html', 'primary': True},
             ],
             'sections': [
                 {
