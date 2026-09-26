@@ -111,6 +111,12 @@ table.data td.num{text-align:right;font-family:"IBM Plex Mono",monospace;font-va
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
 .filters input,.filters select{font:inherit;font-size:13px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:var(--surface);color:var(--ink);min-width:150px}
 .filters label{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.filters input[type=checkbox]{min-width:0;width:auto;padding:0;accent-color:var(--accent)}
+.filters input[type=range]{min-width:110px;padding:0;border:0;background:none;accent-color:var(--accent)}
+.netctl{background:var(--surface-2);border-radius:10px;padding:8px 12px;gap:14px}
+.netctl label{color:var(--ink-2)}
+.netctl button{font:inherit;font-size:13px;padding:6px 12px;border-radius:7px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.netctl button.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
 .count{font-size:12px;color:var(--muted);margin-left:auto}
 /* actor table */
 tr.exp td{background:var(--surface-2)}
@@ -197,7 +203,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 
-<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 24. september 2026</span></div></div>
+<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 27. september 2026</span></div></div>
 <header class="mast">
   <div class="wrap">
     <div>
@@ -284,9 +290,13 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-netvaerk" hidden>
-  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i samme dokument. Tykkere streg = flere fælles dokumenter. Vælg en aktørgruppe for at fremhæve den; hold musen over en node for navn og antal. Klik på en node for at slå den op i registret.</p></div></header>
+  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Det medie, der udgiver en artikel, tæller ikke som deltager, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd med ForceAtlas2: aktører, der ofte optræder sammen, trækkes mod hinanden, og alle andre skubber fra hinanden. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
   <div class="legend" id="net-legend"></div>
-  <div class="filters"><label>Min. fælles dokumenter <input type="range" id="net-min" min="1" max="10" value="1" style="min-width:120px"> <span class="mono" id="net-min-v">1</span></label><span class="count" id="net-count"></span></div>
+  <div class="filters"><label>Farve <select id="net-color"><option value="type">aktørtype</option><option value="comm">lejr</option></select></label>
+    <label>Størrelse <select id="net-size"><option value="mentioned">omtale (antal dokumenter)</option><option value="in_senders">nævnt af flest aktører</option><option value="pagerank">indflydelse</option><option value="betweenness">bindeled</option><option value="own">egne ytringer</option></select></label>
+    <label title="Alle aktører er med på kortet. Skjul de mindste for at få overblik.">Vis aktører med mindst <input type="range" id="net-min" min="1" max="100" value="1" style="min-width:110px"> <span class="mono" id="net-min-v">1</span> dok.</label>
+    <label><input type="checkbox" id="net-arrows" checked> Vis hvem der nævner hvem</label><span class="count" id="net-count"></span></div>
+  <div class="filters netctl" id="net-ctl"></div>
   <canvas id="net" width="1200" height="640"></canvas>
 </section>
 
@@ -295,8 +305,8 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   <div class="measures">
     <div class="measure"><b>Bidrag</b>Antal egne ytringer: pressemeddelelser, debatindlæg, høringssvar, opslag. Hvem taler mest?</div>
     <div class="measure"><b>Omtale</b>Antal dokumenter, hvor andre nævner aktøren. Hvem tales der mest om?</div>
-    <div class="measure"><b>Bindeled</b>Betweenness-centralitet: hvor ofte aktøren ligger på korteste vej mellem to andre. Hvem holder debatten sammen?</div>
-    <div class="measure"><b>Lejre</b>Grupper af aktører, der oftere optræder sammen end med andre (Louvain). Hvem taler ikke sammen?</div>
+    <div class="measure"><b>Bindeled</b>Betweenness-centralitet i netværkets rygrad: hvor ofte aktøren ligger på den korteste vej mellem to andre. Hvem forbinder lejrene?</div>
+    <div class="measure"><b>Lejre og indflydelse</b>Lejre er grupper, der oftere optræder sammen end med andre (Louvain). Indflydelse er PageRank på hvem der nævner hvem: at blive nævnt af aktører, som selv nævnes meget, tæller mest.</div>
   </div>
   <div class="grid2">
     <div class="panel">
@@ -325,12 +335,13 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
       <div class="tablewrap" id="adj"></div>
     </div>
     <div class="panel">
-      <header><div><h3>Netværkskort efter lejr</h3><small>hold musen over en knude; klik slår aktøren op</small></div></header>
+      <header><div><h3>Netværkskort efter lejr</h3><small>farve: lejr · størrelse: bindeled · pile: hvem der nævner hvem · klik slår aktøren op</small></div></header>
       <div class="legend" id="c-legend"></div>
+      <div class="filters netctl" id="cnet-ctl"></div>
       <canvas id="cnet" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
     </div>
     <div class="panel">
-      <header><div><h3>Hvem taler om hvad</h3><small>aktør × tema: temaer som firkanter, aktører som cirkler; kanttykkelse = antal dokumenter</small></div></header>
+      <header><div><h3>Hvem taler om hvad</h3><small>aktør × tema: temaer som firkanter, aktører som cirkler; layoutet er beregnet på forhånd og køres igen, når du flytter skyderen</small></div></header>
       <div class="filters"><label>Min. dokumenter pr. kant <input type="range" id="bip-min" min="1" max="8" value="3" style="min-width:120px"> <span class="mono" id="bip-min-v">3</span></label><span class="count" id="bip-count"></span></div>
       <canvas id="bip" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
     </div>
@@ -557,66 +568,201 @@ document.getElementById('howto').innerHTML = md(`
   window.akFindActor = name => { show('aktoerer'); q.value = name; sel.value=''; render(); window.scrollTo({top:0}); };
 })();
 
-/* ---------- network (canvas + d3-force) ---------- */
+function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+/* ---------- netværk: forudberegnet ForceAtlas2-layout + genkørsel i browseren ---------- */
 const GROUPS = [
-  {k:'erhverv', l:'Erhverv', types:['privat_virksomhed','producentansvar','raadgiver']},
-  {k:'offentlig', l:'Offentlige selskaber og kommuner', types:['kommunalt_selskab','kommune']},
-  {k:'myndighed', l:'Myndigheder og EU', types:['myndighed','eu_aktoer']},
-  {k:'politik', l:'Politikere og partier', types:['politiker','parti']},
-  {k:'org', l:'Organisationer og NGO\'er', types:['interesseorganisation','taenketank_ngo','fagforening']},
-  {k:'medie', l:'Medier', types:['medie','journalist']},
-  {k:'viden', l:'Forskning', types:['forskning']},
-  {k:'andet', l:'Personer og andet', types:['person','andet']},
+  {k:'erhverv', l:'Erhverv', types:['privat_virksomhed','producentansvar','raadgiver'], c:'#eb6834'},
+  {k:'offentlig', l:'Offentlige selskaber og kommuner', types:['kommunalt_selskab','kommune'], c:'#2a78d6'},
+  {k:'myndighed', l:'Myndigheder og EU', types:['myndighed','eu_aktoer'], c:'#4a3aa7'},
+  {k:'politik', l:'Politikere og partier', types:['politiker','parti'], c:'#e34948'},
+  {k:'org', l:'Organisationer og NGO\'er', types:['interesseorganisation','taenketank_ngo','fagforening'], c:'#1baf7a'},
+  {k:'medie', l:'Medier', types:['medie','journalist'], c:'#8a9299'},
+  {k:'viden', l:'Forskning', types:['forskning'], c:'#eda100'},
+  {k:'andet', l:'Personer og andet', types:['person','andet'], c:'#e87ba4'},
 ];
 const groupOf = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).k;
-let netStarted = false, netHighlight = null, netMin = 1, sim = null;
-document.getElementById('net-legend').innerHTML = GROUPS.map(g => { const n = N.nodes.filter(x => groupOf(x.type)===g.k).length; return n ? `<button data-g="${g.k}" aria-pressed="false">${g.l} <span class="mono">${n}</span></button>` : ''; }).join('');
-document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); drawNet(); });
-document.getElementById('net-min').addEventListener('input', e => { netMin = +e.target.value; document.getElementById('net-min-v').textContent = netMin; restartNet(); });
-let nodes=[], links=[], canvas, ctx, transform = {k:1,x:0,y:0}, hover=null;
+const groupColor = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).c;
+const LAY = Object.assign({k:4, gravity:0.2, scaling:2, linlog:false, dissuade:false, iterations:1500}, N.layout||{});
+const NIDX = {}; (N.nodes||[]).forEach((n,i) => NIDX[n.id] = i);
+// hvem nævner hvem (rettede omtaler fra aktørernes egne ytringer)
+const OUTM = {}, INM = {};
+(N.directed||[]).forEach(e => { (OUTM[e.source] = OUTM[e.source]||[]).push(e); (INM[e.target] = INM[e.target]||[]).push(e); });
+Object.values(OUTM).forEach(l => l.sort((a,b)=>b.w-a.w)); Object.values(INM).forEach(l => l.sort((a,b)=>b.w-a.w));
+
+/* ForceAtlas2 (Jacomy m.fl. 2014) – linje for linje som pipeline/fa2.py, så en genkørsel opfører sig som det forudberegnede layout */
+function fa2State(n, edges, xs, ys){
+  const mass = new Float64Array(n).fill(1); edges.forEach(([a,b]) => { mass[a]++; mass[b]++; });
+  let mm = 0; for(let i=0;i<n;i++) mm += mass[i];
+  return {n, edges, x:Float64Array.from(xs), y:Float64Array.from(ys), px:new Float64Array(n), py:new Float64Array(n), mass, meanMass: mm/n, speed:1, eff:1};
+}
+function fa2Step(st, o){
+  const n = st.n, x = st.x, y = st.y, m = st.mass, fx = new Float64Array(n), fy = new Float64Array(n);
+  for(let i=0;i<n;i++){ const xi=x[i], yi=y[i], mi=m[i];
+    for(let j=i+1;j<n;j++){ let dx=xi-x[j], dy=yi-y[j], d2=dx*dx+dy*dy; if(d2<1e-9){ dx=0.01*(i%3-1)+0.005; dy=0.01; d2=dx*dx+dy*dy; }
+      const f = o.scaling*mi*m[j]/d2; fx[i]+=dx*f; fy[i]+=dy*f; fx[j]-=dx*f; fy[j]-=dy*f; } }
+  for(let i=0;i<n;i++){ const r = Math.sqrt(x[i]*x[i]+y[i]*y[i])+1e-9; const g = o.gravity*m[i]/r; fx[i]-=x[i]*g; fy[i]-=y[i]*g; }
+  const comp = o.dissuade ? st.meanMass : 1;
+  for(const [a,b,w] of st.edges){ const dx=x[a]-x[b], dy=y[a]-y[b], d=Math.sqrt(dx*dx+dy*dy)+1e-9;
+    const c = w*(o.dissuade ? comp/m[a] : 1); const f = o.linlog ? c*Math.log1p(d)/d : c; fx[a]-=dx*f; fy[a]-=dy*f; fx[b]+=dx*f; fy[b]+=dy*f; }
+  let ts=0, tt=0; const sw = new Float64Array(n);
+  for(let i=0;i<n;i++){ const s = m[i]*Math.hypot(st.px[i]-fx[i], st.py[i]-fy[i]); sw[i]=s; ts+=s; tt+=0.5*m[i]*Math.hypot(st.px[i]+fx[i], st.py[i]+fy[i]); }
+  ts = Math.max(ts,1e-9); const est = 0.05*Math.sqrt(n); let jt = Math.max(Math.sqrt(est), Math.min(10, est*tt/(n*n)));
+  if(ts/Math.max(tt,1e-9) > 2){ if(st.eff>0.05) st.eff*=0.5; jt = Math.max(jt,1); }
+  const target = jt*st.eff*tt/ts;
+  if(ts > jt*tt){ if(st.eff>0.05) st.eff*=0.7; } else if(st.speed<1000) st.eff*=1.3;
+  st.speed = st.speed + Math.min(target-st.speed, 0.5*st.speed);
+  for(let i=0;i<n;i++){ const fac = st.speed/(1+Math.sqrt(st.speed*sw[i])); x[i]+=fx[i]*fac; y[i]+=fy[i]*fac; st.px[i]=fx[i]; st.py[i]=fy[i]; }
+}
+// rygrad: hver aktørs k stærkeste forbindelser (samme regel som i pipelinen)
+function backboneEdges(k){
+  const nb = {}; (N.assoc||[]).forEach(([a,b,s]) => { (nb[a]=nb[a]||[]).push([s,b]); (nb[b]=nb[b]||[]).push([s,a]); });
+  const E = new Map();
+  Object.entries(nb).forEach(([a,l]) => { l.sort((p,q)=>q[0]-p[0]).slice(0,k).forEach(([s,b]) => { const i=Math.min(+a,b), j=Math.max(+a,b); E.set(i+'-'+j, [i,j,s]); }); });
+  const arr = [...E.values()]; const ws = arr.map(e=>e[2]).sort((p,q)=>p-q); const med = ws.length ? ws[ws.length>>1] : 1;
+  return arr.map(([i,j,s]) => [i,j,s/med]);
+}
+function ringOutliers(V){
+  const n = V.nodes.length, deg = new Array(n).fill(0); V.edges.forEach(([a,b]) => { deg[a]++; deg[b]++; });
+  const con = [...Array(n).keys()].filter(i => deg[i] > 0); if(con.length < 3) return;
+  const med = arr => { const s = arr.slice().sort((a,b)=>a-b); return s[s.length>>1]; };
+  const cx = med(con.map(i => V.x[i])), cy = med(con.map(i => V.y[i]));
+  const r = V.x.map((x,i) => Math.hypot(x-cx, V.y[i]-cy));
+  const rs = con.map(i => r[i]).sort((a,b)=>a-b), R = rs[Math.floor(0.96*(rs.length-1))]*1.08;
+  const iso = [...Array(n).keys()].filter(i => deg[i]===0);
+  iso.forEach((i,k) => { const a = 2*Math.PI*k/Math.max(1,iso.length); V.x[i] = cx + R*1.06*Math.cos(a); V.y[i] = cy + R*1.06*Math.sin(a); });
+  con.forEach(i => { if(r[i] > R){ const f = (R + (r[i]-R)*0.02)/r[i]; V.x[i] = cx + (V.x[i]-cx)*f; V.y[i] = cy + (V.y[i]-cy)*f; } });
+}
+function logSlider(v, lo, hi){ return lo*Math.pow(hi/lo, v/100); }
+function logPos(val, lo, hi){ return Math.round(100*Math.log(val/lo)/Math.log(hi/lo)); }
+
+function makeNetView(o){
+  const canvas = document.getElementById(o.canvas), ctx = canvas.getContext('2d');
+  const H = o.height || 640;
+  let w = canvas.clientWidth, tr = {k:1,x:0,y:0}, hov = null, fit = {s:1,ox:0,oy:0}, running = null;
+  const dpr = window.devicePixelRatio||1; canvas.width = w*dpr; canvas.height = H*dpr; ctx.scale(dpr,dpr);
+  const V = {nodes:o.nodes, edges:o.edges, x:o.nodes.map(n=>n.x), y:o.nodes.map(n=>n.y), opts:o};
+  V.home = {x:V.x.slice(), y:V.y.slice(), edges:V.edges};
+  function doFit(){
+    let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; V.x.forEach((x,i)=>{ x0=Math.min(x0,x); x1=Math.max(x1,x); y0=Math.min(y0,V.y[i]); y1=Math.max(y1,V.y[i]); });
+    const pad = 36, s = Math.min((w-2*pad)/Math.max(1e-9,x1-x0), (H-2*pad)/Math.max(1e-9,y1-y0));
+    fit = {s, ox: pad + ((w-2*pad) - s*(x1-x0))/2 - s*x0, oy: pad + ((H-2*pad) - s*(y1-y0))/2 - s*y0};
+  }
+  const sx = i => fit.ox + V.x[i]*fit.s, sy = i => fit.oy + V.y[i]*fit.s;
+  V.draw = function(){
+    ctx.save(); ctx.clearRect(0,0,w,H); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
+    const line = css('--line'), ink = css('--ink'), surface = css('--surface'), dim = css('--mark-dim');
+    const neigh = new Set(); if(hov!==null) V.edges.forEach(([a,b]) => { if(a===hov) neigh.add(b); if(b===hov) neigh.add(a); });
+    const hl = o.highlight ? o.highlight() : null;
+    const vis = o.visible ? o.visible : (() => true);
+    ctx.lineCap = 'round';
+    V.edges.forEach(([a,b,s]) => { if(!vis(V.nodes[a]) || !vis(V.nodes[b])) return; const on = hov!==null ? (a===hov||b===hov) : (!hl || (hl(V.nodes[a]) && hl(V.nodes[b])));
+      ctx.globalAlpha = hov!==null ? (on?0.85:0.05) : (on?0.45:0.06); ctx.strokeStyle = line; ctx.lineWidth = Math.min(5, 0.5+s*0.9)/tr.k;
+      ctx.beginPath(); ctx.moveTo(sx(a),sy(a)); ctx.lineTo(sx(b),sy(b)); ctx.stroke(); });
+    // hvem nævner hvem: pile ud (orange) og ind (blå) for aktøren under musen
+    if(hov!==null && o.showMentions && o.showMentions()){
+      const id = V.nodes[hov].id;
+      const arrow = (a,b,col,wt) => { const x1=sx(a),y1=sy(a),x2=sx(b),y2=sy(b), ang=Math.atan2(y2-y1,x2-x1), rb = o.radius(V.nodes[b])+3;
+        const ex = x2-Math.cos(ang)*rb, ey = y2-Math.sin(ang)*rb; ctx.globalAlpha=0.9; ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=Math.min(4,1+Math.sqrt(wt)*0.5)/tr.k;
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(ex,ey); ctx.stroke(); const hs=7/tr.k; ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-hs*Math.cos(ang-0.4),ey-hs*Math.sin(ang-0.4)); ctx.lineTo(ex-hs*Math.cos(ang+0.4),ey-hs*Math.sin(ang+0.4)); ctx.closePath(); ctx.fill(); };
+      (OUTM[id]||[]).slice(0,12).forEach(e => { const b = NIDX[e.target]; if(b!==undefined && V.nodes[b]===N.nodes[b]) { arrow(hov,b,'#eb6834',e.w); neigh.add(b); } });
+      (INM[id]||[]).slice(0,12).forEach(e => { const a = NIDX[e.source]; if(a!==undefined && V.nodes[a]===N.nodes[a]) { arrow(a,hov,'#2a78d6',e.w); neigh.add(a); } });
+    }
+    ctx.globalAlpha = 1;
+    V.nodes.forEach((n,i) => { if(!vis(n)) return; const r = o.radius(n); const faded = (hov!==null && i!==hov && !neigh.has(i)) || (hl && !hl(n));
+      ctx.beginPath(); if(o.square && o.square(n)) ctx.rect(sx(i)-r, sy(i)-r, 2*r, 2*r); else ctx.arc(sx(i),sy(i),r,0,Math.PI*2);
+      ctx.globalAlpha = faded ? 0.25 : 1; ctx.fillStyle = faded ? dim : o.color(n); ctx.fill();
+      ctx.globalAlpha = 1; ctx.lineWidth = 1.2/tr.k; ctx.strokeStyle = surface; ctx.stroke(); });
+    if(o.groupLabels && hov===null){ ctx.textAlign='center'; o.groupLabels(V).forEach(g => { ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.lineWidth = 4/tr.k; ctx.strokeStyle = surface; ctx.strokeText(g.text, g.x*fit.s+fit.ox, g.y*fit.s+fit.oy); ctx.fillStyle = g.color; ctx.fillText(g.text, g.x*fit.s+fit.ox, g.y*fit.s+fit.oy); }); }
+    ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`;
+    const lab = o.labelSet ? o.labelSet(V) : new Set();
+    V.nodes.forEach((n,i) => { if(!vis(n)) return; const show = hov!==null ? (i===hov || neigh.has(i)) : (lab.has(i) && !(hl && !hl(n))); if(!show) return;
+      const t = n.name.length>28 ? n.name.slice(0,26)+'…' : n.name; ctx.font = (o.square && o.square(n)) ? `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif` : `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.lineWidth = 3/tr.k; ctx.strokeStyle = surface; ctx.strokeText(t, sx(i), sy(i)-o.radius(n)-4); ctx.fillText(t, sx(i), sy(i)-o.radius(n)-4); });
+    ctx.restore();
+  };
+  V.setEdges = function(edges){ V.edges = edges; };
+  V.setData = function(nodes, edges){ if(running){ cancelAnimationFrame(running); running=null; } V.nodes = nodes; V.edges = edges; V.x = nodes.map(n=>n.x); V.y = nodes.map(n=>n.y); V.home = {x:V.x.slice(), y:V.y.slice(), edges}; hov = null; doFit(); V.draw(); };
+  V.run = function(opts, iters, done){
+    if(running) cancelAnimationFrame(running);
+    const st = fa2State(V.nodes.length, V.edges, V.x, V.y); let left = iters;
+    const per = V.nodes.length > 800 ? 3 : 12;   // få iterationer pr. skærmopdatering ved mange aktører, så siden ikke hakker
+    const tick = () => { const n = Math.min(per, left); for(let i=0;i<n;i++) fa2Step(st, opts); left -= n;
+      V.x = Array.from(st.x); V.y = Array.from(st.y); doFit(); V.draw(); if(o.onProgress) o.onProgress(1 - left/iters);
+      if(left > 0) running = requestAnimationFrame(tick); else { running = null; ringOutliers(V); doFit(); V.draw(); if(done) done(); } };
+    running = requestAnimationFrame(tick);
+  };
+  V.reset = function(){ if(running){ cancelAnimationFrame(running); running=null; } V.x = V.home.x.slice(); V.y = V.home.y.slice(); V.edges = V.home.edges; doFit(); tr = {k:1,x:0,y:0}; d3.select(canvas).call(zoom.transform, d3.zoomIdentity); V.draw(); };
+  V.hover = () => hov;
+  const zoom = d3.zoom().scaleExtent([0.3,8]).on('zoom', ev => { tr = ev.transform; V.draw(); });
+  d3.select(canvas).call(zoom);
+  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const px=(e.clientX-r.left-tr.x)/tr.k, py=(e.clientY-r.top-tr.y)/tr.k;
+    let best=null, bd=1e9; V.nodes.forEach((n,i) => { if(o.visible && !o.visible(n)) return; const d=(sx(i)-px)**2+(sy(i)-py)**2, rr=o.radius(n)+4; if(d<bd && d<rr*rr){ bd=d; best=i; } });
+    if(best!==hov){ hov=best; V.draw(); } if(best!==null) showTip(o.tooltip(V.nodes[best]), e.clientX, e.clientY); else hideTip(); });
+  canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); V.draw(); });
+  canvas.addEventListener('click', () => { if(hov!==null && o.onClick) o.onClick(V.nodes[hov]); });
+  window.addEventListener('resize', () => { const nw = canvas.clientWidth; if(nw && nw!==w){ w = nw; canvas.width = w*dpr; canvas.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); doFit(); V.draw(); } });
+  doFit(); V.draw();
+  return V;
+}
+// kontrolpanel til et netværk (tyngdekraft, afstand, LinLog, hub-dæmpning, forbindelser pr. aktør)
+function netControls(prefix, V, withK){
+  const el = document.getElementById(prefix+'-ctl'); if(!el) return;
+  el.innerHTML = `${withK ? `<label title="Hvor mange af sine stærkeste forbindelser hver aktør viser. Færre = tydeligere lejre.">Forbindelser pr. aktør <input type="range" id="${prefix}-k" min="2" max="10" step="1" value="${LAY.k}"> <span class="mono" id="${prefix}-k-v">${LAY.k}</span></label>` : ''}
+    <label title="Hvor stærkt alle aktører trækkes mod midten. Lav tyngdekraft lader lejrene glide fra hinanden; høj samler kortet.">Tyngdekraft <input type="range" id="${prefix}-g" min="0" max="100" value="${logPos(LAY.gravity,0.01,10)}"> <span class="mono" id="${prefix}-g-v">${LAY.gravity}</span></label>
+    <label title="Hvor meget aktørerne skubber fra hinanden. Påvirker mest kortets størrelse og luften mellem aktørerne.">Afstand <input type="range" id="${prefix}-s" min="0" max="100" value="${logPos(LAY.scaling,0.5,50)}"> <span class="mono" id="${prefix}-s-v">${LAY.scaling}</span></label>
+    <label title="LinLog-tilstand: tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${LAY.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
+    <label title="Store aktører trækkes mindre mod deres naboer, så de lægger sig mellem lejrene. Gør bindeled tydeligere."><input type="checkbox" id="${prefix}-dh" ${LAY.dissuade?'checked':''}> Dæmp store aktører</label>
+    <button id="${prefix}-run">Kør layout igen</button> <button class="ghost" id="${prefix}-reset">Nulstil</button> <span class="count" id="${prefix}-prog"></span>`;
+  const g = () => +logSlider(+document.getElementById(prefix+'-g').value, 0.01, 10).toFixed(3);
+  const s = () => +logSlider(+document.getElementById(prefix+'-s').value, 0.5, 50).toFixed(2);
+  el.addEventListener('input', () => { document.getElementById(prefix+'-g-v').textContent = g(); document.getElementById(prefix+'-s-v').textContent = s(); if(withK) document.getElementById(prefix+'-k-v').textContent = document.getElementById(prefix+'-k').value; });
+  document.getElementById(prefix+'-run').addEventListener('click', () => {
+    if(withK){ V.setEdges(backboneEdges(+document.getElementById(prefix+'-k').value)); if(V.onEdges) V.onEdges(); }
+    const opts = {gravity:g(), scaling:s(), linlog:document.getElementById(prefix+'-ll').checked, dissuade:document.getElementById(prefix+'-dh').checked};
+    const prog = document.getElementById(prefix+'-prog'); V.opts.onProgress = p => { prog.textContent = p < 1 ? `beregner … ${Math.round(p*100)} %` : 'færdig'; };
+    V.run(opts, 400);
+  });
+  document.getElementById(prefix+'-reset').addEventListener('click', () => { V.reset(); document.getElementById(prefix+'-prog').textContent = ''; if(V.onEdges) V.onEdges(); el.querySelectorAll('input').forEach(i => { if(i.type==='range') i.value = i.defaultValue; if(i.type==='checkbox') i.checked = i.defaultChecked; }); el.dispatchEvent(new Event('input')); });
+}
+const RANK_BTW = {}; (N.nodes||[]).slice().sort((a,b)=>(b.betweenness||0)-(a.betweenness||0)).forEach((n,i) => RANK_BTW[n.id] = i+1);
+function actorTip(n){
+  const out = (OUTM[n.id]||[]).slice(0,3).map(e => (N.nodes[NIDX[e.target]]||{}).name).filter(Boolean);
+  const inn = (INM[n.id]||[]).slice(0,3).map(e => (N.nodes[NIDX[e.source]]||{}).name).filter(Boolean);
+  return `<b>${esc(n.name)}</b>${TL[n.type]||n.type} · lejr: ${esc(commName(n.community, 40))}<br>${n.n} dok. · omtalt i ${n.mentioned||0} · nævnt af ${n.in_senders||0} aktører · nævner ${n.out_targets||0}<br>bindeled nr. ${RANK_BTW[n.id]||'–'}`
+    + (inn.length ? `<br><span style="color:#2a78d6">nævnes mest af:</span> ${esc(inn.join(', '))}` : '') + (out.length ? `<br><span style="color:#eb6834">nævner mest:</span> ${esc(out.join(', '))}` : '');
+}
+function commCentroids(V){
+  const acc = {}; V.nodes.forEach((n,i) => { if(n.community<0) return; const a = acc[n.community] = acc[n.community] || {x:0,y:0,c:0,ymin:1e9}; a.x+=V.x[i]; a.y+=V.y[i]; a.c++; });
+  return Object.entries(acc).filter(([k,a]) => a.c >= 8).sort((p,q) => q[1].c - p[1].c).slice(0, 14).map(([k,a]) => ({x:a.x/a.c, y:a.y/a.c, text:commName(+k, 30).split(' · ')[0], color:commColor(+k)}));
+}
+function topLabels(V, key, n){ const idx = V.nodes.map((x,i)=>i).sort((a,b)=>(V.nodes[b][key]||0)-(V.nodes[a][key]||0)).slice(0,n); return new Set(idx); }
+
+let netStarted = false, netHighlight = null, netView = null, netMinDocs = 1;
 function startNet(){
-  if(netStarted || typeof d3==='undefined' || !N.nodes.length) { if(netStarted) drawNet(); return; }
-  netStarted = true; canvas = document.getElementById('net'); ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio||1; const w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
-  restartNet();
-  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { transform = ev.transform; drawNet(); }));
-  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x = (e.clientX-r.left-transform.x)/transform.k, y = (e.clientY-r.top-transform.y)/transform.k; let best=null, bd=1e9; nodes.forEach(n => { const d = (n.x-x)**2+(n.y-y)**2; if(d<bd && d < (n.r+4)**2){ bd=d; best=n; } }); if(best!==hover){ hover=best; drawNet(); } if(best) showTip(`<b>${esc(best.name)}</b>${TL[best.type]||best.type} · ${best.n} dok. · ${best.deg} forbindelser`, e.clientX, e.clientY); else hideTip(); });
-  canvas.addEventListener('mouseleave', () => { hover=null; hideTip(); drawNet(); });
-  canvas.addEventListener('click', () => { if(hover) window.akFindActor(hover.name); });
-}
-function restartNet(){
-  if(!canvas) return;
-  const w = canvas.clientWidth, h = 640;
-  links = N.links.filter(l => l.w >= netMin).map(l => ({source:l.source, target:l.target, w:l.w}));
-  const deg = {}; links.forEach(l => { deg[l.source]=(deg[l.source]||0)+1; deg[l.target]=(deg[l.target]||0)+1; });
-  const keep = new Set(links.flatMap(l => [l.source,l.target]));
-  const old = {}; nodes.forEach(n => old[n.id] = n);
-  nodes = N.nodes.filter(n => keep.has(n.id) || netMin===1).map(n => Object.assign({}, n, {r: 3 + Math.sqrt(n.n||1)*2.2, deg: deg[n.id]||0, g: groupOf(n.type), x: old[n.id]?old[n.id].x:undefined, y: old[n.id]?old[n.id].y:undefined}));
-  document.getElementById('net-count').textContent = `${nodes.length} aktører · ${links.length} forbindelser`;
-  if(sim) sim.stop();
-  sim = d3.forceSimulation(nodes).force('link', d3.forceLink(links).id(d=>d.id).distance(l => 40 + 60/Math.sqrt(l.w)).strength(l => Math.min(1, 0.2 + l.w*0.08)))
-    .force('charge', d3.forceManyBody().strength(-90)).force('center', d3.forceCenter(w/2, h/2)).force('collide', d3.forceCollide(d => d.r+3))
-    .alphaDecay(0.03).on('tick', drawNet);
-}
-function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
-function drawNet(){
-  if(!ctx) return;
-  const w = canvas.clientWidth, h = 640; ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(transform.x, transform.y); ctx.scale(transform.k, transform.k);
-  const mark = css('--mark'), dim = css('--mark-dim'), ink = css('--ink'), line = css('--line'), accent = css('--accent'), surface = css('--surface');
-  const hl = netHighlight; const hn = hover;
-  const neigh = new Set(); if(hn) links.forEach(l => { if(l.source.id===hn.id) neigh.add(l.target.id); if(l.target.id===hn.id) neigh.add(l.source.id); });
-  ctx.lineCap='round';
-  links.forEach(l => { const on = hn ? (l.source.id===hn.id || l.target.id===hn.id) : true; ctx.strokeStyle = on ? line : line; ctx.globalAlpha = hn ? (on?0.9:0.12) : 0.7; ctx.lineWidth = Math.min(6, 0.6 + l.w*0.7)/transform.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
-  ctx.globalAlpha = 1;
-  nodes.forEach(n => { const emph = hl ? n.g===hl : true; const hovered = hn && (n.id===hn.id || neigh.has(n.id)); ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI*2); ctx.fillStyle = (hn ? hovered : emph) ? (hovered && hn && n.id===hn.id ? accent : mark) : dim; ctx.fill(); ctx.lineWidth = 1.5/transform.k; ctx.strokeStyle = surface; ctx.stroke(); });
-  ctx.fillStyle = ink; ctx.font = `${11/Math.sqrt(transform.k)}px "IBM Plex Sans", sans-serif`; ctx.textAlign='center';
-  nodes.forEach(n => { const emph = hl ? n.g===hl : true; if((n.r >= 8 || (hn && (n.id===hn.id || neigh.has(n.id)))) && (!hn || n.id===hn.id || neigh.has(n.id)) && emph){ ctx.globalAlpha = 1; ctx.fillText(n.name.length>28?n.name.slice(0,26)+'…':n.name, n.x, n.y - n.r - 4); } });
-  ctx.restore();
+  if(netStarted || typeof d3==='undefined' || !(N.nodes||[]).length) return; netStarted = true;
+  document.getElementById('net-legend').innerHTML = GROUPS.map(g => { const n = N.nodes.filter(x => groupOf(x.type)===g.k).length; return n ? `<button data-g="${g.k}" aria-pressed="false"><span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${g.c}"></span> ${g.l} <span class="mono">${n}</span></button>` : ''; }).join('');
+  document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); netView.draw(); });
+  const colorMode = () => document.getElementById('net-color').value, sizeMode = () => document.getElementById('net-size').value;
+  const maxOf = k => Math.max(1e-9, ...N.nodes.map(n => n[k]||0));
+  const radius = n => { const k = sizeMode(); return 3 + Math.sqrt((n[k]||0)/maxOf(k))*20; };
+  const edges0 = N.links.map(l => [NIDX[l.source], NIDX[l.target], l.s]).filter(e => e[0]!==undefined && e[1]!==undefined);
+  const ws = edges0.map(e=>e[2]).sort((a,b)=>a-b), med = ws.length ? ws[ws.length>>1] : 1;
+  netView = makeNetView({canvas:'net', nodes:N.nodes, edges:edges0.map(([a,b,s]) => [a,b,s/med]), radius,
+    color: n => colorMode()==='comm' ? commColor(n.community) : groupColor(n.type),
+    highlight: () => netHighlight ? (n => groupOf(n.type)===netHighlight) : null,
+    showMentions: () => document.getElementById('net-arrows').checked,
+    visible: n => (n.n||0) >= netMinDocs,
+    labelSet: V => topLabels(V, sizeMode(), 28), tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
+  document.getElementById('net-min').addEventListener('input', e => { const v = +e.target.value; netMinDocs = v; document.getElementById('net-min-v').textContent = v; count(); netView.draw(); });
+  const count = () => { const shown = N.nodes.filter(n => (n.n||0) >= netMinDocs).length; document.getElementById('net-count').textContent = `${shown} af ${N.nodes.length} aktører vist · ${netView.edges.length} forbindelser i rygraden · ${Object.keys(N.communities||{}).length} lejre`; };
+  netView.onEdges = count; count();
+  ['net-color','net-size','net-arrows'].forEach(id => document.getElementById(id).addEventListener('change', () => netView.draw()));
+  netControls('net', netView, true);
 }
 
 /* ---------- centrale aktører: rangliste, lejr-kort, bipartit, matrix ---------- */
-const COMM_PAL = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948'];
-let centralStarted = false, cHighlight = null;
+const COMM_PAL = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7','#e34948','#17becf','#8c564b','#bcbd22','#9467bd','#0b3d91','#d4a017','#6b8e23','#c71585'];
+let centralStarted = false, cHighlight = null, cView = null;
+function drawC(){ if(cView) cView.draw(); }
 function commColor(c){ return c < 0 ? css('--mark-dim') : (c < COMM_PAL.length ? COMM_PAL[c] : '#8a9299'); }
 function startCentral(){
   if(centralStarted){ return; }
@@ -634,35 +780,20 @@ function startCentral(){
   tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if(tr){ const n = N.nodes.find(x=>x.id===tr.dataset.id); if(n) window.akFindActor(n.name); } });
   renderRank();
   // lejr-legend
-  const comms = Object.entries(N.communities||{}).map(([k,v]) => [Number(k), v]).sort((a,b)=>a[0]-b[0]);
+  const csize = {}; N.nodes.forEach(n => csize[n.community] = (csize[n.community]||0) + 1);
+  const comms = Object.entries(N.communities||{}).map(([k,v]) => [Number(k), v]).filter(([k]) => (csize[k]||0) >= 8).sort((a,b)=>a[0]-b[0]).slice(0, 16);
   const leg = document.getElementById('c-legend');
   leg.innerHTML = comms.map(([k,v]) => { const n = N.nodes.filter(x=>x.community===k).length; return `<button data-c="${k}" aria-pressed="false" style="border-left:6px solid ${commColor(k)}">${esc(v)} <span class="mono">${n}</span></button>`; }).join('');
   leg.addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; leg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false')); cHighlight = on ? Number(b.dataset.c) : null; b.setAttribute('aria-pressed', on); drawC(); });
-  // lejr-kort
-  const canvas = document.getElementById('cnet'), ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio||1, w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
+  // lejr-kort: samme forudberegnede layout som Netværk-fanen, farvet efter lejr og med størrelse efter bindeled
+  const edgesC = N.links.map(l => [NIDX[l.source], NIDX[l.target], l.s]).filter(e => e[0]!==undefined && e[1]!==undefined);
+  const wsC = edgesC.map(e=>e[2]).sort((a,b)=>a-b), medC = wsC.length ? wsC[wsC.length>>1] : 1;
   const maxB = Math.max(1e-6, ...N.nodes.map(n => n.betweenness||0));
-  const cn = N.nodes.map(n => Object.assign({}, n, { r: 3 + Math.sqrt((n.betweenness||0)/maxB)*22 }));
-  const idx = {}; cn.forEach(n => idx[n.id] = n);
-  const cl = N.links.filter(l => l.w >= 1).map(l => ({source:l.source, target:l.target, w:l.w}));
-  let tr = {k:1,x:0,y:0}, hov = null;
-  const sim = d3.forceSimulation(cn).force('link', d3.forceLink(cl).id(d=>d.id).distance(l => 30 + 50/Math.sqrt(l.w)).strength(l => Math.min(1, 0.15 + l.w*0.06)))
-    .force('charge', d3.forceManyBody().strength(-70)).force('center', d3.forceCenter(w/2, h/2)).force('collide', d3.forceCollide(d => d.r+2)).alphaDecay(0.03).on('tick', drawC);
-  function drawC(){
-    ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
-    const line = css('--line'), ink = css('--ink'), surface = css('--surface');
-    const neigh = new Set(); if(hov) cl.forEach(l => { if(l.source.id===hov.id) neigh.add(l.target.id); if(l.target.id===hov.id) neigh.add(l.source.id); });
-    cl.forEach(l => { const on = hov ? (l.source.id===hov.id||l.target.id===hov.id) : (cHighlight===null || (l.source.community===cHighlight && l.target.community===cHighlight)); ctx.globalAlpha = on ? 0.55 : 0.06; ctx.strokeStyle = on && cHighlight!==null && !hov ? commColor(cHighlight) : line; ctx.lineWidth = Math.min(5, 0.5+l.w*0.5)/tr.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
-    ctx.globalAlpha = 1;
-    cn.forEach(n => { const dim = (cHighlight!==null && n.community!==cHighlight) || (hov && n.id!==hov.id && !neigh.has(n.id)); ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fillStyle = dim ? css('--mark-dim') : commColor(n.community); ctx.globalAlpha = dim ? 0.35 : 1; ctx.fill(); ctx.globalAlpha = 1; ctx.lineWidth = 1.2/tr.k; ctx.strokeStyle = surface; ctx.stroke(); });
-    ctx.fillStyle = ink; ctx.font = `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.textAlign = 'center';
-    cn.forEach(n => { const show = (n.r >= 11 || (hov && (n.id===hov.id || neigh.has(n.id)))) && !(cHighlight!==null && n.community!==cHighlight) && (!hov || n.id===hov.id || neigh.has(n.id)); if(show) ctx.fillText(n.name.length>26?n.name.slice(0,24)+'…':n.name, n.x, n.y-n.r-4); });
-    ctx.restore();
-  }
-  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { tr = ev.transform; drawC(); }));
-  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x=(e.clientX-r.left-tr.x)/tr.k, y=(e.clientY-r.top-tr.y)/tr.k; let best=null, bd=1e9; cn.forEach(n => { const d=(n.x-x)**2+(n.y-y)**2; if(d<bd && d<(n.r+4)**2){bd=d;best=n;} }); if(best!==hov){ hov=best; drawC(); } if(best) showTip(`<b>${esc(best.name)}</b>${TL[best.type]||best.type} · brobygger ${(best.betweenness||0).toFixed(3)} · indflydelse ${(best.pagerank||0).toFixed(3)} · ${best.n} dok.<br>Lejr: ${esc((N.communities||{})[best.community]||'')}`, e.clientX, e.clientY); else hideTip(); });
-  canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); drawC(); });
-  canvas.addEventListener('click', () => { if(hov) window.akFindActor(hov.name); });
+  cView = makeNetView({canvas:'cnet', nodes:N.nodes, edges:edgesC.map(([a,b,s]) => [a,b,s/medC]),
+    radius: n => 3 + Math.sqrt((n.betweenness||0)/maxB)*22, color: n => commColor(n.community),
+    highlight: () => cHighlight===null ? null : (n => n.community===cHighlight), showMentions: () => true,
+    groupLabels: commCentroids, labelSet: V => topLabels(V, 'betweenness', 18), tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
+  netControls('cnet', cView, true);
   startBipartite();
   renderMatrix();
   renderQuad();
@@ -701,7 +832,7 @@ function renderBridges(){
 function renderChord(){
   const el = document.getElementById('chord'); if(!el || typeof d3==='undefined') return;
   const M = N.comm_matrix || []; const k = M.length; if(!k){ el.innerHTML = '<p style="color:var(--muted)">Ingen lejr-data.</p>'; return; }
-  const names = Object.keys(N.communities||{}).sort((a,b)=>a-b).map(c => (((N.communities||{})[c]||'').split(' · ')[0] || '').slice(0, 24));
+  const names = N.comm_matrix_names || Object.keys(N.communities||{}).sort((a,b)=>a-b).map(c => (((N.communities||{})[c]||'').split(' · ')[0] || '').slice(0, 24));
   const W = 560, H = 560, R = 200, r = R - 18;
   const svg = d3.create('svg').attr('viewBox', `0 0 ${W} ${H}`).attr('class', 'chart').style('font', '11px "IBM Plex Sans", sans-serif');
   const g = svg.append('g').attr('transform', `translate(${W/2},${H/2})`);
@@ -766,43 +897,36 @@ function renderTone(){
 }
 let toneStarted = false;
 function startBipartite(){
-  const canvas = document.getElementById('bip'), ctx = canvas.getContext('2d');
-  const dpr = window.devicePixelRatio||1, w = canvas.clientWidth, h = 640; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
-  const themeColor = (S.item_colors && S.theme_order) ? null : null;
-  let minW = 3, sim = null, nodes = [], links = [], tr = {k:1,x:0,y:0}, hov = null;
+  if(!(N.nodes||[]).length || typeof d3==='undefined') return;
   const byId = {}; N.nodes.forEach(n => byId[n.id] = n);
   const TP = {}; (S.theme_order||[]).forEach((t,i) => TP[t] = ['#1f77b4','#d62728','#2ca02c','#9467bd','#ff7f0e','#8c564b','#e377c2','#17becf','#bcbd22','#7f7f7f','#003399','#c49c94','#aec7e8','#ffbb78','#98df8a','#f7b6d2'][i%16]);
-  function build(){
+  const BL = N.bip_layout || {};
+  let minW = N.bip_min || 3, view = null;
+  const slider = document.getElementById('bip-min'); slider.value = minW; document.getElementById('bip-min-v').textContent = minW;
+  function data(){
     const bl = (N.bipartite||[]).filter(b => b.w >= minW && byId[b.actor]);
-    const themes = [...new Set(bl.map(b => b.theme))];
-    const actorIds = [...new Set(bl.map(b => b.actor))];
-    const tn = themes.map(t => ({id:'t:'+t, name:t, kind:'theme', r: Math.min(30, 12 + Math.sqrt(bl.filter(b=>b.theme===t).reduce((a,b)=>a+b.w,0))*0.6) }));
-    const an = actorIds.map(a => ({id:a, name:byId[a].name, type:byId[a].type, kind:'actor', r: 2.5 + Math.sqrt(byId[a].n||1)*1.1 }));
-    const old = {}; nodes.forEach(n => old[n.id]=n);
-    nodes = tn.concat(an).map(n => Object.assign(n, old[n.id] ? {x:old[n.id].x, y:old[n.id].y} : {}));
-    links = bl.map(b => ({source:'t:'+b.theme, target:b.actor, w:b.w}));
-    document.getElementById('bip-count').textContent = `${themes.length} temaer · ${actorIds.length} aktører · ${links.length} kanter`;
-    if(sim) sim.stop();
-    sim = d3.forceSimulation(nodes).force('link', d3.forceLink(links).id(d=>d.id).distance(l => 60 + 80/Math.sqrt(l.w)).strength(l => Math.min(1, 0.1 + l.w*0.05)))
-      .force('charge', d3.forceManyBody().strength(d => d.kind==='theme' ? -1400 : -35)).force('center', d3.forceCenter(w/2,h/2)).force('collide', d3.forceCollide(d => d.r+3)).alphaDecay(0.03).on('tick', draw);
+    const themes = [...new Set(bl.map(b => b.theme))], acts = [...new Set(bl.map(b => b.actor))];
+    const tw = {}; bl.forEach(b => tw[b.theme] = (tw[b.theme]||0) + b.w);
+    const nodes = themes.map(t => ({id:'t:'+t, name:t, kind:'theme', tw:tw[t]}))
+      .concat(acts.map(a => Object.assign({}, byId[a], {id:'a:'+a, aid:a, kind:'actor'})));
+    const ix = {}; nodes.forEach((n,i) => ix[n.id] = i);
+    const strongest = {}; bl.forEach(b => { if(!strongest[b.actor] || b.w > strongest[b.actor].w) strongest[b.actor] = b; });
+    nodes.forEach((n,i) => { const p = BL[n.id]; if(p){ n.x = p[0]; n.y = p[1]; } });
+    nodes.forEach((n,i) => { if(n.x===undefined){ const t = n.kind==='actor' ? nodes[ix['t:'+strongest[n.aid].theme]] : null; n.x = (t && t.x!==undefined ? t.x : 0) + (Math.sin(i*12.9898)*43758.5453 % 1) * 20; n.y = (t && t.y!==undefined ? t.y : 0) + (Math.sin(i*78.233)*43758.5453 % 1) * 20; } });
+    const edges = bl.map(b => [ix['t:'+b.theme], ix['a:'+b.actor], Math.log1p(b.w)]);
+    document.getElementById('bip-count').textContent = `${themes.length} temaer · ${acts.length} aktører · ${edges.length} kanter`;
+    return {nodes, edges, fresh: nodes.some(n => !BL[n.id])};
   }
-  function draw(){
-    ctx.save(); ctx.clearRect(0,0,w,h); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
-    const line = css('--line'), ink = css('--ink'), surface = css('--surface');
-    const neigh = new Set(); if(hov) links.forEach(l => { if(l.source.id===hov.id) neigh.add(l.target.id); if(l.target.id===hov.id) neigh.add(l.source.id); });
-    links.forEach(l => { const on = !hov || l.source.id===hov.id || l.target.id===hov.id; ctx.globalAlpha = on ? 0.5 : 0.05; ctx.strokeStyle = TP[l.source.name] || line; ctx.lineWidth = Math.min(8, 0.4 + l.w*0.6)/tr.k; ctx.beginPath(); ctx.moveTo(l.source.x,l.source.y); ctx.lineTo(l.target.x,l.target.y); ctx.stroke(); });
-    ctx.globalAlpha = 1;
-    nodes.forEach(n => { const dim = hov && n.id!==hov.id && !neigh.has(n.id); ctx.globalAlpha = dim ? 0.3 : 1; ctx.fillStyle = n.kind==='theme' ? (TP[n.name]||css('--accent')) : css('--mark'); if(n.kind==='theme'){ ctx.fillRect(n.x-n.r, n.y-n.r, n.r*2, n.r*2); ctx.strokeStyle = surface; ctx.lineWidth = 2/tr.k; ctx.strokeRect(n.x-n.r, n.y-n.r, n.r*2, n.r*2); } else { ctx.beginPath(); ctx.arc(n.x,n.y,n.r,0,Math.PI*2); ctx.fill(); ctx.strokeStyle = surface; ctx.lineWidth = 1/tr.k; ctx.stroke(); } });
-    ctx.globalAlpha = 1; ctx.textAlign='center';
-    nodes.forEach(n => { if(n.kind==='theme'){ ctx.fillStyle = ink; ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.fillText(n.name, n.x, n.y - n.r - 6); } else if(n.r >= 9.5 || (hov && (n.id===hov.id || neigh.has(n.id)))){ if(hov && n.id!==hov.id && !neigh.has(n.id)) return; ctx.fillStyle = ink; ctx.font = `${10.5/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.fillText(n.name.length>24?n.name.slice(0,22)+'…':n.name, n.x, n.y - n.r - 3); } });
-    ctx.restore();
-  }
-  d3.select(canvas).call(d3.zoom().scaleExtent([0.3,5]).on('zoom', ev => { tr = ev.transform; draw(); }));
-  canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const x=(e.clientX-r.left-tr.x)/tr.k, y=(e.clientY-r.top-tr.y)/tr.k; let best=null, bd=1e9; nodes.forEach(n => { const d=(n.x-x)**2+(n.y-y)**2; if(d<bd && d<(n.r+4)**2){bd=d;best=n;} }); if(best!==hov){ hov=best; draw(); } if(best){ const deg = links.filter(l => l.source.id===best.id || l.target.id===best.id); showTip(`<b>${esc(best.name)}</b>${best.kind==='theme' ? deg.length+' aktører' : (TL[best.type]||best.type)+' · '+deg.map(l => (l.source.id===best.id?l.target:l.source).name.replace('t:','')+' ('+l.w+')').join(', ')}`, e.clientX, e.clientY); } else hideTip(); });
-  canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); draw(); });
-  canvas.addEventListener('click', () => { if(hov && hov.kind==='actor') window.akFindActor(hov.name); });
-  document.getElementById('bip-min').addEventListener('input', e => { minW = +e.target.value; document.getElementById('bip-min-v').textContent = minW; build(); });
-  build();
+  const d0 = data();
+  view = makeNetView({canvas:'bip', nodes:d0.nodes, edges:d0.edges,
+    radius: n => n.kind==='theme' ? Math.min(26, 10 + Math.sqrt(n.tw||1)*0.5) : 2.5 + Math.sqrt(n.n||1)*1.0,
+    square: n => n.kind==='theme', color: n => n.kind==='theme' ? (TP[n.name]||css('--accent')) : groupColor(n.type),
+    labelSet: V => { const s = new Set(); V.nodes.forEach((n,i) => { if(n.kind==='theme') s.add(i); }); V.nodes.map((n,i)=>i).filter(i => V.nodes[i].kind==='actor').sort((a,b)=>(V.nodes[b].n||0)-(V.nodes[a].n||0)).slice(0,14).forEach(i => s.add(i)); return s; },
+    tooltip: n => n.kind==='theme' ? `<b>${esc(n.name)}</b>tema · ${n.tw} dokument-aktør-par` : actorTip(byId[n.aid]),
+    onClick: n => { if(n.kind==='actor') window.akFindActor(n.name); }});
+  if(d0.fresh) view.run({gravity:0.5, scaling:3, linlog:false, dissuade:false}, 250);
+  slider.addEventListener('change', e => { minW = +e.target.value; const d = data(); view.setData(d.nodes, d.edges); view.run({gravity:0.5, scaling:3, linlog:false, dissuade:false}, 300); });
+  slider.addEventListener('input', e => { document.getElementById('bip-min-v').textContent = e.target.value; });
 }
 function renderMatrix(){
   const M = N.matrix; if(!M || !M.sources || !M.sources.length){ document.getElementById('matrix').innerHTML = '<p style="color:var(--muted)">Ingen matrixdata endnu.</p>'; return; }
