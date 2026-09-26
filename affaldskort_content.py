@@ -61,14 +61,14 @@ PROJECT = {
         'da': {
             'seo_title': 'Kortlægning af affaldsdebatten | Datara',
             'meta_description': (
-                f'Et interaktivt kort over {_da(_n)} dokumenter fra debatten om affald i Danmark, '
-                'fra Folketinget og byrådene til fagmedier og sociale medier.'
+                f'Et interaktivt kort over {_da(_n)} offentlige dokumenter fra debatten om affald i '
+                'Danmark. Kortet viser, hvilke emner der fylder, og hvem der deltager.'
             ),
             'title': 'Hvem fører debatten om affald, og hvad handler den om?',
             'lead': (
                 'Den danske affaldsbranche bliver diskuteret af mange forskellige aktører. '
-                f'Vi har samlet {_da(_n)} offentlige dokumenter i ét kort: artikler, debatindlæg, '
-                'opslag på sociale medier og meget mere. '
+                f'Vi har samlet {_da(_n)} offentlige dokumenter i ét kort. Det er artikler, '
+                'debatindlæg, opslag på sociale medier og meget mere. '
                 'Kortet viser, hvilke emner der fylder, og hvem der deltager i debatten.'
             ),
             'image_alt': 'Debatkortet med tusindvis af farvede punkter samlet i navngivne klynger',
@@ -83,8 +83,8 @@ PROJECT = {
                 {
                     'title': 'Et punkt for hvert bidrag til debatten',
                     'paragraphs': [
-                        f'Kortet rummer {_da(_n)} dokumenter: nyhedsartikler, debatindlæg, pressemeddelelser, '
-                        'høringssvar, spørgsmål i Folketinget, opslag på sociale medier og meget andet. '
+                        f'Kortet rummer {_da(_n)} dokumenter, blandt andet nyhedsartikler, debatindlæg, '
+                        'pressemeddelelser, høringssvar, spørgsmål i Folketinget og opslag på sociale medier. '
                         'Hvert dokument er placeret efter, hvad det handler om, så dokumenter om beslægtede '
                         'emner ligger tæt på hinanden.',
                         f'Dokumenterne falder i {_clusters} navngivne klynger. Punkterne kan farves efter tema, '
@@ -95,10 +95,11 @@ PROJECT = {
                 {
                     'title': 'Hvor dokumenterne kommer fra',
                     'paragraphs': [
-                        'Folketingets åbne data giver alle spørgsmål, svar og sager om affald med spørgerens navn '
-                        'og parti. Kommunernes dagsordener giver de lokale beslutninger om gebyrer, ordninger og '
-                        'genbrugspladser. Resten kommer fra mediers og organisationers arkiver, pressemeddelelser, '
-                        'rapporter og offentlige opslag på sociale medier.',
+                        'Alt materialet er offentligt tilgængeligt. Størstedelen er mediernes dækning af affald, '
+                        'fra landsdækkende aviser til fag- og lokalmedier, og de debatindlæg, der bliver bragt '
+                        'samme sted. Resten er pressemeddelelser og rapporter fra virksomheder, kommuner og '
+                        'organisationer, spørgsmål og sager fra Folketinget, punkter fra kommunernes dagsordener '
+                        'og offentlige opslag på sociale medier.',
                         f'Samlet er der dokumenter fra mere end {_da(_floor_thousands(STATS.get("n_sources") or 0) or 100)} '
                         f'kilder. De ældste er fra {_year}, men de fleste er fra de seneste år, hvor sortering og '
                         'producentansvar har fyldt mest.',
@@ -107,9 +108,9 @@ PROJECT = {
                 {
                     'title': 'Aktørerne bag debatten',
                     'paragraphs': [
-                        f'Et register over {_da(_actors)} aktører knytter dokumenterne til dem, der udtaler sig eller '
-                        'bliver omtalt: politikere, kommuner og affaldsselskaber, private virksomheder, '
-                        'interesseorganisationer, forskere og medier.',
+                        f'Et register over {_da(_actors)} aktører knytter dokumenterne til de politikere, kommuner '
+                        'og affaldsselskaber, private virksomheder, interesseorganisationer, forskere og medier, '
+                        'der udtaler sig eller bliver omtalt.',
                         'Aktørkortet placerer aktørerne efter, hvad de taler om. Netværket viser, hvem der optræder i '
                         'de samme dokumenter, og dermed både lejrene i debatten og de aktører, der forbinder dem.',
                     ],
@@ -147,14 +148,14 @@ PROJECT = {
         'en': {
             'seo_title': 'Mapping the Danish waste debate | Datara',
             'meta_description': (
-                f'An interactive map of {_en(_n)} documents from the Danish debate about waste, '
-                'from Parliament and city councils to trade media and social media.'
+                f'An interactive map of {_en(_n)} public documents from the Danish debate about waste. '
+                'It shows which topics take up space and who takes part.'
             ),
             'title': 'Who leads the debate on waste, and what is it about?',
             'lead': (
                 'The Danish waste sector is debated by many different actors. '
-                f'We have gathered {_en(_n)} public documents into one map: news articles, opinion pieces, '
-                'social media posts and much more. '
+                f'We have gathered {_en(_n)} public documents into one map. They include news articles, '
+                'opinion pieces, social media posts and much more. '
                 'The map shows which topics take up space and who takes part in the debate.'
             ),
             'image_alt': 'The debate map with thousands of coloured points grouped into named clusters',
@@ -169,8 +170,8 @@ PROJECT = {
                 {
                     'title': 'One point per contribution to the debate',
                     'paragraphs': [
-                        f'The map holds {_en(_n)} documents: news articles, opinion pieces, press releases, '
-                        'consultation responses, parliamentary questions, social media posts and more. '
+                        f'The map holds {_en(_n)} documents, among them news articles, opinion pieces, press '
+                        'releases, consultation responses, parliamentary questions and social media posts. '
                         'Each document is placed according to what it is about, so documents on related topics '
                         'sit close together.',
                         f'The documents fall into {_clusters} named clusters. Points can be coloured by topic, '
@@ -181,10 +182,11 @@ PROJECT = {
                 {
                     'title': 'Where the documents come from',
                     'paragraphs': [
-                        "The Danish Parliament's open data provides every question, answer and case about waste, "
-                        "with the name and party of the member asking. Municipal agendas provide the local decisions "
-                        "on fees, collection schemes and recycling sites. The rest comes from the archives of media "
-                        "and organisations, press releases, reports and public social media posts.",
+                        'All of the material is publicly available. Most of it is how the media cover waste, from '
+                        'national newspapers to trade and local outlets, along with the opinion pieces they carry. '
+                        'The rest is press releases and reports from companies, municipalities and organisations, '
+                        'questions and cases from the Danish Parliament, items from municipal agendas and public '
+                        'social media posts.',
                         f'Altogether the documents come from more than {_en(_floor_thousands(STATS.get("n_sources") or 0) or 100)} '
                         f'sources. The oldest date from {_year}, but most are from recent years, when sorting and '
                         'producer responsibility have dominated.',
@@ -193,9 +195,9 @@ PROJECT = {
                 {
                     'title': 'The actors behind the debate',
                     'paragraphs': [
-                        f'A register of {_en(_actors)} actors links the documents to those who speak or are mentioned: '
-                        'politicians, municipalities and waste companies, private businesses, interest groups, '
-                        'researchers and media.',
+                        f'A register of {_en(_actors)} actors links the documents to the politicians, municipalities '
+                        'and waste companies, private businesses, interest groups, researchers and media who speak '
+                        'or are mentioned.',
                         'The actor map places the actors according to what they talk about. The network shows who '
                         'appears in the same documents, revealing both the camps in the debate and the actors who '
                         'connect them.',
