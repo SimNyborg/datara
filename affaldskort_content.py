@@ -88,7 +88,7 @@ PROJECT = {
                         'Hvert dokument er placeret efter, hvad det handler om, så dokumenter om beslægtede '
                         'emner ligger tæt på hinanden.',
                         f'Dokumenterne falder i {_clusters} navngivne klynger. Punkterne kan farves efter tema, '
-                        'dokumenttype eller afsender, og et tidsfilter nederst på kortet viser, hvad der blev '
+                        'dokumenttype eller afsendertype, og et tidsfilter nederst på kortet viser, hvad der blev '
                         'skrevet i en bestemt periode.',
                     ],
                 },
@@ -117,11 +117,14 @@ PROJECT = {
                 {
                     'title': 'Sådan er kortet lavet',
                     'paragraphs': [
-                        'Titel og resumé for hvert dokument bliver omsat til en talvektor med en sprogmodel, der '
-                        'forstår dansk. UMAP lægger vektorerne ud i to dimensioner, og HDBSCAN finder klyngerne, som '
-                        'vi derefter har navngivet. Tonen i dokumenterne er vurderet med Alexandra Instituttets '
-                        'danske sentimentmodel.',
-                        'Selve kortet er bygget med open source-biblioteket DataMapPlot.',
+                        'En sprogmodel, der forstår dansk, læser hvert dokuments titel og resumé og omsætter '
+                        'indholdet til tal. To dokumenter om det samme emne får tal, der ligner hinanden, også '
+                        'når de ikke bruger de samme ord.',
+                        'Tallene bliver bredt ud på kortets flade, så afstanden mellem to punkter svarer til, '
+                        'hvor beslægtet indholdet er. De grupper, der tegner sig af sig selv, er klyngerne, og '
+                        'dem har vi læst igennem og givet navne.',
+                        'Vi bruger UMAP til at brede tallene ud, HDBSCAN til at finde klyngerne og Alexandra '
+                        'Instituttets danske sentimentmodel til at vurdere tonen.',
                     ],
                 },
                 {
@@ -171,7 +174,7 @@ PROJECT = {
                         'Each document is placed according to what it is about, so documents on related topics '
                         'sit close together.',
                         f'The documents fall into {_clusters} named clusters. Points can be coloured by topic, '
-                        'document type or sender, and a time filter at the bottom of the map shows what was written '
+                        'document type or sender type, and a time filter at the bottom of the map shows what was written '
                         'in a given period.',
                     ],
                 },
@@ -201,11 +204,14 @@ PROJECT = {
                 {
                     'title': 'How the map is made',
                     'paragraphs': [
-                        'The title and summary of each document are turned into a numeric vector by a language model '
-                        'that understands Danish. UMAP lays the vectors out in two dimensions, and HDBSCAN finds the '
-                        "clusters, which we have then named. The tone of each document is scored with the Alexandra "
-                        "Institute's Danish sentiment model.",
-                        'The map itself is built with the open-source library DataMapPlot.',
+                        'A language model that understands Danish reads the title and summary of each document '
+                        'and turns the content into numbers. Two documents on the same topic get similar numbers, '
+                        'even when they do not use the same words.',
+                        'The numbers are then spread across the map, so the distance between two points matches '
+                        'how closely related the content is. The groups that form on their own are the clusters, '
+                        'and we have read through them and given them names.',
+                        "We use UMAP to spread out the numbers, HDBSCAN to find the clusters and the Alexandra "
+                        "Institute's Danish sentiment model to assess tone.",
                     ],
                 },
                 {

@@ -156,7 +156,7 @@
                                 
                                 <p>The map holds 50,973 documents: news articles, opinion pieces, press releases, consultation responses, parliamentary questions, social media posts and more. Each document is placed according to what it is about, so documents on related topics sit close together.</p>
                                 
-                                <p>The documents fall into 306 named clusters. Points can be coloured by topic, document type or sender, and a time filter at the bottom of the map shows what was written in a given period.</p>
+                                <p>The documents fall into 306 named clusters. Points can be coloured by topic, document type or sender type, and a time filter at the bottom of the map shows what was written in a given period.</p>
                                 
                             </div>
                             
@@ -196,9 +196,11 @@
                             <div class="project-story-section-copy">
                                 <h2 id="section-4">How the map is made</h2>
                                 
-                                <p>The title and summary of each document are turned into a numeric vector by a language model that understands Danish. UMAP lays the vectors out in two dimensions, and HDBSCAN finds the clusters, which we have then named. The tone of each document is scored with the Alexandra Institute&#39;s Danish sentiment model.</p>
+                                <p>A language model that understands Danish reads the title and summary of each document and turns the content into numbers. Two documents on the same topic get similar numbers, even when they do not use the same words.</p>
                                 
-                                <p>The map itself is built with the open-source library DataMapPlot.</p>
+                                <p>The numbers are then spread across the map, so the distance between two points matches how closely related the content is. The groups that form on their own are the clusters, and we have read through them and given them names.</p>
+                                
+                                <p>We use UMAP to spread out the numbers, HDBSCAN to find the clusters and the Alexandra Institute&#39;s Danish sentiment model to assess tone.</p>
                                 
                             </div>
                             
