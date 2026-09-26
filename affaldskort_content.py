@@ -81,12 +81,12 @@ PROJECT = {
             ],
             'sections': [
                 {
-                    'title': 'Et punkt for hvert dokument',
+                    'title': 'Et punkt for hvert bidrag til debatten',
                     'paragraphs': [
                         f'Kortet rummer {_da(_n)} dokumenter: nyhedsartikler, debatindlæg, pressemeddelelser, '
-                        'høringssvar, spørgsmål i Folketinget, punkter fra byråds- og udvalgsmøder og opslag på '
-                        'sociale medier. Hvert dokument er placeret efter, hvad det handler om, så en artikel om '
-                        'affaldsgebyrer ender tæt på et byrådspunkt om det samme.',
+                        'høringssvar, spørgsmål i Folketinget, opslag på sociale medier og meget andet. '
+                        'Hvert dokument er placeret efter, hvad det handler om, så dokumenter om beslægtede '
+                        'emner ligger tæt på hinanden.',
                         f'Dokumenterne falder i {_clusters} navngivne klynger. Punkterne kan farves efter tema, '
                         'dokumenttype eller afsender, og et tidsfilter nederst på kortet viser, hvad der blev '
                         'skrevet i en bestemt periode.',
@@ -164,12 +164,12 @@ PROJECT = {
             ],
             'sections': [
                 {
-                    'title': 'One point per document',
+                    'title': 'One point per contribution to the debate',
                     'paragraphs': [
                         f'The map holds {_en(_n)} documents: news articles, opinion pieces, press releases, '
-                        'consultation responses, parliamentary questions, city council agenda items and social media '
-                        'posts. Each document is placed according to what it is about, so an article on waste fees '
-                        'ends up next to a council item on the same subject.',
+                        'consultation responses, parliamentary questions, social media posts and more. '
+                        'Each document is placed according to what it is about, so documents on related topics '
+                        'sit close together.',
                         f'The documents fall into {_clusters} named clusters. Points can be coloured by topic, '
                         'document type or sender, and a time filter at the bottom of the map shows what was written '
                         'in a given period.',
