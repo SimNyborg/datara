@@ -18,6 +18,7 @@
   color-scheme:light;
   --bg:#f2f4f0; --surface:#ffffff; --surface-2:#e9eee9; --ink:#17232b; --ink-2:#4a5860; --muted:#7f8d94; --line:#d8dfda;
   --accent:#0f6e56; --accent-ink:#ffffff; --mark:#118a66; --mark-soft:#cfe8dd; --mark-dim:#b9c6bf; --rust:#b5461a; --focus:#1d6fd6;
+  --island:#ebf1ed; --island-line:#d9e2dc; --net-edge:#8d9a93; --net-inter:#34434b; --bridge:#8f3510;
   --shadow:0 1px 2px rgba(23,35,43,.06),0 6px 20px rgba(23,35,43,.06);
 }
 @media (prefers-color-scheme: dark){
@@ -25,6 +26,7 @@
     color-scheme:dark;
     --bg:#121a18; --surface:#1b2623; --surface-2:#22302c; --ink:#e7ede9; --ink-2:#b5c1bb; --muted:#7f8d87; --line:#2c3934;
     --accent:#4fc4a0; --accent-ink:#0f1a16; --mark:#3dbb93; --mark-soft:#1e4a3c; --mark-dim:#3a4a44; --rust:#e8825a; --focus:#6aa8ff;
+    --island:#24332e; --island-line:#34453f; --net-edge:#8d9a93; --net-inter:#b5c1bb; --bridge:#e8825a;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
   }
 }
@@ -32,6 +34,7 @@
   color-scheme:dark;
   --bg:#121a18; --surface:#1b2623; --surface-2:#22302c; --ink:#e7ede9; --ink-2:#b5c1bb; --muted:#7f8d87; --line:#2c3934;
   --accent:#4fc4a0; --accent-ink:#0f1a16; --mark:#3dbb93; --mark-soft:#1e4a3c; --mark-dim:#3a4a44; --rust:#e8825a; --focus:#6aa8ff;
+  --island:#24332e; --island-line:#34453f; --net-edge:#8d9a93; --net-inter:#b5c1bb; --bridge:#e8825a;
   --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
@@ -132,6 +135,7 @@ tr.exp td{background:var(--surface-2)}
 .month h3{font-size:16px}
 .month .rule{flex:1;height:1px;background:var(--line)}
 .doc{display:grid;grid-template-columns:88px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+.doc>div{min-width:0;overflow-wrap:anywhere}
 .doc .dt{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);padding-top:2px}
 .doc .t{font-weight:600}
 .doc .m{font-size:12px;color:var(--muted);margin:1px 0 3px}
@@ -188,6 +192,13 @@ details.md-block summary{cursor:pointer;font-weight:600;font-family:"Bricolage G
 .legend button{appearance:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:14px;padding:3px 10px;cursor:pointer}
 .legend button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+/* telefon: lejrkortet går 12 px ind i panelets margen i hver side, så det får næsten samme bredde som Netværk-fanens kort */
+@media (max-width:600px){canvas#cnet{width:calc(100% + 24px)!important;margin:0 -12px}}
+.netkey{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;font-size:12.5px;color:var(--ink-2);margin:0 0 10px}
+.netkey>span{display:inline-flex;align-items:center;gap:6px}
+.netkey svg{flex:none}
+.netkey .muted{color:var(--muted)}
+.netkey .campkey{font-size:10.5px;font-weight:600;text-transform:uppercase;color:var(--ink-2);min-width:18px}
 .steps{counter-reset:s;display:grid;gap:10px;padding:0;margin:0;list-style:none;max-width:78ch}
 .steps li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
 .steps li::before{counter-increment:s;content:counter(s);font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;color:var(--accent);line-height:1.1}
@@ -290,7 +301,16 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-netvaerk" hidden>
-  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Alle aktører er med, også medierne, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd med ForceAtlas2: aktører, der ofte optræder sammen, trækkes mod hinanden, alle andre skubber fra hinanden, og hver lejr samler sig om sin egen midte. De store, tydeligt markerede aktører midt i en lejr er dem, der fylder mest. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
+  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Alle aktører er med, også medierne, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd. De centrale aktører er placeret med ForceAtlas2, så aktører, der ofte optræder sammen, trækkes mod hinanden. De øvrige ligger som satellitter rundt om den centrale aktør, de hænger mest sammen med, og hver lejr er pakket som en ø med luft omkring. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
+  <div class="netkey" id="net-key" hidden>
+    <span><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.6" fill="var(--mark-dim)" stroke="var(--ink)" stroke-width="2"/></svg><span id="net-key-top">Tyk ring viser de 20 mest omtalte aktører. Størrelsen følger omtale.</span></span>
+    <span><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="3" fill="var(--mark-dim)"/><circle cx="9" cy="9" r="7.2" fill="none" stroke="var(--bridge)" stroke-width="1.8" stroke-dasharray="3 2.2"/></svg>Rustfarvet stiplet ring viser de 12 største bindeled mellem lejre (nr. 1 til 12 i tooltip).</span>
+    <span><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><line x1="1" y1="5" x2="17" y2="5" stroke="var(--net-inter)" stroke-width="1.4" stroke-opacity=".75"/></svg>Tykke streger forbinder lejrene.</span>
+    <span><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><line x1="1" y1="5" x2="17" y2="5" stroke="var(--bridge)" stroke-width="1.4" stroke-opacity=".7"/></svg>Rustfarvede streger viser de 6 største bindeleds stærkeste forbindelser til andre lejre.</span>
+    <span><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--island)" stroke="var(--island-line)"/></svg>De runde felter er lejre.</span>
+    <span><span class="campkey" aria-hidden="true">Lejr</span>Navne med store bogstaver er lejre. Hver lejr er opkaldt efter sin mest indflydelsesrige aktør.</span>
+    <span class="muted">Afstanden mellem to lejre siger ikke noget om, hvor tæt de hænger sammen. Tynde grå streger er satellitternes øvrige forbindelser.</span>
+  </div>
   <div class="legend" id="net-legend"></div>
   <div class="filters"><label>Farve <select id="net-color"><option value="type">aktørtype</option><option value="comm">lejr</option></select></label>
     <label>Størrelse <select id="net-size"><option value="mentioned">omtale (antal dokumenter)</option><option value="in_senders">nævnt af flest aktører</option><option value="pagerank">indflydelse</option><option value="betweenness">bindeled</option><option value="own">egne ytringer</option></select></label>
@@ -439,8 +459,9 @@ function show(name){
   document.querySelectorAll('section.tab').forEach(s => s.hidden = s.id !== 'tab-'+name);
   document.querySelectorAll('#tab-'+name+' iframe[data-src]').forEach(f => { f.src = f.dataset.src; f.removeAttribute('data-src'); });   // kortene indlæses først når fanen vises (ellers beregnes zoom fra bredde 0)
   try{ localStorage.setItem('ak-tab', name); }catch(e){}
-  if(name==='netvaerk') setTimeout(startNet, 30);
-  if(name==='centrale') setTimeout(startCentral, 30);
+  // lærredet kan have skiftet bredde, mens fanen var skjult: mål igen, når fanen vises
+  if(name==='netvaerk') setTimeout(() => { startNet(); if(netView) netView.checkSize(); }, 30);
+  if(name==='centrale') setTimeout(() => { startCentral(); if(cView) cView.checkSize(); }, 30);
   if(name==='tone' && !toneStarted){ toneStarted = true; setTimeout(renderTone, 30); }
 }
 tabs.addEventListener('click', e => { const b = e.target.closest('button'); if(b) show(b.dataset.tab); });
@@ -583,6 +604,8 @@ const GROUPS = [
 const groupOf = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).k;
 const groupColor = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).c;
 const LAY = Object.assign({k:4, gravity:0.2, scaling:2, linlog:false, dissuade:false, group_gravity:0, iterations:1500}, N.layout||{});
+// den gamle fulde ForceAtlas2 over alle aktører (uden flueben i 'Kerne og satellitter') har sine egne standardværdier i layout.full
+const LAY_FULL = Object.assign({}, LAY, (N.layout||{}).full||{});
 const NIDX = {}; (N.nodes||[]).forEach((n,i) => NIDX[n.id] = i);
 // hvem nævner hvem (rettede omtaler fra aktørernes egne ytringer)
 const OUTM = {}, INM = {};
@@ -590,15 +613,16 @@ const OUTM = {}, INM = {};
 Object.values(OUTM).forEach(l => l.sort((a,b)=>b.w-a.w)); Object.values(INM).forEach(l => l.sort((a,b)=>b.w-a.w));
 
 /* ForceAtlas2 (Jacomy m.fl. 2014) – linje for linje som pipeline/fa2.py, så en genkørsel opfører sig som det forudberegnede layout */
-function fa2State(n, edges, xs, ys, groups){
-  const mass = new Float64Array(n).fill(1); edges.forEach(([a,b]) => { mass[a]++; mass[b]++; });
+// massIn: egen masse pr. aktør (kernelayoutet: grad + 1 + 0,5 pr. satellit); gg: faktor på lejr-tyngdekraften pr. aktør (bindeled slippes lidt)
+function fa2State(n, edges, xs, ys, groups, massIn, gg){
+  const mass = massIn ? Float64Array.from(massIn) : new Float64Array(n).fill(1); if(!massIn) edges.forEach(([a,b]) => { mass[a]++; mass[b]++; });
   let mm = 0; for(let i=0;i<n;i++) mm += mass[i];
   // lejre med mindst 3 aktører får deres egen tyngdekraft (gi = -1: ingen lejr)
   const gi = new Int32Array(n).fill(-1); let G = 0;
   if(groups){ const cnt = {}; groups.forEach(g => { if(g>=0) cnt[g] = (cnt[g]||0)+1; }); const map = {};
     Object.keys(cnt).map(Number).sort((a,b)=>a-b).forEach(g => { if(cnt[g]>=3) map[g] = G++; }); groups.forEach((g,i) => { if(map[g]!==undefined) gi[i] = map[g]; }); }
   const gcount = new Float64Array(G); gi.forEach(g => { if(g>=0) gcount[g]++; });
-  return {n, edges, x:Float64Array.from(xs), y:Float64Array.from(ys), px:new Float64Array(n), py:new Float64Array(n), mass, meanMass: mm/n, speed:1, eff:1, gi, G, gcount};
+  return {n, edges, x:Float64Array.from(xs), y:Float64Array.from(ys), px:new Float64Array(n), py:new Float64Array(n), mass, meanMass: mm/n, speed:1, eff:1, gi, G, gcount, gg: gg ? Float64Array.from(gg) : new Float64Array(n).fill(1)};
 }
 function fa2Step(st, o){
   const n = st.n, x = st.x, y = st.y, m = st.mass, fx = new Float64Array(n), fy = new Float64Array(n);
@@ -609,7 +633,7 @@ function fa2Step(st, o){
   if(o.group_gravity > 0 && st.G > 0){ const cx = new Float64Array(st.G), cy = new Float64Array(st.G);
     for(let i=0;i<n;i++){ const g = st.gi[i]; if(g>=0){ cx[g]+=x[i]; cy[g]+=y[i]; } }
     for(let g=0; g<st.G; g++){ cx[g]/=st.gcount[g]; cy[g]/=st.gcount[g]; }
-    for(let i=0;i<n;i++){ const g = st.gi[i]; if(g<0) continue; const dx = x[i]-cx[g], dy = y[i]-cy[g], dl = Math.sqrt(dx*dx+dy*dy)+1e-9, f = o.group_gravity*m[i]/dl; fx[i]-=dx*f; fy[i]-=dy*f; } }
+    for(let i=0;i<n;i++){ const g = st.gi[i]; if(g<0) continue; const dx = x[i]-cx[g], dy = y[i]-cy[g], dl = Math.sqrt(dx*dx+dy*dy)+1e-9, f = o.group_gravity*m[i]*st.gg[i]/dl; fx[i]-=dx*f; fy[i]-=dy*f; } }
   const comp = o.dissuade ? st.meanMass : 1;
   for(const [a,b,w] of st.edges){ const dx=x[a]-x[b], dy=y[a]-y[b], d=Math.sqrt(dx*dx+dy*dy)+1e-9;
     const c = w*(o.dissuade ? comp/m[a] : 1); const f = o.linlog ? c*Math.log1p(d)/d : c; fx[a]-=dx*f; fy[a]-=dy*f; fx[b]+=dx*f; fy[b]+=dy*f; }
@@ -628,7 +652,7 @@ function backboneEdges(k){
   const E = new Map();
   Object.entries(nb).forEach(([a,l]) => { l.sort((p,q)=>q[0]-p[0]).slice(0,k).forEach(([s,b]) => { const i=Math.min(+a,b), j=Math.max(+a,b); E.set(i+'-'+j, [i,j,s]); }); });
   const arr = [...E.values()]; const ws = arr.map(e=>e[2]).sort((p,q)=>p-q); const med = ws.length ? ws[ws.length>>1] : 1;
-  return arr.map(([i,j,s]) => [i,j,s/med]);
+  const out = arr.map(([i,j,s]) => [i,j,s/med]); out.med = med; return out;
 }
 function ringOutliers(V){
   const n = V.nodes.length, deg = new Array(n).fill(0); V.edges.forEach(([a,b]) => { deg[a]++; deg[b]++; });
@@ -679,20 +703,938 @@ function resolveOverlap(V, rad, iters){
 function logSlider(v, lo, hi){ return lo*Math.pow(hi/lo, v/100); }
 function logPos(val, lo, hi){ return Math.round(100*Math.log(val/lo)/Math.log(hi/lo)); }
 
+/* ---------- kerne og satellitter på lejr-øer (27-09-2026) ----------
+   Samme regler som pipeline/fa2.py (core_satellite_layout): kerneaktører placeres med ForceAtlas2, alle andre som satellitter
+   i vifter om den kerneaktør, de hænger på, og hver lejr pakkes som en ø. Standardvisningen bruger de gemte felter
+   x,y / xm,ym, core, hub og via fra network.json; genkørslen i browseren regner det hele igen med skydernes værdier. */
+const KP = Object.assign({core_deg:8, core_top_mentioned:150, core_top_btw:40, core_k:3, shared_w:0.3, sat_mass:0.5, fa_iter:800,
+  bridge_release:1.6, seed:42, stretch_max:1.3, fan_infl:1.0, camp_pad_px:24, core_pad_px:3, island_iter:600, island_gravity:0.03,
+  island_ky:null, ky_k:1.25, aspect_rounds:4, rotate_rounds:3, island_loose:0.9, compact_iter:120, compact_gravity:0.06,
+  island_squeeze:0.45, sat_gap_px:2.5, sat_pad_px:0.8, fan_min_deg:90, fan_max_deg:360, sat_spread:1.6, camp_dir_w:0.7,
+  final_iter:50, final_pad_px:0.8, loose_cols:8, loose_step_px:7}, N.layout||{});
+const KP_MOBILE = Object.assign({canvas_w:343, canvas_h:640, r_scale:0.52, camp_pad_px:16}, KP.mobile||{});
+// tegnestil (dashboardets egen, ikke fra network.json)
+const KSTY = {bridge_n: KP.bridge_n != null ? KP.bridge_n : 12, fan_bridges: KP.fan_bridges != null ? KP.fan_bridges : 6,
+  fan_per_bridge: KP.fan_per_bridge != null ? KP.fan_per_bridge : 3, disc_min:8, lab_chars:26};
+const KERNE_OK = KP.mode === 'kerne' && (N.nodes||[]).length > 0 && N.nodes.every(n => n.core != null);
+function npMedian(a){ const s = Float64Array.from(a).sort(), n = s.length; if(!n) return 0; return n%2 ? s[(n-1)/2] : (s[n/2-1]+s[n/2])/2; }
+function npPct(a, q){ const s = Float64Array.from(a).sort(), n = s.length; if(!n) return 0; const pos = q/100*(n-1), lo = Math.floor(pos), hi = Math.ceil(pos); return s[lo] + (s[hi]-s[lo])*(pos-lo); }
+function mulberry32(a){ return function(){ a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const wrapA = a => { const T = 2*Math.PI; return (((a + Math.PI) % T) + T) % T - Math.PI; };
+const clampV = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+// placering i faldende orden, lige store i indeksrækkefølge (som np.argsort(np.argsort(-v, stable), stable))
+function stableRank(vals){ const idx = vals.map((v,i) => i).sort((a,b) => (vals[b]-vals[a]) || (a-b)); const rk = new Int32Array(vals.length); idx.forEach((i,r) => rk[i] = r); return rk; }
+// associationer (hver aktørs 12 stærkeste) som naboliste; median over alle rækker som i pipelinen
+let _assocNb = null;
+function assocNb(n){
+  if(_assocNb) return _assocNb;
+  const nb = Array.from({length:n}, () => new Map()), all = [];
+  (N.assoc||[]).forEach(([a,b,s]) => { if(a>=n || b>=n) return; nb[a].set(b, Math.max(s, nb[a].get(b)||0)); nb[b].set(a, Math.max(s, nb[b].get(a)||0)); all.push(s); });
+  return _assocNb = {nb, med: npMedian(all) || 1};
+}
+// roller fra de gemte felter core/hub/via
+function storedRoles(nodes){
+  const n = nodes.length, core = new Uint8Array(n), hub = new Int32Array(n).fill(-1), via = new Int32Array(n).fill(-1);
+  nodes.forEach((d,i) => { core[i] = d.core ? 1 : 0; if(d.hub != null && NIDX[d.hub] !== undefined) hub[i] = NIDX[d.hub]; if(d.via != null && NIDX[d.via] !== undefined) via[i] = NIDX[d.via]; });
+  return {core, hub, via};
+}
+// kerne, hub og forgænger (variant.roles): rygraden i den givne rækkefølge, kø-baseret bredde-først fra kerneaktørerne i stigende indeks
+function coreRoles(n, E3, labs, ment, btw, P){
+  const {nb} = assocNb(n);
+  const deg = new Float64Array(n), adj = Array.from({length:n}, () => []);
+  E3.forEach(([a,b]) => { deg[a]++; deg[b]++; adj[a].push(b); adj[b].push(a); });
+  const rm = stableRank(ment), rb = stableRank(btw), core = new Uint8Array(n);
+  for(let i=0;i<n;i++) core[i] = (deg[i] >= P.core_deg || rm[i] < P.core_top_mentioned || rb[i] < P.core_top_btw) && deg[i] > 0 ? 1 : 0;
+  const byCamp = new Map(); for(let i=0;i<n;i++) if(deg[i] > 0){ if(!byCamp.has(labs[i])) byCamp.set(labs[i], []); byCamp.get(labs[i]).push(i); }
+  [...byCamp.keys()].sort((a,b) => a-b).forEach(c => { const mem = byCamp.get(c); if(mem.length >= 3 && !mem.some(i => core[i])){ let best = mem[0]; mem.forEach(i => { if(ment[i] > ment[best]) best = i; }); core[best] = 1; } });
+  const bfs = same => { const near = new Int32Array(n).fill(-1), pred = new Int32Array(n).fill(-1), dep = new Int32Array(n), q = []; let h = 0;
+    for(let i=0;i<n;i++) if(core[i]){ near[i] = i; q.push(i); }
+    while(h < q.length){ const u = q[h++]; for(const v of adj[u]) if(near[v] < 0 && (!same || labs[v] === labs[u])){ near[v] = near[u]; pred[v] = u; dep[v] = dep[u]+1; q.push(v); } }
+    return {near, pred, dep}; };
+  const A = bfs(true), B = bfs(false);
+  const hub = new Int32Array(n).fill(-1), via = new Int32Array(n).fill(-1), pstr = new Float64Array(n), depth = new Int32Array(n), pending = [];
+  const better = (s, j, bs, bj) => s > bs || (s === bs && j > bj);   // max over (s, j) som i Python
+  for(let v=0; v<n; v++){
+    if(core[v] || deg[v] === 0) continue;
+    let ss = -1, sj = -1, as = -1, aj = -1;
+    for(const [j,s] of nb[v]) if(core[j]){ if(better(s,j,as,aj)){ as = s; aj = j; } if(labs[j] === labs[v] && better(s,j,ss,sj)){ ss = s; sj = j; } }
+    if(sj >= 0){ hub[v] = sj; pstr[v] = ss; }                                   // stærkeste kerneforbindelse i egen lejr
+    else if(A.near[v] >= 0) pending.push([A.dep[v], v, A.pred[v], A.near[v]]);   // hænger på den lejrfælle, den er forbundet med
+    else if(aj >= 0){ hub[v] = aj; pstr[v] = as; }                              // stærkeste kerneforbindelse i det hele taget
+    else if(B.near[v] >= 0) pending.push([B.dep[v], v, B.pred[v], B.near[v]]);
+  }
+  pending.sort((p,q) => p[0]-q[0] || p[1]-q[1] || p[2]-q[2] || p[3]-q[3]);
+  for(const [dp,v,p,h] of pending){ via[v] = p; depth[v] = dp; hub[v] = (hub[p] >= 0 && !core[p]) ? hub[p] : (core[p] ? p : h); }
+  for(const [,v,p] of pending) if(hub[p] >= 0 && !core[p] && hub[v] !== hub[p]) hub[v] = hub[p];
+  const loose = []; for(let i=0;i<n;i++) if(!core[i] && hub[i] < 0) loose.push(i);
+  return {core, hub, via, pstr, depth, loose, adj};
+}
+// tegnede kanter: rygraden + hver direkte satellits streg til sin hub, hvis parret er en association uden for rygraden
+function kerneEdges(E3, roles){
+  const n = roles.hub.length, have = new Set(E3.map(([a,b]) => Math.min(a,b)*n + Math.max(a,b))), out = E3.slice(), {nb} = assocNb(n), med = E3.med || 1;
+  for(let v=0; v<n; v++){ const h = roles.hub[v]; if(h < 0 || roles.via[v] >= 0) continue; const k = Math.min(v,h)*n + Math.max(v,h);
+    if(!have.has(k) && nb[v].has(h)){ out.push([Math.min(v,h), Math.max(v,h), nb[v].get(h)/med]); have.add(k); } }
+  out.med = E3.med; return out;
+}
+// overlap fjernes (samme skubberegel som resolve_overlap_fast i fa2.py): need = r_i + r_j + pad - d; naboer via et gitter
+function resolveOverlapPad(x, y, r, iters, pad){
+  const n = x.length; if(n < 2) return;
+  const R = new Float64Array(n), r2 = new Float64Array(n); let rmax = 0;
+  for(let i=0;i<n;i++){ const v = r[i]; R[i] = v; r2[i] = v*v; if(v > rmax) rmax = v; }
+  const mx = new Float64Array(n), my = new Float64Array(n), gx = new Int32Array(n), gy = new Int32Array(n);
+  let any = false;
+  function pair(i, j){ let dx = x[i]-x[j], dy = y[i]-y[j]; const lim = R[i]+R[j]+pad, d2 = dx*dx+dy*dy; if(d2 >= lim*lim) return;
+    let d = Math.sqrt(d2); const need = lim-d; if(need <= 0) return;
+    if(d < 1e-6){ dx = Math.cos(i*2.4)*1e-3; dy = Math.sin(i*2.4)*1e-3; d = 1e-3; }
+    const push = need/d*0.5, tot = Math.max(r2[i]+r2[j], 1e-12), si = r2[j]/tot, sj = r2[i]/tot;
+    mx[i] += dx*push*si; my[i] += dy*push*si; mx[j] -= dx*push*sj; my[j] -= dy*push*sj; any = true; }
+  // gitterets celler følger de små aktører (95 %-fraktilen af r), så tætte satellitvifter ikke giver tusinder af par pr. aktør;
+  // de få store aktører søger i et større felt af celler, og de store tjekkes indbyrdes. Hvert par tælles én gang (i < j).
+  // Runde c: løkkerne er skrevet ud (ingen funktion pr. aktør og runde); samme par i samme rækkefølge som før.
+  const rcap = n > 80 ? Math.min(rmax, Math.max(npPct(R, 95), 1e-3)) : rmax, cell = 2*rcap + pad;
+  const bigL = []; for(let i=0;i<n;i++) if(R[i] > rcap) bigL.push(i);
+  const big = Int32Array.from(bigL), nb = big.length, isBig = new Uint8Array(n); for(let p=0; p<nb; p++) isBig[big[p]] = 1;
+  const item = new Int32Array(n); let start = null, fill = null;
+  for(let it=0; it<iters; it++){
+    mx.fill(0); my.fill(0); any = false;
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for(let i=0;i<n;i++){ const xi = x[i], yi = y[i]; if(xi < x0) x0 = xi; if(xi > x1) x1 = xi; if(yi < y0) y0 = yi; if(yi > y1) y1 = yi; }
+    const nx = cell > 0 ? Math.floor((x1-x0)/cell) + 1 : Infinity, ny = cell > 0 ? Math.floor((y1-y0)/cell) + 1 : Infinity;
+    if(n <= 80 || !(nx*ny <= 16*n + 256)){   // få aktører eller meget spredt udstrækning: alle par
+      for(let i=0;i<n;i++) for(let j=i+1;j<n;j++) pair(i, j);
+    } else {
+      const nc = nx*ny; if(!start || start.length < nc + 1){ start = new Int32Array(nc + 1); fill = new Int32Array(nc + 1); } else start.fill(0, 0, nc + 1);
+      for(let i=0;i<n;i++){ const cx = Math.floor((x[i]-x0)/cell), cy = Math.floor((y[i]-y0)/cell); gx[i] = cx; gy[i] = cy; if(!isBig[i]) start[cx*ny + cy + 1]++; }
+      for(let c=0; c<nc; c++) start[c+1] += start[c];
+      fill.set(start.subarray(0, nc)); for(let i=0;i<n;i++) if(!isBig[i]) item[fill[gx[i]*ny + gy[i]]++] = i;
+      for(let i=0;i<n;i++){ if(isBig[i]) continue;
+        const ca = Math.max(0, gx[i]-1), cb = Math.min(nx-1, gx[i]+1), da = Math.max(0, gy[i]-1), db = Math.min(ny-1, gy[i]+1);
+        for(let cx=ca; cx<=cb; cx++){ const base = cx*ny; for(let cy=da; cy<=db; cy++){ const c = base + cy; for(let q=start[c], e=start[c+1]; q<e; q++){ const j = item[q]; if(j > i) pair(i, j); } } } }
+      for(let p=0; p<nb; p++){ const b = big[p], k = Math.ceil((R[b] + rcap + pad)/cell);
+        const ca = Math.max(0, gx[b]-k), cb = Math.min(nx-1, gx[b]+k), da = Math.max(0, gy[b]-k), db = Math.min(ny-1, gy[b]+k);
+        for(let cx=ca; cx<=cb; cx++){ const base = cx*ny; for(let cy=da; cy<=db; cy++){ const c = base + cy; for(let q=start[c], e=start[c+1]; q<e; q++){ const j = item[q]; if(j < b) pair(j, b); else pair(b, j); } } } }
+      for(let p=0; p<nb; p++) for(let q=p+1; q<nb; q++){ const a = big[p], b = big[q]; if(a < b) pair(a, b); else pair(b, a); }
+    }
+    if(!any) break;
+    for(let i=0;i<n;i++){ x[i] += mx[i]; y[i] += my[i]; }
+  }
+}
+// satellitvifte om en hub: ringe med pladser, bredde efter antal (ren geometri, som fan_slots)
+function fanSlots(rHub, rs, gap, pad, minDeg, maxDeg, spread){
+  const ns = rs.length; if(!ns) return [];
+  const d = rs.map(v => 2*v + pad), sum = d.reduce((a,b) => a+b, 0);
+  const width = clampV(sum/(rHub + gap + sum/ns), minDeg*Math.PI/180, maxDeg*Math.PI/180), full = width >= 2*Math.PI - 1e-6;
+  const rings = []; let k = 0, R = rHub + gap + d[0]/2;
+  while(k < ns){
+    let tot = 0, j = k; while(j < ns && (j === k || tot + d[j] <= width*R)){ tot += d[j]; j++; }
+    let f; if(j < ns || full) f = j < ns ? width*R/tot : Math.min(spread, 2*Math.PI*R/tot); else f = Math.min(spread, width*R/tot);
+    f = Math.max(f, 1);
+    const idx = []; for(let t=k; t<j; t++) idx.push(t);
+    rings.push([R, idx, f]);
+    const dm = Math.max(...d.slice(k, j)); k = j;
+    if(k < ns) R += dm/2 + Math.max(...d.slice(k, Math.min(ns, k+8)))/2;
+  }
+  return rings;
+}
+function compactIsland(x, y, r, pad, iters, grav){
+  const m = x.length;
+  for(let it=0; it<iters; it++){ const g = grav*Math.max(0, 1 - it/iters); let cx = 0, cy = 0; for(let t=0;t<m;t++){ cx += x[t]; cy += y[t]; } cx /= m; cy /= m;
+    for(let t=0;t<m;t++){ x[t] -= g*(x[t]-cx); y[t] -= g*(y[t]-cy); } resolveOverlapPad(x, y, r, 1, pad); }
+  resolveOverlapPad(x, y, r, 100, pad);
+}
+// stive øer pakkes med lejrenes indbyrdes skub og en aftagende, skæv tyngdekraft (ky på lodret); returnerer den pakkede form.
+// pad: ét tal eller ét pr. ø (i sorteret ø-rækkefølge; mellem to øer bruges gennemsnittet); Rfix: valgfri radius pr. ø i stedet
+// for 90 %-fraktilen (som pack_islands i pipeline/netlayout.py). pp: tyngdekraftens form; 2 = elliptisk (som før), over 2 en
+// superellipse (|dx|^p + |sqrt(ky) dy|^p)^(2/p) / 2, der er lige så stærk på akserne, men svagere mod hjørnerne, så øerne fylder
+// et afrundet rektangel (network.json 'layout.pack_p', runde c).
+// hole: valgfri [bredde, højde]; et rektangel i ø-skyens nederste venstre hjørne (skivernes udstrækning), som øerne skubbes ud af
+// (plads til de løse aktørers gitter og dets overskrift; network.json 'layout.loose_hole'). ref: valgfri forskydning pr. ø fra
+// middelpunktet til skivens centrum ([dx, dy], fx den mindste omsluttende cirkels centrum); Rfix måles så fra det centrum.
+// Begge som pack_islands i netlayout.py (runde c, 27-09-2026)
+function packIslands(X, Y, gl, rc, iters, pad, grav, ky, Rfix, pp, hole, ref){
+  const pe = pp != null ? +pp : 2, kq = Math.sqrt(ky);
+  const camps = [...new Set(gl)].sort((a,b) => a-b), G = camps.length, mem = camps.map(c => { const m = []; gl.forEach((g,k) => { if(g === c) m.push(k); }); return m; });
+  const Cx = new Float64Array(G), Cy = new Float64Array(G);
+  mem.forEach((m,g) => { m.forEach(k => { Cx[g] += X[k]; Cy[g] += Y[k]; }); Cx[g] /= m.length; Cy[g] /= m.length; });
+  if(ref) for(let g=0; g<G; g++){ Cx[g] += ref[g][0]; Cy[g] += ref[g][1]; }
+  const offx = mem.map((m,g) => m.map(k => X[k]-Cx[g])), offy = mem.map((m,g) => m.map(k => Y[k]-Cy[g]));
+  const R = Rfix ? Array.from(Rfix) : mem.map((m,g) => npPct(m.map((k,t) => Math.hypot(offx[g][t], offy[g][t]) + rc[k]), 90));
+  const padOf = typeof pad === 'number' ? (() => pad) : ((a,b) => (pad[a]+pad[b])/2);
+  const area = mem.map(m => m.reduce((a,k) => a + rc[k]*rc[k], 0)), atot = area.reduce((a,b) => a+b, 0);
+  const mvx = new Float64Array(G), mvy = new Float64Array(G);
+  // mindsteafstand og skubbeandele pr. par regnes én gang (øernes radius er fast under pakningen)
+  const LIM = new Float64Array(G*G), SA = new Float64Array(G*G), SB = new Float64Array(G*G);
+  for(let a=0;a<G;a++) for(let b=a+1;b<G;b++){ const t = Math.max(area[a]+area[b], 1e-12); LIM[a*G+b] = R[a]+R[b]+padOf(a,b); SA[a*G+b] = 0.5*area[b]/t; SB[a*G+b] = 0.5*area[a]/t; }
+  for(let it=0; it<iters+300; it++){
+    const gr = grav*Math.max(0, 1 - it/iters); let any = false; mvx.fill(0); mvy.fill(0);
+    // hvert par én gang (samme skub som før: a får andelen area[b]/(area[a]+area[b]), b resten); kvadreret afstand først
+    for(let a=0;a<G;a++){ const ax = Cx[a], ay = Cy[a], row = a*G;
+      for(let b=a+1;b<G;b++){ const dx = ax-Cx[b], dy = ay-Cy[b], d2 = dx*dx+dy*dy, lim = LIM[row+b];
+        if(lim <= 0 || d2 >= lim*lim) continue; const d = Math.sqrt(d2), need = lim-d; if(need <= 0) continue;
+        any = true; const q = need/Math.max(d,1e-9), ka = q*SA[row+b], kb = q*SB[row+b]; mvx[a] += dx*ka; mvy[a] += dy*ka; mvx[b] -= dx*kb; mvy[b] -= dy*kb; } }
+    let holeHit = false;
+    if(hole){   // øer, der rører hullet i hjørnet, skubbes ud (lodret op, hvis midten ligger i hullet)
+      let hx0 = Infinity, hy1 = -Infinity; for(let g=0; g<G; g++){ hx0 = Math.min(hx0, Cx[g]-R[g]); hy1 = Math.max(hy1, Cy[g]+R[g]); }
+      for(let g=0; g<G; g++){ const ex = Cx[g] - clampV(Cx[g], hx0, hx0 + hole[0]), ey = Cy[g] - clampV(Cy[g], hy1 - hole[1], hy1), dq = Math.hypot(ex, ey), nh = R[g] - dq;
+        if(nh <= 0) continue; holeHit = true; const inside = dq < 1e-9;
+        mvx[g] += 0.5*nh*(inside ? 0 : ex/Math.max(dq, 1e-9)); mvy[g] += 0.5*nh*(inside ? -1 : ey/Math.max(dq, 1e-9)); } }
+    if(gr === 0 && !any && !holeHit) break;
+    let c0x = 0, c0y = 0; for(let g=0; g<G; g++){ c0x += Cx[g]*area[g]; c0y += Cy[g]*area[g]; } c0x /= atot; c0y /= atot;
+    if(pe === 2) for(let g=0; g<G; g++){ Cx[g] += mvx[g] - gr*(Cx[g]-c0x); Cy[g] += mvy[g] - gr*(Cy[g]-c0y)*ky; }
+    else for(let g=0; g<G; g++){ const dx = Cx[g]-c0x, dy = Cy[g]-c0y, ux = Math.abs(dx), uy = Math.abs(dy)*kq, S = ux**pe + uy**pe;
+      const f = S > 0 ? Math.max(S, 1e-300)**(2/pe - 1) : 0;
+      Cx[g] += mvx[g] - gr*f*ux**(pe-1)*Math.sign(dx); Cy[g] += mvy[g] - gr*f*uy**(pe-1)*Math.sign(dy)*kq; }
+  }
+  const OX = Float64Array.from(X), OY = Float64Array.from(Y);
+  mem.forEach((m,g) => m.forEach((k,t) => { OX[k] = Cx[g] + offx[g][t]; OY[k] = Cy[g] + offy[g][t]; }));
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for(let g=0; g<G; g++){ x0 = Math.min(x0, Cx[g]-R[g]); x1 = Math.max(x1, Cx[g]+R[g]); y0 = Math.min(y0, Cy[g]-R[g]); y1 = Math.max(y1, Cy[g]+R[g]); }
+  return {X:OX, Y:OY, ar:(x1-x0)/Math.max(1e-9, y1-y0)};
+}
+// pakningen rettes til lærredets form: ky *= (ønsket / målt form)^2, højst 'rounds' runder fra samme start
+function packIslandsAspect(X, Y, gl, rc, P, ky, aspect, pad, Rfix, hole, ref){
+  let res = null; const tol = P.aspect_tol_log != null ? P.aspect_tol_log : 0.03;
+  for(let k=0; k<P.aspect_rounds; k++){ res = packIslands(X, Y, gl, rc, P.island_iter, pad != null ? pad : P.camp_pad_px, P.island_gravity, ky, Rfix, P.pack_p, hole, ref);
+    if(Math.abs(Math.log(res.ar/aspect)) < tol || k === P.aspect_rounds-1) break; ky *= (aspect/res.ar)**2; }
+  return Object.assign(res, {ky});
+}
+// hver ø drejes stift, så dens forbindelser ud af øen peger mod de lejre, de går til
+function rotateIslands(X, Y, gl, cedges, rounds){
+  const A = [], B = [], W = []; cedges.forEach(([a,b,w]) => { if(gl[a] !== gl[b]){ A.push(a); B.push(b); W.push(w); } });
+  const AA = A.concat(B), BB = B.concat(A), WW = W.concat(W), camps = [...new Set(gl)].sort((a,b) => a-b);
+  const mem = new Map(camps.map(c => [c, []])); gl.forEach((c,k) => mem.get(c).push(k));
+  for(let r=0; r<rounds; r++) camps.forEach(c => { const m = mem.get(c); if(m.length < 2) return;
+    let cx = 0, cy = 0; m.forEach(k => { cx += X[k]; cy += Y[k]; }); cx /= m.length; cy /= m.length;
+    let sn = 0, cs = 0, any = false;
+    for(let e=0; e<AA.length; e++){ if(gl[AA[e]] !== c) continue; any = true; const ox = X[AA[e]]-cx, oy = Y[AA[e]]-cy, ux = X[BB[e]]-cx, uy = Y[BB[e]]-cy; sn += WW[e]*(ox*uy - oy*ux); cs += WW[e]*(ox*ux + oy*uy); }
+    if(!any) return; const th = Math.atan2(sn, cs), co = Math.cos(th), si = Math.sin(th);
+    m.forEach(k => { const lx = X[k]-cx, ly = Y[k]-cy; X[k] = cx + co*lx - si*ly; Y[k] = cy + si*lx + co*ly; }); });
+}
+// mindste omsluttende cirkel om cirklerne (X[i], Y[i], r[i]) for i i m (Badoiu-Clarkson fra tyngdepunktet; den bedste runde
+// gemmes), som enclosing_circle i netlayout.py og skiverne i fitDiscs. Returnerer [cx, cy, R]
+function enclCircle(X, Y, r, m, iters){
+  let cx = 0, cy = 0; for(const i of m){ cx += X[i]; cy += Y[i]; } cx /= m.length; cy /= m.length;
+  const far = (ax, ay) => { let best = -Infinity, bi = m[0]; for(const i of m){ const d = Math.hypot(X[i]-ax, Y[i]-ay) + r[i]; if(d > best){ best = d; bi = i; } } return [best, bi]; };
+  let [Rb] = far(cx, cy), bx = cx, by = cy;
+  for(let t=1; t<=(iters || 200) && m.length > 1; t++){ const [Rt, f] = far(cx, cy); if(Rt < Rb){ Rb = Rt; bx = cx; by = cy; }
+    const dx = X[f]-cx, dy = Y[f]-cy, d = Math.hypot(dx, dy); if(d < 1e-9) break;
+    cx += (X[f] + r[f]*dx/d - cx)/(t+1); cy += (Y[f] + r[f]*dy/d - cy)/(t+1); }
+  const [Rl] = far(cx, cy); if(Rl < Rb){ Rb = Rl; bx = cx; by = cy; }
+  return [bx, by, Rb];
+}
+// mindste mellemrum mellem skiverne [cx, cy, R] og medianen af mellemrummet til nærmeste skive; under to skiver uendelig
+function discGapStats(D){
+  if(D.length < 2) return [Infinity, Infinity];
+  const near = D.map(() => Infinity);
+  for(let a=0; a<D.length; a++) for(let b=a+1; b<D.length; b++){ const g = Math.hypot(D[a][0]-D[b][0], D[a][1]-D[b][1]) - D[a][2] - D[b][2]; if(g < near[a]) near[a] = g; if(g < near[b]) near[b] = g; }
+  return [Math.min(...near), npMedian(near)];
+}
+// disc_rule 'island_p90' (runde c, som clamp_to_discs i netlayout.py): de få aktører, der stikker længere ud end øens p90-skive
+// (p90(afstand + r) + disc_pad om øens middelpunkt), flyttes ind på skiven med rpad + 0,5 px luft til kanten, skiftevis med et kort
+// overlap-skub. Så er den tegnede skive (mindste omsluttende cirkel + rpad) højst så stor som p90-skiven, som øerne er pakket
+// efter. grp: ø pr. aktør (-1 = ingen); labN: lejrenes størrelse. Skriver i X, Y; returnerer antal flyttede aktører i første runde
+function clampToDiscs(X, Y, grp, labN, r, minSize, discPad, rpad, overlapPad, rounds){
+  const byG = new Map(); grp.forEach((g,i) => { if(g >= 0 && (labN.get(g)||0) >= minSize){ if(!byG.has(g)) byG.set(g, []); byG.get(g).push(i); } });
+  const discs = [...byG.keys()].sort((a,b) => a-b).map(g => { const m = byG.get(g); let cx = 0, cy = 0; m.forEach(i => { cx += X[i]; cy += Y[i]; }); cx /= m.length; cy /= m.length;
+    const R = npPct(m.map(i => Math.hypot(X[i]-cx, Y[i]-cy) + r[i]), 90) + discPad; return {m, cx, cy, lim: m.map(i => Math.max(0, R - rpad - 0.5 - r[i]))}; });
+  const r5 = Array.from(r, v => v + 0.5); let moved0 = null;
+  for(let k=0; k<(rounds || 10); k++){ let moved = 0;
+    for(const D of discs) D.m.forEach((i,t) => { const dx = X[i]-D.cx, dy = Y[i]-D.cy, d = Math.hypot(dx, dy); if(d > D.lim[t] + 1e-6){ const f = D.lim[t]/Math.max(d, 1e-9); X[i] = D.cx + dx*f; Y[i] = D.cy + dy*f; moved++; } });
+    if(moved0 === null) moved0 = moved; if(!moved) break;
+    resolveOverlapPad(X, Y, r5, 10, overlapPad); }
+  if(moved0) resolveOverlapPad(X, Y, r5, 40, overlapPad);
+  return moved0 || 0;
+}
+// trin 1: roller, kernekanter og ForceAtlas2-tilstand for kernen (selve iterationerne køres af kalderen i bidder). seed: frøet til
+// kernens startplacering (standard P.seed); roles: rollerne fra et tidligere kald (de afhænger ikke af frøet)
+function kerneStart(inp, seed, roles){
+  const {n, labs, P} = inp, R0 = roles || coreRoles(n, inp.E3, labs, inp.ment, inp.btw, P), {nb, med} = assocNb(n), {core, hub, via, pstr} = R0;
+  const ci = []; for(let i=0;i<n;i++) if(core[i]) ci.push(i);
+  const nc = ci.length, cpos = new Map(ci.map((i,k) => [i,k])), sats = new Map(ci.map(i => [i, []]));
+  for(let v=0; v<n; v++) if(hub[v] >= 0){ if(!sats.has(hub[v])) sats.set(hub[v], []); sats.get(hub[v]).push(v); }
+  const ce = new Map(), key = (a,b) => Math.min(a,b)*n + Math.max(a,b);
+  ci.forEach(i => { const cand = []; for(const [j,s] of nb[i]) if(core[j]) cand.push([s,j]); cand.sort((p,q) => q[0]-p[0] || q[1]-p[1]);
+    cand.slice(0, P.core_k).forEach(([s,j]) => { const k = key(i,j); ce.set(k, Math.max(ce.get(k)||0, s/med)); }); });
+  for(let v=0; v<n; v++){ if(hub[v] < 0 || via[v] >= 0) continue; const p = hub[v], oth = [];
+    for(const [j,s] of nb[v]) if(core[j] && j !== p) oth.push([s,j]); oth.sort((a,b) => b[0]-a[0] || b[1]-a[1]);
+    oth.slice(0, 2).forEach(([s,j]) => { const k = key(p,j); ce.set(k, (ce.get(k)||0) + P.shared_w*Math.min(s, pstr[v])/med); }); }
+  const cedges = [...ce.entries()].sort((a,b) => a[0]-b[0]).map(([k,wt]) => [cpos.get(Math.floor(k/n)), cpos.get(k%n), wt]).filter(e => e[0] !== undefined && e[1] !== undefined);
+  const cdeg = new Float64Array(nc); cedges.forEach(([a,b]) => { cdeg[a]++; cdeg[b]++; });
+  const mass = ci.map((i,k) => cdeg[k] + 1 + P.sat_mass*(sats.get(i)||[]).length);
+  const gmul = ci.map(i => Math.max(0.15, 1 - P.bridge_release*(inp.bshare[i]||0)));
+  const rnd = mulberry32(seed != null ? seed : P.seed), sc = Math.sqrt(nc)*10, x0 = [], y0 = [];
+  for(let k=0; k<nc; k++){ x0.push((rnd()*2-1)*sc); y0.push((rnd()*2-1)*sc); }
+  const st = fa2State(nc, cedges, x0, y0, ci.map(i => labs[i]), mass, gmul);
+  return {inp, R0, ci, nc, sats, cedges, st, nb, med};
+}
+// trin 2: vifter, ø-pakning, drejning, satellitter, løse aktører og overlap; resultat i lærredets pixel (W x H)
+function kerneFinish(S){
+  const T = {}, t00 = performance.now(); let tl = t00; const tk = k => { const u = performance.now(); T[k] = Math.round(u - tl); tl = u; };   // tider pr. trin (ms)
+  // lærredets margen som i pipelinen (fit_pad_px; telefonens egen værdi, hvis network.json 'layout.mobile' har en)
+  const {inp, R0, ci, nc, sats, cedges, nb, med} = S, {n, labs, P, r} = inp, CW = inp.W, CH = inp.H, PAD = P.fit_pad_px != null ? +P.fit_pad_px : 36;
+  const {core, via, pstr, depth, loose, adj} = R0, aspect = (CW-2*PAD)/(CH-2*PAD);
+  let ky = P.island_ky != null ? P.island_ky : P.ky_k*aspect*aspect;
+  const Px = Array.from(S.st.x), Py = Array.from(S.st.y);
+  const fans = new Map(), rc = new Float64Array(nc);
+  ci.forEach((i,k) => { const sl = (sats.get(i)||[]).slice().sort((a,b) => (pstr[b]-pstr[a]) || (depth[a]-depth[b]) || (a-b));
+    fans.set(i, {sl, rings: fanSlots(r[i], sl.map(v => r[v]), P.sat_gap_px, P.sat_pad_px, P.fan_min_deg, P.fan_max_deg, P.sat_spread)});
+    let area = 0; sl.forEach(v => { const d = 2*r[v] + P.sat_pad_px; area += d*d; });
+    const rr = r[i] + (area > 0 ? P.sat_gap_px : 0); rc[k] = Math.sqrt(rr*rr + P.fan_infl*area/Math.PI); });
+  // a) hver lejr pakkes tæt som en ø
+  const gl = ci.map(i => labs[i]), camps = [...new Set(gl)].sort((a,b) => a-b), memOf = new Map(camps.map(c => [c, []]));
+  gl.forEach((c,k) => memOf.get(c).push(k));
+  const X = new Float64Array(nc), Y = new Float64Array(nc);
+  camps.forEach(c => { const mem = memOf.get(c); let mx = 0, my = 0; mem.forEach(k => { mx += Px[k]; my += Py[k]; }); mx /= mem.length; my /= mem.length;
+    let lx = mem.map(k => Px[k]-mx), ly = mem.map(k => Py[k]-my);
+    if(mem.length >= 2){ const target = Math.sqrt(mem.reduce((a,k) => a + rc[k]*rc[k], 0))*P.island_loose;
+      const f = target/Math.max(1e-9, npPct(lx.map((v,t) => Math.hypot(v, ly[t])), 80)); lx = lx.map(v => v*f); ly = ly.map(v => v*f);
+      for(let t=0; t<lx.length; t++){ const g = Math.min(1, 1.25*target/Math.max(Math.hypot(lx[t], ly[t]), 1e-9)); lx[t] *= g; ly[t] *= g; }
+      compactIsland(lx, ly, mem.map(k => rc[k]), P.core_pad_px, P.compact_iter, P.compact_gravity); }
+    mem.forEach((k,t) => { X[k] = lx[t]; Y[k] = ly[t]; }); });
+  // b) øerne lægges efter lejrcentrenes FA2-placering, presset sammen og strakt langs lærredets lange akse
+  const G = camps.length, Cx = new Float64Array(G), Cy = new Float64Array(G);
+  camps.forEach((c,g) => { const mem = memOf.get(c); mem.forEach(k => { Cx[g] += Px[k]; Cy[g] += Py[k]; }); Cx[g] /= mem.length; Cy[g] /= mem.length; });
+  const mdx = npMedian(Cx), mdy = npMedian(Cy); for(let g=0; g<G; g++){ Cx[g] -= mdx; Cy[g] -= mdy; }
+  const rad = Array.from(Cx, (v,g) => Math.hypot(v, Cy[g])), r90 = npPct(rad, 90);
+  for(let g=0; g<G; g++){ const f = Math.min(1, 1.1*r90/Math.max(rad[g], 1e-9)); Cx[g] *= f; Cy[g] *= f; }
+  const sq = P.island_squeeze*(Math.min(CW,CH) - 2*PAD)/2/Math.max(1e-9, 1.1*r90); for(let g=0; g<G; g++){ Cx[g] *= sq; Cy[g] *= sq; }
+  const ptp = a => Math.max(...a) - Math.min(...a), ar0 = ptp(Cx)/Math.max(1e-9, ptp(Cy));
+  if(aspect >= ar0){ const f = clampV(aspect/ar0, 1, P.stretch_max); for(let g=0; g<G; g++) Cx[g] *= f; }
+  else { const f = clampV(ar0/aspect, 1, P.stretch_max); for(let g=0; g<G; g++) Cy[g] *= f; }
+  camps.forEach((c,g) => { const mem = memOf.get(c); let mx = 0, my = 0; mem.forEach(k => { mx += X[k]; my += Y[k]; }); mx /= mem.length; my /= mem.length; mem.forEach(k => { X[k] += Cx[g]-mx; Y[k] += Cy[g]-my; }); });
+  tk('a_oer');
+  const pk = packIslandsAspect(X, Y, gl, rc, P, ky, aspect); const QX = pk.X, QY = pk.Y; ky = pk.ky;
+  tk('b_pakning');
+  resolveOverlapPad(QX, QY, rc, 60, P.core_pad_px);
+  rotateIslands(QX, QY, gl, cedges, P.rotate_rounds);
+  // c) satellitter i vifter; en satellit på en lejrfælle placeres i retning af lejrfællen
+  const XX = new Float64Array(n), YY = new Float64Array(n); ci.forEach((i,k) => { XX[i] = QX[k]; YY[i] = QY[k]; });
+  const campC = new Map(camps.map(c => { const mem = memOf.get(c); let mx = 0, my = 0; mem.forEach(k => { mx += QX[k]; my += QY[k]; }); return [c, [mx/mem.length, my/mem.length]]; }));
+  ci.forEach((i,k) => { const {sl, rings} = fans.get(i); if(!sl.length) return;
+    const hx = QX[k], hy = QY[k]; let vx = 0, vy = 0;
+    for(const [j,s] of nb[i]) if(core[j] && j !== i){ const dx = hx-XX[j], dy = hy-YY[j], dl = Math.hypot(dx,dy); if(dl > 1e-6){ vx += (s/med)*dx/dl; vy += (s/med)*dy/dl; } }
+    const vl = Math.hypot(vx,vy); if(vl > 1e-9){ vx /= vl; vy /= vl; }
+    const cc = campC.get(labs[i]), dcx = hx-cc[0], dcy = hy-cc[1], dcl = Math.hypot(dcx,dcy); if(dcl > 1e-6){ vx += P.camp_dir_w*dcx/dcl; vy += P.camp_dir_w*dcy/dcl; }
+    const th0 = Math.hypot(vx,vy) > 1e-9 ? Math.atan2(vy,vx) : -Math.PI/2, pref = new Map(), angOf = new Map();
+    sl.forEach(sv => { if(via[sv] >= 0) return; let ax = 0, ay = 0;
+      for(const [j,s] of nb[sv]) if(core[j] && j !== i){ const dx = XX[j]-hx, dy = YY[j]-hy, dl = Math.hypot(dx,dy); if(dl > 1e-6){ ax += s*dx/dl; ay += s*dy/dl; } }
+      pref.set(sv, wrapA((Math.hypot(ax,ay) > 1e-9 ? Math.atan2(ay,ax) : th0) - th0)); });
+    rings.forEach(([R, idx, f]) => { let ring = idx.map(t => sl[t]);
+      ring.forEach(sv => { if(via[sv] >= 0){ const p = via[sv]; pref.set(sv, angOf.has(p) ? wrapA(angOf.get(p) - th0) : (pref.has(p) ? pref.get(p) : 0)); } });
+      ring = ring.slice().sort((a,b) => (pref.get(a)-pref.get(b)) || (a-b));
+      const dd = ring.map(v => 2*r[v] + P.sat_pad_px), tot = dd.reduce((a,b) => a+b, 0); let cum = 0;
+      ring.forEach((sv,t) => { const cen = cum + dd[t]/2; cum += dd[t]; const ang = th0 + (cen - tot/2)*f/R; XX[sv] = hx + R*Math.cos(ang); YY[sv] = hy + R*Math.sin(ang); angOf.set(sv, ang); }); }); });
+  // d) F1: øerne pakkes igen med deres faktiske form (kerne + satellitter), så ø-skiverne ikke rører hinanden (som trin c i
+  //    pipeline/netlayout.py). Hver ø er en stiv skive af de aktører, der ligger på den.
+  //    'compress' (desktop og, siden fix-runde 2, telefonen med 14 px margen): tilpasses lærredet med fuld radius, og øens
+  //    radius måles efter tilpasningen (/ s).
+  //    'uniform' (ikke længere standard): gemmes i fuld størrelse, og doFit skalerer positioner og radier ens (skive-margen og
+  //    mellemrum / s).
+  //    Runde c (27-09-2026, som netlayout.py): disc_rule bestemmer, hvilken skive øerne pakkes og måles efter. 'island' (telefonen):
+  //    skiven, som fitDiscs tegner den (mindste omsluttende cirkel om øens aktører + disc_rpad_px), med forskydningen fra øens
+  //    middelpunkt til cirklens centrum. 'island_p90' (desktop): p90(afstand + r) + disc_pad_px om øens middelpunkt; til sidst
+  //    flyttes de få aktører uden for den ind på den (clampToDiscs), så den tegnede skive højst er så stor som den pakkede.
+  //    'camp' (før runde c): p90-skiven om lejrens middelpunkt. Kun 'compress' bruger 'island' og 'island_p90'.
+  tk('c_vifter');
+  const uniform = P.fit_mode === 'uniform', hubA = R0.hub;
+  const grp = new Int32Array(n).fill(-1); for(let i=0;i<n;i++){ if(core[i]) grp[i] = labs[i]; else if(hubA[i] >= 0) grp[i] = labs[hubA[i]]; }
+  const act = []; for(let i=0;i<n;i++) if(grp[i] >= 0) act.push(i);
+  const na = act.length, ra = act.map(i => r[i]), ra5 = ra.map(v => v + 0.5), ga = act.map(i => grp[i]);
+  const labN = new Map(); labs.forEach(c => { if(c >= 0) labN.set(c, (labN.get(c)||0) + 1); });
+  const glist = [...new Set(ga)].sort((a,b) => a-b), gpos = new Map(glist.map((g,k) => [g,k]));
+  const discMinN = P.disc_min != null ? P.disc_min : KSTY.disc_min;
+  const isDisc = glist.map(g => (labN.get(g)||0) >= discMinN);
+  const discGap = P.disc_gap_px != null ? P.disc_gap_px : 10, discPad = P.disc_pad_px != null ? P.disc_pad_px : 4;
+  const rule = P.disc_rule || 'camp', islRule = (rule === 'island' || rule === 'island_p90') && !uniform, mecPack = rule === 'island' && !uniform;
+  const rpad = P.disc_rpad_px != null ? +P.disc_rpad_px : Math.min(discPad, 2);
+  const gidx = glist.map(() => []); ga.forEach((g,t) => gidx[gpos.get(g)].push(t));
+  const bbox = (ax, ay) => { let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for(let t=0; t<ax.length; t++){ if(ax[t] < x0) x0 = ax[t]; if(ax[t] > x1) x1 = ax[t]; if(ay[t] < y0) y0 = ay[t]; if(ay[t] > y1) y1 = ay[t]; } return [x0, x1, y0, y1]; };
+  // ch: lærredets højde i tilpasningen (mindre end CH, når øerne skal give plads til de løse aktørers gitter forneden)
+  const fitFactor = (ax, ay, ch = CH) => { const [x0, x1, y0, y1] = bbox(ax, ay); return Math.min((CW-2*PAD)/Math.max(1e-9, x1-x0), (ch-2*PAD)/Math.max(1e-9, y1-y0)); };
+  const fitCanvas = (ax, ay, ch = CH) => { const [x0, x1, y0, y1] = bbox(ax, ay), s = Math.min((CW-2*PAD)/Math.max(1e-9, x1-x0), (ch-2*PAD)/Math.max(1e-9, y1-y0));
+    const ox = PAD + ((CW-2*PAD) - s*(x1-x0))/2 - s*x0, oy = PAD + ((ch-2*PAD) - s*(y1-y0))/2 - s*y0; return [Float64Array.from(ax, v => ox + v*s), Float64Array.from(ay, v => oy + v*s)]; };
+  const centreC = (ax, ay) => { const [x0, x1, y0, y1] = bbox(ax, ay), dx = CW/2 - (x0+x1)/2, dy = CH/2 - (y0+y1)/2; return [Float64Array.from(ax, v => v + dx), Float64Array.from(ay, v => v + dy)]; };
+  const bodyRadii = (ax, ay, dpad) => gidx.map((m,k) => { let cx = 0, cy = 0; m.forEach(t => { cx += ax[t]; cy += ay[t]; }); cx /= m.length; cy /= m.length;
+    return npPct(m.map(t => Math.hypot(ax[t]-cx, ay[t]-cy) + ra[t]), 90) + (isDisc[k] ? dpad : 0); });
+  // (radius, forskydning [dx, dy] fra øens middelpunkt til skivens centrum) pr. ø (body_geom i netlayout.py): 'island' den mindste
+  // omsluttende cirkel + rpad, ellers p90-radius + dpad om middelpunktet (ingen forskydning)
+  const bodyGeom = (ax, ay, dpad) => { if(!mecPack) return [bodyRadii(ax, ay, dpad), null];
+    const R = [], off = [];
+    gidx.forEach((m,k) => { const [ex, ey, Re] = enclCircle(ax, ay, ra, m); let mx = 0, my = 0; m.forEach(t => { mx += ax[t]; my += ay[t]; });
+      R.push(Re + (isDisc[k] ? rpad : 0)); off.push([ex - mx/m.length, ey - my/m.length]); });
+    return [R, off]; };
+  const XXf = XX.slice(), YYf = YY.slice();   // kerne + vifter før ompakningen (hvert forsøg nedenfor starter herfra)
+  // skive-mellemrum (mindst, median af mellemrummet til nærmeste skive) for øerne i Fx, Fy (aktørerne i act) efter disc_rule
+  // (disc_gaps_act i netlayout.py): 'island' de tegnede skiver; 'island_p90' p90-skiven om øens middelpunkt for øer, hvis lejr har
+  // mindst disc_min aktører; 'camp' p90-skiven om middelpunktet af aktørerne i samme lejr. Under to skiver: uendelig
+  const discGapsAct = (Fx, Fy) => {
+    if(mecPack) return discGapStats(gidx.filter((m,k) => isDisc[k]).map(m => { const [ex, ey, Re] = enclCircle(Fx, Fy, ra, m); return [ex, ey, Re + rpad]; }));
+    let groups;
+    if(islRule) groups = gidx.filter((m,k) => isDisc[k]);
+    else { const byC = new Map(); act.forEach((i,t) => { const c = labs[i]; if(c < 0) return; if(!byC.has(c)) byC.set(c, []); byC.get(c).push(t); });
+      groups = [...byC.keys()].sort((a,b) => a-b).map(c => byC.get(c)).filter(m => m.length >= discMinN); }
+    return discGapStats(groups.map(m => { let cx = 0, cy = 0; m.forEach(t => { cx += Fx[t]; cy += Fy[t]; }); cx /= m.length; cy /= m.length;
+      return [cx, cy, npPct(m.map(t => Math.hypot(Fx[t]-cx, Fy[t]-cy) + ra[t]), 90) + discPad]; })); };
+  // de løse aktørers gitter med overskrift og margen [bredde, højde] i lærredets px / sv (loose_box i netlayout.py); med
+  // loose_hole holder ompakningen et hul af den størrelse fri i øernes nederste venstre hjørne
+  const capW0 = P.loose_caption_w_px != null ? +P.loose_caption_w_px : 150, capH0 = P.loose_caption_h_px != null ? +P.loose_caption_h_px : 18;
+  const looseBox = sv => { const st = P.loose_step_px*Math.sqrt(inp.rs), cols = P.loose_cols, rows = Math.ceil(loose.length/cols), mg = 0.5*discGap;
+    return [(Math.max((cols-1)*st, capW0) + 2*mg + st)/sv, ((rows-1)*st + capH0 + 2*mg + st)/sv]; };
+  // ompakning på et lærred på CW x ch (som repack i netlayout.py, runde c: også pipelinens valg mellem runderne og dens
+  // redningsrunder). 'compress': hver runde gemmes; blandt runderne med mindst disc_gap_px + repack_margin_px mellem skiverne
+  // vælges den med størst median op til repack_median_px og derefter størst tilpasningsfaktor; har ingen runde det, pakkes der
+  // højst repack_rescue_rounds gange mere med et mellemrum, der er øget med det, der manglede, og ellers vælges runden med størst
+  // mellemrum. repack_restarts (standard 1, kun dashboardet): flere forsøg, hvor hver ø først flyttes lidt (repack_jitter x
+  // medianradius, i en tilfældig retning med fast frø), og der pakkes forfra; rundevalget vælger blandt alle forsøgs runder.
+  function repack(ch){
+    const asp = (CW-2*PAD)/(ch-2*PAD);
+    const Ax0 = Float64Array.from(act, i => XXf[i]), Ay0 = Float64Array.from(act, i => YYf[i]);
+    resolveOverlapPad(Ax0, Ay0, ra5, P.final_iter, P.final_pad_px);                      // utilpasset (layoutets pixel)
+    const shrink0 = na > 1 ? fitFactor(Ax0, Ay0, ch) : 1, s0 = uniform ? Math.min(1, shrink0) : shrink0;
+    const [Rb0, ref0] = bodyGeom(Ax0, Ay0, uniform ? discPad/s0 : discPad), ky0 = ky, ar0 = pk.ar;
+    let Ax = Ax0, Ay = Ay0, sEst = s0, sFit = shrink0, arPack = ar0, Fx = null, Fy = null;
+    const target = discGap + (P.repack_margin_px != null ? +P.repack_margin_px : 1), nRounds = P.repack_rounds|0;
+    const nRescue = (uniform || nRounds === 0) ? 0 : (P.repack_rescue_rounds|0), cand = [];
+    // blødt krav til medianen af mellemrummet (repack_median_px) og et valgfrit mindste antal runder (repack_min_rounds)
+    const medT = P.repack_median_px != null ? +P.repack_median_px : -Infinity, nMin = Math.min(nRounds, P.repack_min_rounds|0);
+    const useHole = !!P.loose_hole && loose.length > 0 && !uniform && ch >= CH;
+    const nTry = (uniform || nRounds === 0) ? 1 : Math.max(1, (P.repack_restarts|0) || 1);
+    const rng = mulberry32((P.seed != null ? +P.seed : 42) + 7919);
+    for(let ti=0; ti<nTry; ti++){
+      Ax = Ax0; Ay = Ay0; let Rb = Rb0, ref = ref0; sEst = s0; ky = ky0; arPack = ar0;
+      if(ti > 0){ Ax = Float64Array.from(Ax0); Ay = Float64Array.from(Ay0);   // nyt forsøg: hver ø flyttes lidt, og der pakkes forfra
+        const jr = (P.repack_jitter != null ? +P.repack_jitter : 0.5)*npMedian(Rb0);
+        gidx.forEach(m => { const ang = rng()*2*Math.PI, rr = jr*(0.5 + 0.5*rng()), dx = rr*Math.cos(ang), dy = rr*Math.sin(ang); m.forEach(t => { Ax[t] += dx; Ay[t] += dy; }); }); }
+      let boost = 0;
+      for(let rnd=0; rnd<nRounds+nRescue; rnd++){
+        if(glist.length < 2) break;
+        const padg = isDisc.map(d => (d ? (P.repack_gap_px != null ? P.repack_gap_px : discGap + 2) + boost : (P.repack_pad_px != null ? P.repack_pad_px : 8))/sEst);
+        let tq = performance.now();
+        const q = packIslandsAspect(Ax, Ay, ga, ra, P, ky, asp, padg, Rb, useHole ? looseBox(sEst) : null, ref); Ax = q.X; Ay = q.Y; ky = q.ky; arPack = q.ar;
+        T.pack = (T.pack||0) + Math.round(performance.now() - tq); tq = performance.now();
+        sFit = fitFactor(Ax, Ay, ch); let sNew, gR = null, gM = null;
+        if(uniform){ sNew = Math.min(1, sFit); [Fx, Fy] = sFit >= 1 ? fitCanvas(Ax, Ay, ch) : centreC(Ax, Ay); Rb = bodyRadii(Ax, Ay, discPad/sNew); }
+        else { sNew = sFit; [Fx, Fy] = fitCanvas(Ax, Ay, ch); resolveOverlapPad(Fx, Fy, ra5, P.final_iter, P.final_pad_px);
+          const bg = bodyGeom(Fx, Fy, discPad);            // hvad øen fylder efter tilpasning, i utilpassede enheder
+          Rb = bg[0].map(v => v/sFit); ref = bg[1] ? bg[1].map(([a, b]) => [a/sFit, b/sFit]) : null;
+          [gR, gM] = discGapsAct(Fx, Fy); cand.push({g: gR, gm: gM, s: sFit, rnd, ti, Fx, Fy, sNew, ky, ar: arPack}); }
+        T.fitovl = (T.fitovl||0) + Math.round(performance.now() - tq);
+        // stop, når s har lagt sig, men i 'compress' først når mindst én runde har nok luft mellem skiverne og den ønskede median;
+        // medianen er et blødt krav, så efter repack_rounds runder stopper det, når blot det mindste mellemrum er nået
+        const okMin = uniform || cand.some(c => c.g >= target), okAll = uniform || cand.some(c => c.g >= target && c.gm >= medT);
+        const fin = rnd >= Math.max(1, nMin - 1) && Math.abs(sNew - sEst) < 0.01*sEst && okAll; sEst = sNew;
+        if(fin || (rnd + 1 >= nRounds && okMin)) break;
+        if(rnd + 1 >= nRounds) boost += Math.max(0, target - gR);   // redningsrunde
+      }
+    }
+    let pick = null;
+    if(cand.length){ const ok = cand.filter(c => c.g >= target);
+      // lige gode: det tidligste forsøg og den tidligste runde (kandidaterne ligger i den rækkefølge)
+      const better = ok.length ? ((b, a) => { const mb = Math.min(b.gm, medT), ma = Math.min(a.gm, medT); return mb > ma || (mb === ma && (b.s > a.s || (b.s === a.s && b.rnd < a.rnd))); })
+                               : ((b, a) => b.g > a.g || (b.g === a.g && b.rnd < a.rnd));
+      const best = (ok.length ? ok : cand).reduce((a, b) => better(b, a) ? b : a);
+      Fx = best.Fx; Fy = best.Fy; sFit = best.s; sEst = best.sNew; ky = best.ky; arPack = best.ar;
+      pick = {rnd: best.rnd + 1, ti: best.ti + 1, tries: nTry, of: cand.length, gap: best.g, med: best.gm, ok: ok.length > 0, rounds: cand.map(c => [+c.s.toFixed(3), +c.g.toFixed(1), +c.gm.toFixed(1)])}; }
+    if(!Fx){ if(na < 2){ Fx = Ax; Fy = Ay; } else if(uniform && shrink0 < 1) [Fx, Fy] = centreC(Ax, Ay);
+      else { [Fx, Fy] = fitCanvas(Ax, Ay, ch); resolveOverlapPad(Fx, Fy, ra5, P.final_iter, P.final_pad_px); } }
+    return {Fx, Fy, sEst, sFit, arPack, asp, shrink0, pick};
+  }
+  // e) løse aktører (uden vej til kernen) i et lille gitter nederst til venstre, et sted uden ø og med plads til overskriften
+  //    (skriver i XX/YY); øerne som i ompakningen (bodyGeom)
+  function placeLoose(Fx, Fy, sv){
+    const mn = v => adj[v].reduce((a,b) => Math.min(a,b), v), order = loose.slice().sort((a,b) => (mn(a)-mn(b)) || (a-b));
+    const st = P.loose_step_px*Math.sqrt(inp.rs)/sv, cols = P.loose_cols, rows = Math.ceil(order.length/cols);
+    let y1, x0, span, bodies = [];
+    if(na){ const bb = bbox(Fx, Fy); y1 = bb[3]; x0 = bb[0]; span = bb[1]-bb[0]; const [Rf, of] = bodyGeom(Fx, Fy, discPad/sv);
+      bodies = gidx.map((m,k) => { let cx = 0, cy = 0; m.forEach(t => { cx += Fx[t]; cy += Fy[t]; }); cx /= m.length; cy /= m.length;
+        return [cx + (of ? of[k][0] : 0), cy + (of ? of[k][1] : 0), Rf[k]]; }); }
+    else { y1 = CH-PAD; x0 = PAD; span = CW-2*PAD; }
+    const capW = capW0/sv, capH = capH0/sv, mg = 0.5*discGap/sv;
+    const bw = Math.max((cols-1)*st, capW), bh = (rows-1)*st + capH;
+    const free = (bx0, by1) => { const bx1 = bx0 + bw, by0 = by1 - bh;
+      return bodies.every(([cx, cy, rr]) => { const qx = clampV(cx, bx0, bx1), qy = clampV(cy, by0, by1); return (qx-cx)**2 + (qy-cy)**2 >= (rr+mg)**2; }); };
+    let spot = null;
+    if(na){ const y0a = bbox(Fx, Fy)[2], ny = Math.floor(Math.max(0, Math.min(0.5*(y1-y0a), y1-y0a-bh))/st), nx = Math.floor(Math.max(0, span-bw)/st);
+      for(let dy=0; dy<=ny && !spot; dy++) for(let dx=0; dx<=nx; dx++) if(free(x0 + dx*st, y1 - dy*st)){ spot = [x0 + dx*st, y1 - dy*st]; break; } }   // 1) inden for øernes udstrækning
+    for(let dy=1; dy<40 && !spot; dy++) for(let dx=0; dx<Math.max(1, Math.floor(0.35*span/st)); dx++) if(free(x0 + dx*st, y1 + dy*st)){ spot = [x0 + dx*st, y1 + dy*st]; break; }   // 2) under øerne
+    const [gx, gy] = spot || [x0, y1 + 3*st];
+    order.forEach((v,t) => { XX[v] = gx + (t % cols)*st; YY[v] = gy - (rows - 1 - Math.floor(t/cols))*st; });
+  }
+  // ligger gitteret under øerne og gør udstrækningen højere, pakkes øerne igen (højst loose_reserve_rounds gange) på et lærred,
+  // der er lige så meget lavere, så gitteret får en fri stribe forneden, og trin f ikke skal presse alt sammen (fix-runde 2,
+  // som netlayout.py); en rest under loose_reserve_tol (1 %) accepteres
+  let rb = 0, res = null, sv = 1, sAll = 1;
+  const nTry = (uniform || !loose.length) ? 1 : 1 + (P.loose_reserve_rounds != null ? (P.loose_reserve_rounds|0) : 2);
+  const tolR = P.loose_reserve_tol != null ? +P.loose_reserve_tol : 0.01;
+  for(let attempt=0; attempt<nTry; attempt++){
+    res = repack(CH - rb); tk('d_ompakning_' + attempt);
+    XX.set(XXf); YY.set(YYf); act.forEach((i,t) => { XX[i] = res.Fx[t]; YY[i] = res.Fy[t]; });
+    sv = uniform ? res.sEst : 1;   // 'uniform': dashboardet skalerer alt med ca. sv; afstande her er i fuld størrelse
+    if(loose.length) placeLoose(res.Fx, res.Fy, sv);
+    sAll = n > 1 ? fitFactor(XX, YY) : 1;
+    const bb = bbox(XX, YY), over = n > 1 ? (bb[3]-bb[2]) - (CH-2*PAD) : 0;
+    if(uniform || sAll > 1 - Math.max(1e-3, tolR) || over <= 0 || attempt === nTry-1) break;
+    rb = Math.min(rb + over + 1, 0.3*(CH-2*PAD));
+  }
+  // f) til sidst: 'compress' tilpasses lærredet (normalt uændret), 'uniform' skaleres kun op, hvis det er mindre end lærredet;
+  //    så fjernes overlap (radius i fuld størrelse), og med 'island_p90' flyttes de få aktører uden for øens p90-skive ind på den
+  if(n > 1 && (sAll >= 1 + 1e-3 || (!uniform && sAll <= 1 - 1e-3))){ const [a, b] = fitCanvas(XX, YY); XX.set(a); YY.set(b); }
+  else if(n > 1 && uniform){ const [a, b] = centreC(XX, YY); XX.set(a); YY.set(b); }
+  resolveOverlapPad(XX, YY, Array.from(r, v => v + 0.5), P.final_iter, P.final_pad_px);
+  const nClamp = rule === 'island_p90' && islRule && n > 1 ? clampToDiscs(XX, YY, grp, labN, r, discMinN, discPad, rpad, P.final_pad_px) : 0;
+  tk('f_overlap');
+  const shrink = uniform ? 1 : res.sFit*Math.min(1, sAll), viewS = uniform && n > 1 ? Math.min(1, fitFactor(XX, YY)) : 1;
+  // skive-mellemrum i det færdige layout, som dashboardet viser det (runde c: de tegnede skiver; ellers p90-skiven om lejrens
+  // middelpunkt); bruges til konsollens log og til valget mellem ForceAtlas2-frø (fa_seeds)
+  let Xv = XX, Yv = YY, rv = r; if(uniform && n > 1){ [Xv, Yv] = fitCanvas(XX, YY); rv = Array.from(r, v => v*viewS); }
+  let gFin;
+  if(islRule){ const byG = new Map(); grp.forEach((g,i) => { if(g >= 0 && (labN.get(g)||0) >= discMinN){ if(!byG.has(g)) byG.set(g, []); byG.get(g).push(i); } });
+    gFin = discGapStats([...byG.keys()].sort((a,b) => a-b).map(g => { const [ex, ey, Re] = enclCircle(Xv, Yv, rv, byG.get(g)); return [ex, ey, Re + rpad]; })); }
+  else { const byC = new Map(); labs.forEach((c,i) => { if(c >= 0){ if(!byC.has(c)) byC.set(c, []); byC.get(c).push(i); } });
+    gFin = discGapStats([...byC.keys()].sort((a,b) => a-b).map(c => byC.get(c)).filter(m => m.length >= discMinN).map(m => { let cx = 0, cy = 0; m.forEach(i => { cx += Xv[i]; cy += Yv[i]; }); cx /= m.length; cy /= m.length;
+      return [cx, cy, npPct(m.map(i => Math.hypot(Xv[i]-cx, Yv[i]-cy) + rv[i]), 90) + discPad]; })); }
+  T.total = Math.round(performance.now() - t00);
+  return {x: Array.from(XX), y: Array.from(YY), roles: {core, hub: R0.hub, via}, shrink, shrink0: res.shrink0, viewS, uniform, ky, packed: res.arPack, aspect: res.asp, reserve: rb, nc, nsat: n - nc - loose.length, nloose: loose.length, ncedges: cedges.length, pick: res.pick,
+    gapMin: gFin[0], gapMed: gFin[1], clamped: nClamp, rule, canvas: [CW, CH], ms: T};
+}
+
 function makeNetView(o){
   const canvas = document.getElementById(o.canvas), ctx = canvas.getContext('2d');
   const H = o.height || 640;
-  let w = canvas.clientWidth, tr = {k:1,x:0,y:0}, hov = null, fit = {s:1,ox:0,oy:0}, running = null;
-  const dpr = window.devicePixelRatio||1; canvas.width = w*dpr; canvas.height = H*dpr; ctx.scale(dpr,dpr);
-  const V = {nodes:o.nodes, edges:o.edges, x:o.nodes.map(n=>n.x), y:o.nodes.map(n=>n.y), opts:o};
-  V.home = {x:V.x.slice(), y:V.y.slice(), edges:V.edges};
+  let w = canvas.clientWidth, tr = {k:1,x:0,y:0}, hov = null, fit = {s:1,ox:0,oy:0}, running = null, runId = 0, rk = 1, K = null;
+  let dpr = window.devicePixelRatio||1; canvas.width = w*dpr; canvas.height = H*dpr; ctx.scale(dpr,dpr);
+  // kerne: tegning med lejr-øer, kanttyper, bindeled-ringe og navne uden overlap; ellers som før
+  const V = {nodes:o.nodes, edges:o.edges, x:o.nodes.map(n=>n.x), y:o.nodes.map(n=>n.y), opts:o, kerne:!!o.kerne, roles:o.roles||null, backbone:o.backbone||o.edges, rs:1};
+  if(o.posFor){ const p = o.posFor(w < 600); V.x = p.x.slice(); V.y = p.y.slice(); V.rs = p.rs; }
+  V.bx = V.x.slice(); V.by = V.y.slice();   // layoutets placering før et eventuelt overlap-skub i skærmens pixel
+  V.home = {x:V.x.slice(), y:V.y.slice(), edges:V.edges, roles:V.roles, kerne:V.kerne, backbone:V.backbone, rs:V.rs};
+  // radius: kaldernes radius (desktop) x telefonskala x min(1, tilpasning), så en krympende tilpasning ikke giver overlap
+  const rad = n => o.radius(n)*rk;
   function doFit(){
     let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; V.x.forEach((x,i)=>{ x0=Math.min(x0,x); x1=Math.max(x1,x); y0=Math.min(y0,V.y[i]); y1=Math.max(y1,V.y[i]); });
-    const pad = 36, s = Math.min((w-2*pad)/Math.max(1e-9,x1-x0), (H-2*pad)/Math.max(1e-9,y1-y0));
+    // et lærred uden bredde (skjult fane) må ikke give negativ skala (negativ radius i ctx.arc). Margen 36 px, men kun 14 px
+    // for kerne-tegningen på telefon (lærred < 600 px), så telefonplaceringen (xm, ym) ikke krymper, og radius forbliver x 0,52;
+    // navneskiltene holdes selv inden for lærredet. Den gamle tegning og det bipartite kort beholder 36 px.
+    const pad = V.kerne && w < 600 ? 14 : 36, s = Math.max(1e-3, Math.min((w-2*pad)/Math.max(1e-9,x1-x0), (H-2*pad)/Math.max(1e-9,y1-y0)));
     fit = {s, ox: pad + ((w-2*pad) - s*(x1-x0))/2 - s*x0, oy: pad + ((H-2*pad) - s*(y1-y0))/2 - s*y0};
+    V.fitS = s; rk = V.kerne ? V.rs*Math.min(1, s) : 1; K = null;
   }
   const sx = i => fit.ox + V.x[i]*fit.s, sy = i => fit.oy + V.y[i]*fit.s;
-  V.draw = function(){
+  // lejrkortet (størrelse efter bindeled): et billigt overlap-skub i skærmens pixel efter tilpasningen
+  const wantOverlap = () => V.kerne && (typeof o.screenOverlap === 'function' ? o.screenOverlap() : !!o.screenOverlap);
+  // radius i skubbet: aktørens radius + 0,5 px, og en tyk ring (de 20 øverste) regnes med, så ringene ikke rører naboen
+  const pushR = i => radI(i) + (o.topSet && o.topSet.has(i) ? 1.6 : 0.5);
+  function screenOverlap(){
+    if(!wantOverlap()) return;
+    const n = V.nodes.length, X = new Float64Array(n), Y = new Float64Array(n), r = new Float64Array(n);
+    for(let i=0;i<n;i++){ X[i] = sx(i); Y[i] = sy(i); r[i] = pushR(i); }
+    resolveOverlapPad(X, Y, r, 300, 0.8);   // stopper, så snart intet par overlapper
+    for(let i=0;i<n;i++){ V.x[i] = (X[i]-fit.ox)/fit.s; V.y[i] = (Y[i]-fit.oy)/fit.s; }
+    K = null;
+  }
+  // fælles for skiverne og skubbet mellem øerne: aktørerne i skærmens pixel, øerne (kerneaktørens egen lejr, satellittens hubs
+  // lejr) og skivernes mål (telefonen har sine egne værdier i network.json 'layout.mobile')
+  function discSetup(){
+    const n = V.nodes.length, narrow = w < 600, isl = islandOf();
+    const X = new Float64Array(n), Y = new Float64Array(n), r = new Float64Array(n);
+    for(let i=0;i<n;i++){ X[i] = sx(i); Y[i] = sy(i); r[i] = radI(i); }
+    const cnt = new Map(); V.nodes.forEach(nd => { if(nd.community >= 0) cnt.set(nd.community, (cnt.get(nd.community)||0) + 1); });
+    const members = new Map(); isl.forEach((c,i) => { if(c >= 0){ if(!members.has(c)) members.set(c, []); members.get(c).push(i); } });
+    // vises kortet mindre end layoutet (tilpasning under 1, fx ved 800 px), bliver positioner og radier mindre med samme faktor,
+    // og så gør skivernes mellemrum og margen det også (ellers skulle næsten alle skiver krympes)
+    const sv = Math.min(1, fit.s || 1);
+    const dPad = (narrow ? nv(KP_MOBILE.disc_pad_px, 3) : nv(KP.disc_pad_px, 4))*sv, dGap = (narrow ? nv(KP_MOBILE.disc_gap_px, 8) : nv(KP.disc_gap_px, 10))*sv;
+    const discMin = nv(KP.disc_min, KSTY.disc_min);
+    // den lille margen uden om den yderste aktør (layout.disc_rpad_px, som ompakningen regner med; disc_pad_px er til p90-radius)
+    const rPad = Math.min(dPad, nv(narrow ? KP_MOBILE.disc_rpad_px : KP.disc_rpad_px, narrow ? 1.5 : 2)*sv);
+    // mindste omsluttende cirkel om aktørernes cirkler (Badoiu-Clarkson fra tyngdepunktet; den bedste runde gemmes)
+    const encl = m => { let cx = 0, cy = 0; m.forEach(i => { cx += X[i]; cy += Y[i]; }); cx /= m.length; cy /= m.length;
+      const far = (ax, ay) => { let best = -1, bi = m[0]; for(const i of m){ const d = Math.hypot(X[i]-ax, Y[i]-ay) + r[i]; if(d > best){ best = d; bi = i; } } return [best, bi]; };
+      let [Rb] = far(cx, cy), bx = cx, by = cy;
+      for(let t=1; t<=200 && m.length > 1; t++){ const [Rt, f] = far(cx, cy); if(Rt < Rb){ Rb = Rt; bx = cx; by = cy; }
+        const dx = X[f]-cx, dy = Y[f]-cy, d = Math.hypot(dx, dy); if(d < 1e-9) break;
+        cx += (X[f] + r[f]*dx/d - cx)/(t+1); cy += (Y[f] + r[f]*dy/d - cy)/(t+1); }
+      const [Rl] = far(cx, cy); if(Rl < Rb){ Rb = Rl; bx = cx; by = cy; }
+      return [bx, by, Rb + rPad]; };
+    const back = () => { for(let i=0;i<n;i++){ V.x[i] = (X[i]-fit.ox)/fit.s; V.y[i] = (Y[i]-fit.oy)/fit.s; } };
+    return {n, narrow, X, Y, r, cnt, members, dGap, discMin, encl, back};
+  }
+  // lejrkortet og andre størrelser end omtale (runde c): aktørerne er større end i layoutet, og overlap-skubbet gør øerne
+  // bredere, så de stive øer (om alle deres aktører) skubbes fra hinanden i skærmens pixel med disc_gap_px + 1 mellem to
+  // skiver (3 px, hvis en af dem er en lille lejr uden skive); store øer flytter sig mindst
+  function separateIslands(){
+    if(!V.kerne) return;
+    const {X, Y, r, cnt, members, dGap, discMin, encl, back} = discSetup();
+    const isl = [...members.entries()].sort((a,b) => a[0]-b[0]).map(([c,m]) => { const [cx, cy, R] = encl(m); return {m, cx, cy, R, disc: (cnt.get(c)||0) >= discMin, area: m.reduce((a,i) => a + r[i]*r[i] + 1, 0)}; });
+    const G = isl.length; if(G < 2) return;
+    const mx = new Float64Array(G), my = new Float64Array(G); let moved = false;
+    for(let it=0; it<300; it++){ mx.fill(0); my.fill(0); let any = false;
+      for(let a=0; a<G; a++) for(let b=a+1; b<G; b++){ const A = isl[a], B = isl[b], dx = A.cx-B.cx, dy = A.cy-B.cy, d = Math.hypot(dx, dy), need = A.R + B.R + (A.disc && B.disc ? dGap + 1 : 3) - d;
+        if(need <= 0) continue; any = true; const ux = d > 1e-9 ? dx/d : Math.cos(a*2.4), uy = d > 1e-9 ? dy/d : Math.sin(a*2.4), t = A.area + B.area;
+        mx[a] += ux*need*0.5*B.area/t; my[a] += uy*need*0.5*B.area/t; mx[b] -= ux*need*0.5*A.area/t; my[b] -= uy*need*0.5*A.area/t; }
+      if(!any) break; moved = true; isl.forEach((I,g) => { I.cx += mx[g]; I.cy += my[g]; I.m.forEach(i => { X[i] += mx[g]; Y[i] += my[g]; }); }); }
+    if(moved){ back(); K = null; }
+  }
+  // ø-skiver (runde c, 27-09-2026): hver lejr med mindst disc_min aktører får en skive om ALLE de aktører, der ligger på dens ø
+  // (kerne + satellitter; løse aktører tæller ikke). Radius = største (afstand + r) om den mindste omsluttende cirkel + en lille
+  // margen (layout.disc_rpad_px, 2 px; 1,5 px på telefon), så ingen aktør stikker ud af sin skive (før p90 + disc_pad_px, og op
+  // til 54 aktører lå uden for). Kommer to skiver tættere end disc_gap_px, krympes netop de to forholdsvis, og aktører, der så
+  // stikker ud, flyttes ind på skiven, efterfulgt af et kort overlap-skub. Beregnes i skærmens pixel efter tilpasningen og
+  // gemmes i V.discs; de flyttede aktører skrives tilbage i V.x, V.y.
+  function fitDiscs(){
+    V.discs = []; V.discInfo = null; if(!V.kerne) return;
+    const {n, X, Y, r, cnt, members, dGap, discMin, encl, back} = discSetup(), inPad = 1;   // inPad: mindste luft mellem en flyttet aktør og skivens kant
+    const discs = [...members.entries()].filter(([c]) => (cnt.get(c)||0) >= discMin).sort((a,b) => a[0]-b[0]).map(([c,m]) => {
+      const [cx, cy, R] = encl(m); return {c, cx, cy, n: cnt.get(c)||m.length, R, R0: R, m}; });
+    // disc_gap_px mellem skiverne: kun par, der kommer for tæt på hinanden, krympes (forholdsvis, 3 runder)
+    for(let round=0; round<3; round++) for(let a=0; a<discs.length; a++) for(let b=a+1; b<discs.length; b++){
+      const A = discs[a], B = discs[b], ex = A.R + B.R + dGap - Math.hypot(A.cx-B.cx, A.cy-B.cy);
+      if(ex > 0){ const t = A.R + B.R; A.R -= ex*A.R/t; B.R -= ex*B.R/t; } }
+    discs.forEach(D => { D.R = Math.max(D.R, 4); });
+    const clamp = () => { let moved = 0; for(const D of discs) for(const i of D.m){ const dx = X[i]-D.cx, dy = Y[i]-D.cy, d = Math.hypot(dx, dy), lim = Math.max(0, D.R - inPad - r[i]);
+      if(d > lim + 1e-6 && d > 1e-9){ X[i] = D.cx + dx/d*lim; Y[i] = D.cy + dy/d*lim; moved++; } } return moved; };
+    // skiftevis overlap-skub og flyt ind på skiven; til sidst et overlap-skub, så intet overlapper (en aktør kan derefter stikke
+    // højst ca. inPad ud)
+    const moved0 = clamp(); let moved = moved0;
+    if(moved){ const rr = Float64Array.from(r, v => v + 0.5);
+      for(let k=0; k<10 && moved; k++){ resolveOverlapPad(X, Y, rr, 10, 0.8); moved = clamp(); }
+      resolveOverlapPad(X, Y, rr, 40, 0.8); }
+    if(moved0) back();
+    V.discs = discs; V.discInfo = {shrunk: discs.filter(D => D.R < D.R0 - 0.05).length, clamped: moved0}; K = null;
+  }
+  // ny tilpasning; skal der skubbes, startes altid fra layoutets placering, så skift frem og tilbage ikke flytter noget varigt.
+  // Lejrkortet (og andre størrelser end omtale) får to runder tilpasning og overlap-skub med øerne skubbet fra hinanden
+  // imellem: skubbene gør udstrækningen lidt større, så den anden tilpasning krymper en smule, og det andet overlap-skub
+  // fjerner det sidste overlap (runde c)
+  function refit(){ if(V.kerne && V.bx && V.bx.length === V.nodes.length){ V.x = V.bx.slice(); V.y = V.by.slice(); } doFit();
+    if(wantOverlap()){ screenOverlap(); separateIslands(); doFit(); screenOverlap(); } fitDiscs(); }
+  const setBase = (x, y) => { V.bx = x.slice(); V.by = y.slice(); V.x = x.slice(); V.y = y.slice(); };
+
+  /* ---- kerne-tegning ---- */
+  const EK = {satIn:0, satX:1, intra:2, spoke:3, inter:4, fan:5};
+  // kanttyper: satellitternes øvrige (inden for / på tværs af lejre), kerne-kerne i lejren, eger til hub eller lejrfælle,
+  // kerne-kerne mellem lejre og de største bindeleds stærkeste forbindelser ud af lejren; tegnes svageste først
+  function classify(){
+    const E = V.edges, m = E.length, ro = V.roles, lab = i => V.nodes[i].community, ek = new Int8Array(m), fan = new Set();
+    if(ro){
+      const rank = i => RANK_BTW[V.nodes[i].id] || 1e9;
+      const fb = V.nodes.map((nd,i) => i).filter(i => rank(i) <= KSTY.fan_bridges).sort((a,b) => rank(a)-rank(b)), inc = new Map(fb.map(i => [i, []]));
+      E.forEach(([a,b],e) => { if(lab(a) === lab(b)) return; if(inc.has(a)) inc.get(a).push(e); if(inc.has(b)) inc.get(b).push(e); });
+      const lo = e => Math.min(E[e][0],E[e][1]), hi = e => Math.max(E[e][0],E[e][1]);
+      fb.forEach(i => inc.get(i).sort((p,q) => (E[q][2]-E[p][2]) || (lo(q)-lo(p)) || (hi(q)-hi(p))).slice(0, KSTY.fan_per_bridge).forEach(e => fan.add(e)));
+    }
+    E.forEach(([a,b],e) => { const x = lab(a) !== lab(b);
+      if(fan.has(e)) ek[e] = EK.fan;
+      else if(ro && ((ro.hub[a] === b && ro.via[a] < 0) || (ro.hub[b] === a && ro.via[b] < 0) || ro.via[a] === b || ro.via[b] === a)) ek[e] = EK.spoke;
+      else if(ro && ro.core[a] && ro.core[b]) ek[e] = x ? EK.inter : EK.intra;
+      else ek[e] = x ? EK.satX : EK.satIn; });
+    const cls = e => ek[e] <= 1 ? 0 : ek[e];
+    V.eorder = [...Array(m).keys()].sort((p,q) => (cls(p)-cls(q)) || (E[p][2]-E[q][2]));
+    V.ek = ek; V._ekFor = E; V._ekRoles = ro;
+  }
+  // lejrnavne med store bogstaver i halvfed Plex Sans (som et kvarter på et bykort), så de ikke ligner aktørnavne
+  const FONTS = {node:'11px "IBM Plex Sans", sans-serif', bridge:'italic 11px "IBM Plex Sans", sans-serif', camp:'600 10.5px "IBM Plex Sans", sans-serif', cap:'10.5px "IBM Plex Sans", sans-serif', hover:'600 11px "IBM Plex Sans", sans-serif'};
+  const twCache = new Map();
+  const tw = (t, f) => { const key = f+'|'+t; let v = twCache.get(key); if(v === undefined){ ctx.font = FONTS[f]; v = ctx.measureText(t).width; twCache.set(key, v); } return v; };
+  const cut = t => t.length > KSTY.lab_chars ? t.slice(0, KSTY.lab_chars-1) + '…' : t;
+  const ringR = r => w < 600 ? Math.max(r + 2.5, 6) : Math.max(r + 3.2, 8);
+  const nv = (v, d) => v != null ? v : d;
+  // løse aktører (ikke kerne, ingen hub) får en mindste radius, så gitteret kan ses, også på telefonen
+  const isLoose = i => !!(V.kerne && V.roles && !V.roles.core[i] && V.roles.hub[i] < 0);
+  const radI = i => { const r = rad(V.nodes[i]); return isLoose(i) ? Math.max(r, w < 600 ? 1.3 : 1.6) : r; };
+  // øen, en aktør ligger på: kerneaktørens egen lejr, satellittens hubs lejr (som ompakningen i pipelinen); løse aktører ingen
+  const islandOf = () => { const ro = V.roles; return V.nodes.map((nd,i) => !ro || ro.core[i] ? nd.community : ro.hub[i] >= 0 ? V.nodes[ro.hub[i]].community : -1); };
+  // geometri til navneskilte: to linjestykker krydser, afstand fra punkt til linjestykke, linjestykke gennem en kasse
+  const segSeg = (x0, y0, x1, y1, x2, y2, x3, y3) => { const o = (ax, ay, bx, by, cx, cy) => (bx-ax)*(cy-ay) - (by-ay)*(cx-ax);
+    const d1 = o(x2, y2, x3, y3, x0, y0), d2 = o(x2, y2, x3, y3, x1, y1), d3 = o(x0, y0, x1, y1, x2, y2), d4 = o(x0, y0, x1, y1, x3, y3);
+    return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0)); };
+  const segDist = (px, py, x0, y0, x1, y1) => { const vx = x1-x0, vy = y1-y0, L2 = vx*vx + vy*vy, t = L2 > 0 ? clampV(((px-x0)*vx + (py-y0)*vy)/L2, 0, 1) : 0; return Math.hypot(px - x0 - t*vx, py - y0 - t*vy); };
+  const segBox = (x0, y0, x1, y1, bx) => { for(let k=1; k<12; k++){ const t = k/12, x = x0 + (x1-x0)*t, y = y0 + (y1-y0)*t; if(x > bx[0] && x < bx[2] && y > bx[1] && y < bx[3]) return true; } return false; };
+  // grådig placering af navneskilte uden overlap: 13 nære pladser, så ydre ringe med henvisningsstreg (3 på telefon, 4 ellers).
+  // En ydre plads afvises, når stregen er for lang (telefon), går gennem en anden aktør på mindst 6 px, krydser en anden streg
+  // eller går gennem et skilt. Runde c (27-09-2026): et skilt må ikke dække en anden synlig aktør på mindst 4 px (cover, rr) og
+  // højst ligge 30 % inde på en anden lejrs skive (9 prøvepunkter: hjørner, kantmidter og midte); af de ydre pladser i samme
+  // ring vælges den, der ligger mindst på fremmede skiver, dvs. ude i mellemrummet. 'relax' (de vigtigste navne, når ingen plads
+  // overholder reglerne): kun aktører på mindst 6 px må ikke dækkes, og højst 45 % på en fremmed skive.
+  function makePlacer(X, Y, ext, obst, blockers, discs, isl, narrow, cover, rr){
+    const placed = [], out = [], leaders = [], words = [];
+    cover = cover || [];
+    const sig = t => new Set(t.toLowerCase().match(/\p{L}{4,}/gu) || []);
+    // samme aktør under to navne (fx 'WasteTech (Ingeniøren)' og 'Ingeniøren / WasteTech'): mindst 2 fælles ord på 4+ bogstaver
+    const dupExact = t => { const tl = t.toLowerCase(); return out.some(l => l.t.toLowerCase() === tl); };
+    const dup = t => { const s = sig(t); return dupExact(t) || words.some(p => { let c = 0; s.forEach(x => { if(p.has(x)) c++; }); return c >= 2; }); };
+    const hitBox = bx => placed.some(p => bx[0] < p[2] && p[0] < bx[2] && bx[1] < p[3] && p[1] < bx[3]);
+    const hitObst = bx => obst.some(j => { const qx = clampV(X[j], bx[0], bx[2]) - X[j], qy = clampV(Y[j], bx[1], bx[3]) - Y[j], rr = ext[j] + 1; return qx*qx + qy*qy < rr*rr; });
+    const free = bx => bx[0] >= 2 && bx[1] >= 2 && bx[2] <= w-2 && bx[3] <= H-2 && !hitBox(bx) && !hitObst(bx);
+    // dækker skiltet en anden synlig aktør med radius mindst minR?
+    const coverHit = (bx, i, minR) => { for(const j of cover){ if(j === i || rr[j] < minR) continue; const qx = clampV(X[j], bx[0], bx[2]) - X[j], qy = clampV(Y[j], bx[1], bx[3]) - Y[j]; if(qx*qx + qy*qy < rr[j]*rr[j]) return true; } return false; };
+    const boxHitsDisc = (bx, D) => { const qx = clampV(D.cx, bx[0], bx[2]) - D.cx, qy = clampV(D.cy, bx[1], bx[3]) - D.cy; return qx*qx + qy*qy < D.R*D.R; };
+    // andel af et skilt, der ligger inde i en anden lejrs skive (9 prøvepunkter)
+    const foreign = (bx, c) => { const ds = discs.filter(D => D.c !== c && boxHitsDisc(bx, D)); if(!ds.length) return 0; let hit = 0;
+      for(let a=0; a<3; a++) for(let b=0; b<3; b++){ const px = bx[0] + a/2*(bx[2]-bx[0]), py = bx[1] + b/2*(bx[3]-bx[1]); if(ds.some(D => (px-D.cx)**2 + (py-D.cy)**2 < D.R*D.R)) hit++; }
+      return hit/9; };
+    // opt.extra (en tyk ring uden navn, sidste forsøg): to ringe længere ude, og kun aktører på mindst 10 px spærrer for stregen
+    const rings = narrow ? [14, 30, 46] : [14, 30, 46, 62], ringsX = narrow ? rings : rings.concat([80, 100]);
+    // more (sidste forsøg for de vigtigste navne, runde c): også de forskudte pladser over og under aktøren i de ydre ringe, så
+    // navnet kan stå skråt over eller under i stedet for lige over eller under
+    const cands = (i, wd, h, rs, more) => { const x = X[i], y = Y[i], res = [];
+      [[0, ext[i]+3]].concat(rs.map((f,k) => [k+1, ext[i]+3+f])).forEach(([ring, e]) => { const g = 0.7071*e;
+        [[x-wd/2, y-e-h, x+wd/2, y-e], [x-wd/2, y+e, x+wd/2, y+e+h], [x+e+1, y-h/2, x+e+1+wd, y+h/2], [x-e-1-wd, y-h/2, x-e-1, y+h/2],
+         [x+g, y-g-h, x+g+wd, y-g], [x-g-wd, y-g-h, x-g, y-g], [x+g, y+g, x+g+wd, y+g+h], [x-g-wd, y+g, x-g, y+g+h]].forEach(b => res.push([ring, b]));
+        if(!ring || more) [[x-wd*0.8, y-e-h, x+wd*0.2, y-e], [x-wd*0.2, y-e-h, x+wd*0.8, y-e], [x-wd*0.8, y+e, x+wd*0.2, y+e+h], [x-wd*0.2, y+e, x+wd*0.8, y+e+h]].forEach(b => res.push([ring, b]));
+        if(ring && more) [[x-wd, y-e-h, x, y-e], [x, y-e-h, x+wd, y-e], [x-wd, y+e, x, y+e+h], [x, y+e, x+wd, y+e+h]].forEach(b => res.push([ring, b])); });
+      return res; };
+    const put = (bx, t, kind, extra) => { placed.push(bx); words.push(sig(t)); out.push(Object.assign({t, kind, x:(bx[0]+bx[2])/2, y:(bx[1]+bx[3])/2}, extra)); };
+    const leaderOK = (i, x0, y0, x1, y1, minExt) => {
+      if(narrow && Math.hypot(x1-x0, y1-y0) > 36) return false;
+      if(blockers.some(j => j !== i && ext[j] >= (minExt || 0) && segDist(X[j], Y[j], x0, y0, x1, y1) < ext[j] + 0.5)) return false;
+      if(leaders.some(L => segSeg(x0, y0, x1, y1, L.x0, L.y0, L.x1, L.y1))) return false;
+      return !placed.some(p => segBox(x0, y0, x1, y1, p)); };
+    const leaderFor = (i, kind, bx) => { const qx = clampV(X[i], bx[0], bx[2]), qy = clampV(Y[i], bx[1], bx[3]), vx = qx-X[i], vy = qy-Y[i], Ln = Math.max(Math.hypot(vx,vy), 1e-9);
+      return {i, kind, x0: X[i] + vx/Ln*(ext[i]+1.5), y0: Y[i] + vy/Ln*(ext[i]+1.5), x1: qx, y1: qy}; };
+    // opt.force: findes ingen fri plads, sættes navnet alligevel lige over aktøren (aktøren under musen); opt.relax: se ovenfor
+    const nodeLab = (i, kind, t, opt) => { opt = opt || {}; const wd = tw(t, kind) + 2, h = 13, all = cands(i, wd, h, opt.extra ? ringsX : rings, !!opt.extra);
+      const own = isl ? isl[i] : -1;
+      // ringene r0..r1 (0 = nære pladser) med de givne regler
+      const tryPass = (minR, maxF, r0, r1, minExt) => {
+        let ring = -1, best = null;
+        for(const [rg, bx] of all){
+          if(rg < r0) continue; if(rg > r1) break;
+          if(rg !== ring){ if(best) break; ring = rg; }
+          if(!free(bx) || coverHit(bx, i, minR)) continue;
+          const f = discs.length ? foreign(bx, own) : 0; if(f > maxF) continue;
+          if(!rg){ best = {bx, L: null, f}; break; }   // nære pladser: den første, der overholder reglerne
+          const L = leaderFor(i, kind, bx); if(!leaderOK(i, L.x0, L.y0, L.x1, L.y1, minExt)) continue;
+          if(!best || f < best.f - 1e-9) best = {bx, L, f}; }
+        if(!best) return false; put(best.bx, t, kind, {i}); if(best.L) leaders.push(best.L); return true; };
+      // korte placeringer først: nær plads eller kort streg efter de strenge regler; for de vigtigste navne så en nær plads efter
+      // de lempede regler, før der bruges lange henvisningsstreger
+      const RN = rings.length;
+      if(tryPass(4, 0.3, 0, 2)) return true;
+      if(opt.relax && tryPass(6, 0.45, 0, 0)) return true;
+      if(tryPass(4, 0.3, 3, RN)) return true;
+      if(opt.relax && tryPass(6, 0.45, 1, RN)) return true;
+      if(opt.extra && tryPass(6, 0.45, 1, ringsX.length, 10)) return true;
+      // opt.cover (bindeled nr. 1 til 3, allersidst): en nær plads eller en kort henvisningsstreg (de to inderste ringe), hvor kun
+      // aktører på mindst 10 px ikke må dækkes eller krydses, så navnet hellere dækker en mindre aktør uden navn end udelades
+      if(opt.cover && tryPass(10, 0.45, 0, 2, 10)) return true;
+      if(opt.force){ const x = X[i], y = Y[i] - ext[i] - 3 - h/2; put([x-wd/2, y-h/2, x+wd/2, y+h/2], t, kind, {i}); return true; }
+      return false; };
+    return {placed, out, leaders, free, put, dup, dupExact, boxHitsDisc, foreign, coverHit, nodeLab};
+  }
+  // øer, tegnerækkefølge, gennemsigtighed og navneskilte; beregnes efter tilpasning, størrelses- og filterskift og gemmes
+  function buildKerne(){
+    const n = V.nodes.length, vis = o.visible || (() => true), narrow = w < 600, mid = !narrow && w < 900;
+    // lys skive bag hver lejr med mindst disc_min aktører (fitDiscs, efter tilpasningen); kan flytte aktører ind på skiven,
+    // så positionerne læses bagefter
+    const ms = {}, tk = (() => { let t = performance.now(); return k => { const u = performance.now(); ms[k] = Math.round(u - t); t = u; }; })();   // tider pr. trin (K.ms)
+    if(!V.discs) fitDiscs();
+    tk('skiver');
+    const X = new Float64Array(n), Y = new Float64Array(n), r = new Float64Array(n), lab = V.nodes.map(nd => nd.community), isl = islandOf();
+    for(let i=0;i<n;i++){ X[i] = sx(i); Y[i] = sy(i); r[i] = radI(i); }
+    const campMem = new Map(); lab.forEach((c,i) => { if(c >= 0){ if(!campMem.has(c)) campMem.set(c, []); campMem.get(c).push(i); } });
+    const discs = V.discs || [];
+    const ro = V.roles, order = [...Array(n).keys()].sort((a,b) => (r[a]-r[b]) || (a-b)), alpha = new Float64Array(n);
+    for(let i=0;i<n;i++){ const im = o.importance ? o.importance(V.nodes[i]) : 1, q = Math.min(1, 2.5*im);
+      alpha[i] = !ro ? 0.3 + 0.7*Math.min(1, im*2.2) : ro.core[i] ? 0.5 + 0.5*q : ro.hub[i] < 0 ? Math.max(0.6, 0.3 + 0.4*q) : 0.3 + 0.4*q; }
+    const rank = i => RANK_BTW[V.nodes[i].id] || 1e9;
+    const bridges = V.nodes.map((nd,i) => i).filter(i => rank(i) <= KSTY.bridge_n).sort((a,b) => rank(a)-rank(b)), bset = new Set(bridges), topSet = o.topSet || new Set();
+    let looseCap = null;
+    const key = o.labelKey ? o.labelKey() : 'mentioned';
+    const Bd = Object.assign(narrow ? {first:8, top:8, camps:6, bridges:6} : mid ? {first:12, top:16, camps:7, bridges:6} : {first:12, top:20, camps:8, bridges:8}, o.labelBudget ? o.labelBudget(narrow, mid) : {});
+    const byKey = [...Array(n).keys()].filter(i => vis(V.nodes[i])).sort((a,b) => ((V.nodes[b][key]||0) - (V.nodes[a][key]||0)) || (a-b));
+    const labTop = byKey.slice(0, Bd.top), labTopSet = new Set(labTop);
+    const ext = Float64Array.from(r); topSet.forEach(i => { ext[i] = r[i] + 1.5; }); bridges.forEach(i => { ext[i] = ringR(r[i]) + 1; });
+    const obst = [], blockers = [], cover = [];
+    for(let i=0;i<n;i++){ if(!vis(V.nodes[i])) continue; if(ext[i] >= 12 || topSet.has(i) || bset.has(i) || labTopSet.has(i)) obst.push(i); if(ext[i] >= 6) blockers.push(i); if(r[i] >= 4) cover.push(i); }
+    const PL = makePlacer(X, Y, ext, obst, blockers, discs, isl, narrow, cover, r);
+    tk('forberedelse');
+    // løse aktører: overskrift over eller under gitteret (der, hvor den rammer færrest øer og aktører); feltet holdes fri for navne
+    const loose = ro ? [...Array(n).keys()].filter(i => !ro.core[i] && ro.hub[i] < 0 && vis(V.nodes[i])) : [];
+    if(loose.length){ let lx0 = Infinity, lx1 = -Infinity, ly0 = Infinity, ly1 = -Infinity;
+      loose.forEach(i => { lx0 = Math.min(lx0, X[i]-r[i]); lx1 = Math.max(lx1, X[i]+r[i]); ly0 = Math.min(ly0, Y[i]-r[i]); ly1 = Math.max(ly1, Y[i]+r[i]); });
+      const t = 'uden forbindelse til resten', cw = tw(t, 'cap'), ls = new Set(loose);
+      const cost = bx => (bx[1] < 2 || bx[3] > H-2 || bx[2] > w-2 ? 1000 : 0) + 10*discs.filter(D => PL.boxHitsDisc(bx, D)).length
+        + [...Array(n).keys()].filter(i => !ls.has(i) && vis(V.nodes[i]) && (clampV(X[i], bx[0], bx[2])-X[i])**2 + (clampV(Y[i], bx[1], bx[3])-Y[i])**2 < r[i]*r[i]).length;
+      const above = [lx0-2, ly0-17, lx0+cw+2, ly0-3], below = [lx0-2, ly1+3, lx0+cw+2, ly1+17], bx = cost(above) <= cost(below) ? above : below;
+      looseCap = {t, x: lx0, y: bx[3]-1}; PL.placed.push([Math.min(bx[0], lx0)-2, Math.min(bx[1], ly0)-2, Math.max(bx[2], lx1)+2, Math.max(bx[3], ly1)+2]); }
+    // de vigtigste navne (de øverste efter størrelsesmålet og bindeleddene) må falde tilbage til de lempede regler i makePlacer
+    const nodeLab = (i, kind) => { const t = cut(V.nodes[i].name); return PL.dup(t) ? false : PL.nodeLab(i, kind, t, {relax: true}); };
+    const bridgeLab = bridges.filter(i => !labTopSet.has(i) && vis(V.nodes[i])).slice(0, Bd.bridges);
+    // en synlig kerneaktør eller en stor aktør under skiltet (små, lyse satellitter må gerne ligge under lejrnavnets kant)
+    const hitNode = (bx, minR) => { for(let i=0;i<n;i++){ if(!(r[i] >= 6 || (ro && ro.core[i] && r[i] >= minR)) || !vis(V.nodes[i])) continue; const qx = clampV(X[i], bx[0], bx[2]) - X[i], qy = clampV(Y[i], bx[1], bx[3]) - Y[i], rr = r[i] + 0.5; if(qx*qx + qy*qy < rr*rr) return true; } return false; };
+    // lejrnavn = lejrens hovedaktør (størst PageRank), med store bogstaver; hænger på sin egen ø: skiltets midte skal ligge nærmere
+    // egen ø end nogen anden, skiltet må ikke røre en anden ø eller dække en aktør; ellers udelades navnet. Udelades også, når
+    // hovedaktøren får sit eget navn. Telefon (runde c): er ingen af de faste pladser fri, prøves pladser inde på egen skive
+    // oppe ved kanten (helt inde på skiven, hvis skiltet kan være der, ellers ved 0,35 R over midten); her må kun små aktører
+    // (under 4 px) ligge under skiltet, og skiltet må ikke røre en anden skive.
+    const campInfo = [];   // hvorfor et lejrnavn blev udeladt (til kontrol)
+    const campLab = D => { const m = campMem.get(D.c) || D.m; let ld = m[0]; m.forEach(i => { if((V.nodes[i].pagerank||0) > (V.nodes[ld].pagerank||0)) ld = i; });
+      if(labTopSet.has(ld) || bridgeLab.includes(ld)){ campInfo.push({c: D.c, why: 'hovedaktøren har eget navn'}); return; }
+      // telefon: den korte form af navnet (uden parentes og uden det, der står efter ' – ' eller ' / '), så navnet kan stå på skiven,
+      // fx 'KØBENHAVNS KOMMUNE' for 'Københavns Kommune – Teknik- og Miljøforvaltningen'
+      const full = V.nodes[ld].name, short = full.replace(/\s*\([^)]*\)/g, '').split(/\s+[–\/]\s+/)[0].trim();
+      const t = cut(narrow && short.length >= 2 ? short : full).toLocaleUpperCase('da-DK'); if(PL.dup(t)){ campInfo.push({c: D.c, t, why: 'dublet'}); return; }
+      const fails = {free: 0, node: 0, disc: 0}; campInfo.push({c: D.c, t, fails});
+      // minR: kerneaktører fra denne radius må ikke ligge under skiltet (telefon 3 px: på telefonens små radier ligger der næsten
+      // altid en lille kerneaktør under et navn på skiven, og så blev kun KL navngivet)
+      const wd = tw(t, 'camp') + 2, h = 13, cx = D.cx, cy = D.cy, R = D.R, sh = wd*0.3, minR = narrow ? 3 : 2;
+      const inTop = [cx-wd/2, cy-R+4, cx+wd/2, cy-R+4+h], above = [cx-wd/2, cy-R-3-h, cx+wd/2, cy-R-3], inBot = [cx-wd/2, cy+R-4-h, cx+wd/2, cy+R-4],
+        below = [cx-wd/2, cy+R+3, cx+wd/2, cy+R+3+h], right = [cx+R+4, cy-h/2, cx+R+4+wd, cy+h/2], left = [cx-R-4-wd, cy-h/2, cx-R-4, cy+h/2],
+        inL = [cx-wd/2-sh, cy-R+8, cx+wd/2-sh, cy-R+8+h], inR = [cx-wd/2+sh, cy-R+8, cx+wd/2+sh, cy-R+8+h],
+        in55t = [cx-wd/2, cy-0.55*R-h/2, cx+wd/2, cy-0.55*R+h/2], in55b = [cx-wd/2, cy+0.55*R-h/2, cx+wd/2, cy+0.55*R+h/2];
+      const trySlot = bx => { if(!PL.free(bx)){ fails.free++; return false; } if(hitNode(bx, minR)){ fails.node++; return false; }
+        const mx = (bx[0]+bx[2])/2, my = (bx[1]+bx[3])/2, own = Math.hypot(mx-cx, my-cy) - R;
+        if(discs.some(E => E !== D && (Math.hypot(mx-E.cx, my-E.cy) - E.R <= own || PL.boxHitsDisc(bx, E)))){ fails.disc++; return false; }
+        PL.put(bx, t, 'camp', {c: D.c}); fails.placed = true; return true; };
+      if(!narrow){ for(const bx of [inTop, above, inBot, below, right, left, inL, inR, in55t, in55b]) if(trySlot(bx)) return; return; }
+      // telefon (runde c): kun pladser på egen skive, derefter lige over den. Pladserne ved siden af og under skiven er droppet,
+      // fordi navnet der svævede ude i mellemrummet (op til 19 px fra skiven), så det var uklart, hvilken ø det hørte til
+      for(const bx of [inTop, inL, inR, in55t, inBot, in55b]) if(trySlot(bx)) return;
+      // helst oppe ved kanten, ellers længere nede på skiven (runde c: også midten og den nederste halvdel)
+      const q = R*R - (wd/2)**2, yIn = q > (h/2 + 1)**2 ? Math.sqrt(q) - h/2 - 1 : 0.35*R, yTop = cy - yIn, yBot = cy + yIn;
+      const ys = [yTop, yTop + 0.6*h, cy - 0.35*R, cy - 0.2*R, cy, cy + 0.2*R, cy + 0.35*R, yBot - 0.6*h, yBot];
+      for(const yc of ys) for(const dx of [0, -0.15*wd, 0.15*wd]){ const bx = [cx-wd/2+dx, yc-h/2, cx+wd/2+dx, yc+h/2];
+        if(!PL.free(bx)){ fails.free++; continue; } if(PL.coverHit(bx, -1, 4)){ fails.node++; continue; }
+        if(discs.some(E => E !== D && PL.boxHitsDisc(bx, E))){ fails.disc++; continue; }
+        PL.put(bx, t, 'camp', {c: D.c}); fails.placed = true; fails.inside = true; return; }
+      if(trySlot(above)) fails.above = true; };
+    tk('løse');
+    // telefon (27-09-2026): lejrnavnene placeres før aktørnavnene; ellers brugte de første otte navne pladsen på skiverne, og kun
+    // et enkelt lejrnavn kom med
+    const campLoop = () => { let ncamp = 0; discs.slice().sort((a,b) => (b.n-a.n) || (a.c-b.c)).slice(0, narrow ? 12 : discs.length)
+      .forEach(D => { if(ncamp >= Bd.camps) return; const k0 = campInfo.length; campLab(D); const ci = campInfo[k0]; if(ci && ci.fails && ci.fails.placed) ncamp++; }); };
+    if(narrow) campLoop();
+    labTop.slice(0, Bd.first).forEach(i => nodeLab(i, 'node'));
+    // de tre største bindeled (nr. 1 til 3) får navn lige efter de første navne og før lejrnavnene (runde c). Før kom
+    // bindeleddene sidst, og på desktop var pladsen så brugt: nr. 1 (Sjællandske Nyheder, bindeled 0,25, ca. 3 gange nr. 2), der
+    // er en lille aktør midt på KL-øen, og nr. 3 (Europa-Kommissionen, DG ENV) fik intet navn. Et bindeled blandt de øverste
+    // efter størrelsesmålet får et almindeligt navn som de andre øverste; de andre får bindeleddets kursive rustfarvede navn
+    // (på telefonen først efter lejrnavnene: de store lejres navne på egen skive har kun få pladser, og bindeleddenes navne kan
+    // bruge henvisningsstreger)
+    const topBr = Bd.bridges > 0 ? bridges.filter(i => rank(i) <= 3 && vis(V.nodes[i])) : [];
+    let nbr = 0; const topBrLab = () => topBr.forEach(i => { if(labTopSet.has(i)){ if(labTop.indexOf(i) >= Bd.first) nodeLab(i, 'node'); } else if(nodeLab(i, 'bridge')) nbr++; });
+    if(!narrow) topBrLab();
+    tk('første navne');
+    // de største lejre først; kun lejre, hvis navn faktisk kommer på, tæller med i budgettet (runde c: før talte forsøg med,
+    // og på telefonen brugte seks mislykkede forsøg hele budgettet, så mindre lejre aldrig blev prøvet). På telefonen prøves kun
+    // de 12 største lejre (efter antal aktører): hellere færre lejrnavne end de mest højlydte navne på små lejre i udkanten
+    if(!narrow) campLoop();
+    if(narrow) topBrLab();
+    tk('lejrnavne');
+    labTop.slice(Bd.first).forEach(i => nodeLab(i, 'node'));
+    bridges.forEach(i => { if(labTopSet.has(i) || topBr.includes(i) || nbr >= Bd.bridges || !vis(V.nodes[i])) return; if(nodeLab(i, 'bridge')) nbr++; });
+    // store aktører med tyk ring (inden for budgettet) og bindeled nr. 1 til 3, der ikke fik navn, fordi navnet ligner et andet (fx
+    // 'Ingeniøren / WasteTech' ved siden af 'WasteTech (Ingeniøren)'), eller fordi der ikke var plads: et navn mere, gerne med
+    // henvisningsstreg (runde c); bindeleddene først
+    tk('resten');
+    const named = new Set(PL.out.filter(l => l.i !== undefined).map(l => l.i));
+    topBr.concat(labTop.filter(i => topSet.has(i) && !topBr.includes(i))).forEach(i => { if(named.has(i)) return; const t = cut(V.nodes[i].name);
+      if(!PL.dupExact(t) && PL.nodeLab(i, labTopSet.has(i) ? 'node' : 'bridge', t, {relax: true, extra: true, cover: topBr.includes(i)})) named.add(i); });
+    // de øvrige bindeled inden for budgettet, der ikke fik navn (fx Randers Kommune, nr. 9): samme sidste forsøg
+    bridges.forEach(i => { if(nbr >= Bd.bridges || named.has(i) || labTopSet.has(i) || topBr.includes(i) || !vis(V.nodes[i])) return; const t = cut(V.nodes[i].name);
+      if(!PL.dupExact(t) && PL.nodeLab(i, 'bridge', t, {relax: true, extra: true})){ named.add(i); nbr++; } });
+    tk('tykke ringe');
+    return {discs, order, alpha, bridges, labels: PL.out, leaders: PL.leaders, looseCap, X, Y, r, ext, campInfo, hover: null, ms};
+  }
+  // navne ved musen: aktøren selv og dens stærkeste naboer (rygrad og hvem der nævner hvem), placeret uden overlap med samme
+  // pladser og henvisningsstreger som de faste navne; højst 15 naboer (telefon 8), naboer uden fri plads får intet navn
+  function buildHover(){
+    const vis = o.visible || (() => true), narrow = w < 600, h = hov, wts = new Map(), mw = new Map();
+    V.edges.forEach(([a,b,s]) => { const j = a === h ? b : b === h ? a : -1; if(j >= 0 && vis(V.nodes[j])) wts.set(j, Math.max(wts.get(j)||0, s)); });
+    if(o.showMentions && o.showMentions()){ const id = V.nodes[h].id, add = (j, c) => { if(j !== undefined && j !== h && V.nodes[j] === N.nodes[j] && vis(V.nodes[j])){ if(!wts.has(j)) wts.set(j, 0); mw.set(j, (mw.get(j)||0) + c); } };
+      (OUTM[id]||[]).slice(0,12).forEach(e => add(NIDX[e.target], e.w||1)); (INM[id]||[]).slice(0,12).forEach(e => add(NIDX[e.source], e.w||1)); }
+    // rækkefølge (runde c): kerneaktører først, derefter forbindelsens vægt (rygraden + omtaler, som pilene viser) gange aktørens
+    // radius, så de store aktører, man ser tykke streger og pile til, får navn før små satellitter
+    const isCore = j => V.roles ? V.roles.core[j] : 1, score = j => ((wts.get(j)||0) + 0.5*Math.sqrt(mw.get(j)||0)) * radI(j);
+    const nbs = [...wts.keys()].sort((a,b) => (isCore(b)-isCore(a)) || (score(b)-score(a)) || ((V.nodes[b].mentioned||0) - (V.nodes[a].mentioned||0)) || (a-b));
+    const obst = [h].concat(nbs), PL = makePlacer(K.X, K.Y, K.ext, obst, obst, [], null, narrow);
+    const name = i => { const t = V.nodes[i].name; return t.length > 28 ? t.slice(0,26)+'…' : t; };
+    PL.nodeLab(h, 'hover', name(h), {force: true});
+    let placedN = 0; const cap = narrow ? 8 : 15;
+    for(const j of nbs){ if(placedN >= cap) break; const t = name(j); if(PL.dup(t)) continue; if(PL.nodeLab(j, 'node', t)) placedN++; }
+    return {labels: PL.out, leaders: PL.leaders};
+  }
+  function drawKerne(){
+    if(V._ekFor !== V.edges || V._ekRoles !== V.roles) classify();
+    if(!K) K = buildKerne();
+    const k = tr.k, ink = css('--ink'), ink2 = css('--ink-2'), surface = css('--surface'), dim = css('--mark-dim');
+    const cEdge = css('--net-edge') || '#8d9a93', cInter = css('--net-inter') || '#34434b', cBr = css('--bridge') || '#8f3510';
+    const vis = o.visible || (() => true), hl = o.highlight ? o.highlight() : null, narrow = w < 600;
+    ctx.save(); ctx.clearRect(0,0,w,H); ctx.translate(tr.x,tr.y); ctx.scale(k,k);
+    const neigh = new Set(); if(hov !== null) V.edges.forEach(([a,b]) => { if(a===hov) neigh.add(b); if(b===hov) neigh.add(a); });
+    // lejr-øer
+    ctx.globalAlpha = 1; ctx.fillStyle = css('--island') || '#ebf1ed'; ctx.strokeStyle = css('--island-line') || '#d9e2dc'; ctx.lineWidth = 1/k;
+    K.discs.forEach(D => { ctx.beginPath(); ctx.arc(D.cx, D.cy, D.R, 0, 2*Math.PI); ctx.fill(); ctx.stroke(); });
+    // kanter, svageste først
+    ctx.lineCap = 'round';
+    const E = V.edges, ek = V.ek, seg = e => { const a = E[e][0], b = E[e][1]; ctx.moveTo(sx(a), sy(a)); ctx.lineTo(sx(b), sy(b)); };
+    const batch = (list, col, al, lw) => { if(!list.length) return; ctx.globalAlpha = al; ctx.strokeStyle = col; ctx.lineWidth = lw/k; ctx.beginPath(); list.forEach(seg); ctx.stroke(); };
+    const each = (list, col, al, wf) => { ctx.globalAlpha = al; ctx.strokeStyle = col; list.forEach(e => { ctx.lineWidth = wf(Math.min(E[e][2], 3))/k; ctx.beginPath(); seg(e); ctx.stroke(); }); };
+    const Ls = [[],[],[],[],[],[]], off = [], inc = [];
+    V.eorder.forEach(e => { const a = E[e][0], b = E[e][1]; if(!vis(V.nodes[a]) || !vis(V.nodes[b])) return;
+      if(hov !== null){ (a === hov || b === hov ? inc : off).push(e); return; }
+      if(hl && !(hl(V.nodes[a]) && hl(V.nodes[b]))) off.push(e); else Ls[ek[e]].push(e); });
+    if(hov !== null){   // som før: aktørens egne forbindelser tydelige, alt andet næsten væk (bindeleddenes rustfarvede streger skjules)
+      batch(off, cEdge, 0.04, 0.5);
+      ctx.globalAlpha = 0.85; ctx.strokeStyle = cEdge; inc.forEach(e => { ctx.lineWidth = Math.min(5, 0.4 + E[e][2]*0.8)/k; ctx.beginPath(); seg(e); ctx.stroke(); });
+    } else {
+      batch(off, cEdge, 0.04, 0.4);
+      batch(Ls[EK.satIn], cEdge, 0.05, 0.4); batch(Ls[EK.satX], cEdge, 0.09, 0.4);
+      each(Ls[EK.intra], cEdge, 0.35, s => 0.45 + 0.3*s);
+      batch(Ls[EK.spoke], cEdge, 0.40, 0.5);
+      each(Ls[EK.inter], cInter, 0.40, s => 0.55 + 0.3*s);
+      each(Ls[EK.fan], cBr, 0.45, s => 0.9 + 0.2*s);
+    }
+    // hvem nævner hvem: pile ud (orange) og ind (blå) for aktøren under musen
+    if(hov !== null && o.showMentions && o.showMentions()) drawArrows(neigh);
+    // knuder: små først; kerneaktører tydelige, satellitter lysere
+    ctx.globalAlpha = 1;
+    K.order.forEach(i => { const nd = V.nodes[i]; if(!vis(nd)) return; const r = Math.max(0.3, radI(i)), faded = (hov !== null && i !== hov && !neigh.has(i)) || (hl && !hl(nd));
+      ctx.beginPath(); ctx.arc(sx(i), sy(i), r, 0, 2*Math.PI);
+      ctx.globalAlpha = faded ? 0.2 : (hov !== null ? 1 : K.alpha[i]); ctx.fillStyle = faded ? dim : o.color(nd); ctx.fill();
+      const top = o.topSet && o.topSet.has(i) && !faded; ctx.globalAlpha = faded ? 0.2 : 1; ctx.lineWidth = (top ? 2.2 : Math.min(1, 0.6*r))/k; ctx.strokeStyle = top ? ink : surface; ctx.stroke(); });
+    // bindeled: rustfarvet stiplet ring på de 12 største efter betweenness (samme rangering som 'bindeled nr.' i tooltip)
+    // stregerne [3, 2,2] px, så ringen læses som stiplet ved normal zoom (før [2,2, 1,6], der lignede en takket perlering)
+    ctx.setLineDash([3/k, 2.2/k]); ctx.strokeStyle = cBr; ctx.lineWidth = (narrow ? 1.4 : 1.8)/k;
+    if(o.bridgeRings !== false) K.bridges.forEach(i => { const nd = V.nodes[i]; if(!vis(nd)) return; const faded = (hov !== null && i !== hov && !neigh.has(i)) || (hl && !hl(nd));
+      ctx.globalAlpha = faded ? 0.3 : 1; ctx.beginPath(); ctx.arc(sx(i), sy(i), ringR(radI(i)), 0, 2*Math.PI); ctx.stroke(); });
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    // navne (gennem zoom, skriftstørrelse / sqrt(k) som før)
+    const fs = f => f/Math.sqrt(k);
+    ctx.lineJoin = 'round';
+    const drawLabels = (labels, leaders, skip) => {
+      leaders.forEach(L => { if(skip(L.i)) return;
+        ctx.globalAlpha = 1; ctx.strokeStyle = surface; ctx.lineWidth = 3/k; ctx.beginPath(); ctx.moveTo(L.x0, L.y0); ctx.lineTo(L.x1, L.y1); ctx.stroke();
+        ctx.globalAlpha = 0.85; ctx.strokeStyle = L.kind === 'bridge' ? cBr : ink; ctx.lineWidth = 1.1/k; ctx.beginPath(); ctx.moveTo(L.x0, L.y0); ctx.lineTo(L.x1, L.y1); ctx.stroke(); });
+      ctx.globalAlpha = 1; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      labels.forEach(l => { if(l.i !== undefined && skip(l.i)) return; const camp = l.kind === 'camp';
+        ctx.font = camp ? `600 ${fs(10.5)}px "IBM Plex Sans", sans-serif` : l.kind === 'hover' ? `600 ${fs(11)}px "IBM Plex Sans", sans-serif` : `${l.kind === 'bridge' ? 'italic ' : ''}${fs(11)}px "IBM Plex Sans", sans-serif`;
+        ctx.lineWidth = (camp ? 4 : 3)/k; ctx.strokeStyle = surface; ctx.strokeText(l.t, l.x, l.y);
+        ctx.fillStyle = camp ? (o.campColor ? o.campColor(l.c) : ink2) : l.kind === 'bridge' ? cBr : ink; ctx.fillText(l.t, l.x, l.y); });
+    };
+    if(hov === null){
+      drawLabels(K.labels, K.leaders, i => !!(hl && !hl(V.nodes[i])));
+      if(K.looseCap){ const c = K.looseCap; ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.font = `${fs(10.5)}px "IBM Plex Sans", sans-serif`;
+        ctx.lineWidth = 3/k; ctx.strokeStyle = surface; ctx.strokeText(c.t, c.x, c.y); ctx.fillStyle = ink2; ctx.fillText(c.t, c.x, c.y); }
+    } else {
+      const hk = hov + '|' + (o.showMentions && o.showMentions() ? 1 : 0);
+      if(!K.hover || K.hover.key !== hk) K.hover = Object.assign(buildHover(), {key: hk});
+      drawLabels(K.hover.labels, K.hover.leaders, () => false);
+    }
+    ctx.restore();
+  }
+  function drawArrows(neigh){
+    const id = V.nodes[hov].id;
+    const arrow = (a,b,col,wt) => { const x1=sx(a),y1=sy(a),x2=sx(b),y2=sy(b), ang=Math.atan2(y2-y1,x2-x1), rb = rad(V.nodes[b])+3;
+      const ex = x2-Math.cos(ang)*rb, ey = y2-Math.sin(ang)*rb; ctx.globalAlpha=0.9; ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=Math.min(4,1+Math.sqrt(wt)*0.5)/tr.k;
+      ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(ex,ey); ctx.stroke(); const hs=7/tr.k; ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-hs*Math.cos(ang-0.4),ey-hs*Math.sin(ang-0.4)); ctx.lineTo(ex-hs*Math.cos(ang+0.4),ey-hs*Math.sin(ang+0.4)); ctx.closePath(); ctx.fill(); };
+    (OUTM[id]||[]).slice(0,12).forEach(e => { const b = NIDX[e.target]; if(b!==undefined && V.nodes[b]===N.nodes[b]) { arrow(hov,b,'#eb6834',e.w); neigh.add(b); } });
+    (INM[id]||[]).slice(0,12).forEach(e => { const a = NIDX[e.source]; if(a!==undefined && V.nodes[a]===N.nodes[a]) { arrow(a,hov,'#2a78d6',e.w); neigh.add(a); } });
+  }
+  /* ---- tegning som før (fuld ForceAtlas2, bipartit) ---- */
+  function drawOld(){
     ctx.save(); ctx.clearRect(0,0,w,H); ctx.translate(tr.x,tr.y); ctx.scale(tr.k,tr.k);
     const line = css('--line'), ink = css('--ink'), surface = css('--surface'), dim = css('--mark-dim');
     const neigh = new Set(); if(hov!==null) V.edges.forEach(([a,b]) => { if(a===hov) neigh.add(b); if(b===hov) neigh.add(a); });
@@ -703,78 +1645,194 @@ function makeNetView(o){
       ctx.globalAlpha = hov!==null ? (on?0.85:0.04) : (on?(o.edgeAlpha||0.45):0.05); ctx.strokeStyle = line; ctx.lineWidth = Math.min(5, 0.4+s*0.8)/tr.k;
       ctx.beginPath(); ctx.moveTo(sx(a),sy(a)); ctx.lineTo(sx(b),sy(b)); ctx.stroke(); });
     // hvem nævner hvem: pile ud (orange) og ind (blå) for aktøren under musen
-    if(hov!==null && o.showMentions && o.showMentions()){
-      const id = V.nodes[hov].id;
-      const arrow = (a,b,col,wt) => { const x1=sx(a),y1=sy(a),x2=sx(b),y2=sy(b), ang=Math.atan2(y2-y1,x2-x1), rb = o.radius(V.nodes[b])+3;
-        const ex = x2-Math.cos(ang)*rb, ey = y2-Math.sin(ang)*rb; ctx.globalAlpha=0.9; ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=Math.min(4,1+Math.sqrt(wt)*0.5)/tr.k;
-        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(ex,ey); ctx.stroke(); const hs=7/tr.k; ctx.beginPath(); ctx.moveTo(ex,ey); ctx.lineTo(ex-hs*Math.cos(ang-0.4),ey-hs*Math.sin(ang-0.4)); ctx.lineTo(ex-hs*Math.cos(ang+0.4),ey-hs*Math.sin(ang+0.4)); ctx.closePath(); ctx.fill(); };
-      (OUTM[id]||[]).slice(0,12).forEach(e => { const b = NIDX[e.target]; if(b!==undefined && V.nodes[b]===N.nodes[b]) { arrow(hov,b,'#eb6834',e.w); neigh.add(b); } });
-      (INM[id]||[]).slice(0,12).forEach(e => { const a = NIDX[e.source]; if(a!==undefined && V.nodes[a]===N.nodes[a]) { arrow(a,hov,'#2a78d6',e.w); neigh.add(a); } });
-    }
+    if(hov!==null && o.showMentions && o.showMentions()) drawArrows(neigh);
     ctx.globalAlpha = 1;
-    V.nodes.forEach((n,i) => { if(!vis(n)) return; const r = o.radius(n); const faded = (hov!==null && i!==hov && !neigh.has(i)) || (hl && !hl(n));
+    V.nodes.forEach((n,i) => { if(!vis(n)) return; const r = Math.max(0.3, rad(n)); const faded = (hov!==null && i!==hov && !neigh.has(i)) || (hl && !hl(n));
       ctx.beginPath(); if(o.square && o.square(n)) ctx.rect(sx(i)-r, sy(i)-r, 2*r, 2*r); else ctx.arc(sx(i),sy(i),r,0,Math.PI*2);
       const imp = o.importance ? o.importance(n) : 1;
       ctx.globalAlpha = faded ? 0.2 : (hov!==null ? 1 : 0.3 + 0.7*Math.min(1, imp*2.2)); ctx.fillStyle = faded ? dim : o.color(n); ctx.fill();
       ctx.globalAlpha = 1; const top = o.topSet && o.topSet.has(i) && !faded; ctx.lineWidth = (top ? 2.2 : 1)/tr.k; ctx.strokeStyle = top ? ink : surface; ctx.stroke(); });
-    if(o.groupLabels && hov===null){ ctx.textAlign='center'; o.groupLabels(V).forEach(g => { ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.lineWidth = 4/tr.k; ctx.strokeStyle = surface; const gy = g.y*fit.s+fit.oy - (g.above ? 14 : 0); ctx.strokeText(g.text, g.x*fit.s+fit.ox, gy); ctx.fillStyle = g.color; ctx.fillText(g.text, g.x*fit.s+fit.ox, gy); }); }
+    // lejrnavne udelades, når lejrens hovedaktør selv får et navn (ellers står fx 'Venstre' to gange)
+    const labNames = new Set(); if(o.labelSet && hov===null){ const ls = o.labelSet(V); V.nodes.forEach((n,i) => { if(ls.has(i) && vis(n)) labNames.add(n.name); }); }
+    const dupG = t => { const p = t.replace(/…$/, ''); for(const nm of labNames) if(nm === t || (p.length >= 8 && nm.startsWith(p))) return true; return false; };   // lejrnavne er afkortet i pipelinen
+    if(o.groupLabels && hov===null){ ctx.textAlign='center'; o.groupLabels(V).filter(g => !dupG(g.text)).forEach(g => { ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.lineWidth = 4/tr.k; ctx.strokeStyle = surface; const gy = g.y*fit.s+fit.oy - (g.above ? 14 : 0); ctx.strokeText(g.text, g.x*fit.s+fit.ox, gy); ctx.fillStyle = g.color; ctx.fillText(g.text, g.x*fit.s+fit.ox, gy); }); }
     ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`;
     const lab = o.labelSet ? o.labelSet(V) : new Set();
     V.nodes.forEach((n,i) => { if(!vis(n)) return; const show = hov!==null ? (i===hov || neigh.has(i)) : (lab.has(i) && !(hl && !hl(n))); if(!show) return;
-      const t = n.name.length>28 ? n.name.slice(0,26)+'…' : n.name; ctx.font = (o.square && o.square(n)) ? `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif` : `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.lineWidth = 3/tr.k; ctx.strokeStyle = surface; ctx.strokeText(t, sx(i), sy(i)-o.radius(n)-4); ctx.fillText(t, sx(i), sy(i)-o.radius(n)-4); });
+      const t = n.name.length>28 ? n.name.slice(0,26)+'…' : n.name; ctx.font = (o.square && o.square(n)) ? `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif` : `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`; ctx.lineWidth = 3/tr.k; ctx.strokeStyle = surface; ctx.strokeText(t, sx(i), sy(i)-rad(n)-4); ctx.fillText(t, sx(i), sy(i)-rad(n)-4); });
     ctx.restore();
-  };
+  }
+  V.draw = function(){ if(w < 10) return; if(V.kerne) drawKerne(); else drawOld(); };
+  V.invalidate = function(){ K = null; };
+  V.kerneState = () => K;   // til kontrol (skiver, navneskilte) fra konsollen
+  V.refit = function(){ refit(); };
+  V.width = () => w;
   V.setEdges = function(edges){ V.edges = edges; };
-  V.setData = function(nodes, edges){ if(running){ cancelAnimationFrame(running); running=null; } V.nodes = nodes; V.edges = edges; V.x = nodes.map(n=>n.x); V.y = nodes.map(n=>n.y); V.home = {x:V.x.slice(), y:V.y.slice(), edges}; hov = null; doFit(); V.draw(); };
+  V.setData = function(nodes, edges){ if(running){ cancelAnimationFrame(running); running=null; } runId++; V.nodes = nodes; V.edges = edges; V.backbone = edges; V.x = nodes.map(n=>n.x); V.y = nodes.map(n=>n.y); V.kerne = false; V.roles = null; V.home = {x:V.x.slice(), y:V.y.slice(), edges, backbone:edges, roles:null, kerne:false, rs:1}; hov = null; doFit(); V.draw(); };
+  // gammel vej: ForceAtlas2 på alle aktører, derefter lejre som øer, ring af løse aktører og overlap (som før 27-09-2026)
   V.run = function(opts, iters, done){
-    if(running) cancelAnimationFrame(running);
+    if(running) cancelAnimationFrame(running); runId++;
+    if(V.kerne){ V.kerne = false; V.backbone = V.edges; doFit(); }
     const st = fa2State(V.nodes.length, V.edges, V.x, V.y, o.groups ? V.nodes.map(o.groups) : null); let left = iters;
-    const per = V.nodes.length > 800 ? 3 : 12;   // få iterationer pr. skærmopdatering ved mange aktører, så siden ikke hakker
+    const per = V.nodes.length > 800 ? 5 : 12;   // få iterationer pr. skærmopdatering ved mange aktører, så siden ikke hakker
+    // kortet tegnes kun hver 4. gang (og til sidst), fordi tegningen af alle aktører koster næsten lige så meget som trinene (runde c)
+    let nt = 0;
     const tick = () => { const n = Math.min(per, left); for(let i=0;i<n;i++) fa2Step(st, opts); left -= n;
-      V.x = Array.from(st.x); V.y = Array.from(st.y); doFit(); V.draw(); if(o.onProgress) o.onProgress(1 - left/iters);
+      if(++nt % 4 === 0 || left <= 0){ V.x = Array.from(st.x); V.y = Array.from(st.y); doFit(); V.draw(); } if(o.onProgress) o.onProgress(1 - left/iters);
       if(left > 0) running = requestAnimationFrame(tick); else { running = null;
         if(o.groups && opts.group_gravity > 0){   // lejre som øer, derefter overlap (som i pipelinen)
-          const W = Math.max(w, 800), groups = V.nodes.map(o.groups), rad = s => (i => (o.radius(V.nodes[i]) + 1) / s);
-          for(let k=0;k<2;k++){ const s = fitScale(V, W, H); separateGroups(V, groups, rad(s), 8/s); }
-          ringOutliers(V); resolveOverlap(V, rad(fitScale(V, W, H)));
+          const W = Math.max(w, 800), groups = V.nodes.map(o.groups), radS = s => (i => (o.radius(V.nodes[i]) + 1) / s);
+          for(let k=0;k<2;k++){ const s = fitScale(V, W, H); separateGroups(V, groups, radS(s), 8/s); }
+          ringOutliers(V); resolveOverlap(V, radS(fitScale(V, W, H)));
         } else ringOutliers(V);
-        doFit(); V.draw(); if(done) done(); } };
+        doFit(); V.draw(); if(o.onMode) o.onMode(); if(done) done(); } };
+    if(o.onMode) o.onMode();
     running = requestAnimationFrame(tick);
   };
-  V.reset = function(){ if(running){ cancelAnimationFrame(running); running=null; } V.x = V.home.x.slice(); V.y = V.home.y.slice(); V.edges = V.home.edges; doFit(); tr = {k:1,x:0,y:0}; d3.select(canvas).call(zoom.transform, d3.zoomIdentity); V.draw(); };
+  // kerne og satellitter: 800 ForceAtlas2-trin på kernen i bidder på 100 (med fremdrift), resten i ét stræk.
+  // Runde c (27-09-2026, som core_satellite_layout i netlayout.py): layoutet lægges ud på pipelinens lærred (layout.canvas_w x
+  // canvas_h, 960 x 640; telefonen layout.mobile, 343 x 640), og doFit tilpasser det til skærmen som det gemte layout. Med
+  // layout.fa_seeds (fx [42, 7, 99, 11]) lægges det ud én gang pr. ForceAtlas2-frø, og det bedste vælges: først dem, hvis
+  // skiver har mindst disc_gap_px og en median på mindst pick_median_px imellem, og blandt dem den største tilpasningsfaktor
+  // (ellers det, der er nærmest målene). Rollerne afhænger ikke af frøet og regnes kun én gang. Frøene giver andre startpladser
+  // end i pipelinen (mulberry32 her, numpy dér), men valget er det samme, bortset fra at et frø, der når målene med en
+  // tilpasningsfaktor på mindst 0,9, tages med det samme (seed_accept_shrink), og at der ikke startes et frø, der forventes at
+  // slutte senere end 15 s efter klikket (seed_budget_s); alle fire frø tog ca. 25-28 s på en travl maskine.
+  V.runKerne = function(opts, done){
+    if(running) cancelAnimationFrame(running); running = null;
+    const my = ++runId, t0 = performance.now(), n = V.nodes.length, narrow = w < 600, rs = narrow ? KP_MOBILE.r_scale : 1;
+    // telefon: som pipelinen (dict(P, **mobile), afstande x r_scale), dvs. også skive-margen, ompakningens mellemrum, fit_mode og
+    // fit_pad_px (network.json 'layout.mobile'; siden fix-runde 2 'compress' med 14 px margen)
+    const P = Object.assign({}, KP, narrow ? Object.assign({}, KP_MOBILE, {core_pad_px: KP.core_pad_px*rs, sat_gap_px: KP.sat_gap_px*rs, sat_pad_px: KP.sat_pad_px*rs}) : {},
+      {core_deg: opts.core_deg, camp_pad_px: opts.camp_pad_px});
+    const CWp = +P.canvas_w > 0 ? +P.canvas_w : w, CHp = +P.canvas_h > 0 ? +P.canvas_h : H;
+    const inp = {n, E3: opts.E3, labs: V.nodes.map(nd => nd.community), ment: V.nodes.map(nd => nd.mentioned||0), btw: V.nodes.map(nd => nd.betweenness||0),
+      bshare: V.nodes.map(nd => nd.bridge_share||0), r: V.nodes.map(nd => o.radius(nd)*rs), rs, P, W: CWp, H: CHp};
+    const seeds = (Array.isArray(P.fa_seeds) ? P.fa_seeds : []).map(Number).filter(Number.isFinite), runs = seeds.length > 1 ? seeds : [seeds.length ? seeds[0] : P.seed];
+    const gapT = P.disc_gap_px != null ? +P.disc_gap_px : 10, medT = P.pick_median_px != null ? +P.pick_median_px : -Infinity;
+    // kun dashboardet: et frø, der når målene og har en tilpasningsfaktor på mindst seed_accept_shrink (0,9), tages med det samme,
+    // så genkørslen ikke skal lægge alle fire layout ud (hver tager nogle sekunder i browseren)
+    const accS = P.seed_accept_shrink != null ? +P.seed_accept_shrink : 0.9;
+    // og et nyt frø startes kun, hvis det forventes at blive færdigt inden for seed_budget_s (15 s) fra klikket (gennemsnittet af
+    // de frø, der er kørt); ellers vælges det bedste af dem, der er prøvet (på lejrkortet tog fire frø ca. 25 s på en travl maskine)
+    const budS = P.seed_budget_s != null ? +P.seed_budget_s : 15;
+    const prog = o.onProgress || (() => {}), fo = {scaling: opts.scaling, gravity: opts.gravity, linlog: opts.linlog, group_gravity: opts.group_gravity, dissuade: opts.dissuade};
+    const results = [], K = runs.length, ms0 = {start: 0, fa2: 0};
+    let si = 0, S = null, left = 0, roles = null, tSeed = 0;
+    const startSeed = () => { const ts = performance.now(); S = kerneStart(inp, runs[si], roles); roles = S.R0; left = P.fa_iter; tSeed = performance.now(); ms0.start += Math.round(tSeed - ts); };
+    startSeed();
+    const step = {k: 1, of: K};
+    const tick = () => { if(my !== runId) return;
+      const m = Math.min(100, left); for(let i=0;i<m;i++) fa2Step(S.st, fo); left -= m; step.k = si + 1;
+      prog((si + 0.7*(P.fa_iter-left)/P.fa_iter)/K, 'kerne', step);
+      if(left > 0){ running = requestAnimationFrame(tick); return; }
+      running = null; prog((si + 0.75)/K, 'sat', step); ms0.fa2 += Math.round(performance.now() - tSeed);
+      setTimeout(() => { if(my !== runId) return;
+        const r1 = kerneFinish(S); r1.seed = runs[si]; results.push(r1);
+        const good = q => q.gapMin >= gapT && q.gapMed >= medT;
+        const el = (performance.now() - t0)/1000, inTime = el + el/(si + 1) <= budS;
+        if(++si < K && !(good(r1) && r1.shrink >= accS) && inTime){ startSeed(); running = requestAnimationFrame(tick); return; }
+        // det bedste frø: målene nået (skive-mellemrum og median), derefter størst tilpasningsfaktor; ellers det nærmeste
+        const ok = results.filter(good), near = q => Math.min(q.gapMin - gapT, q.gapMed - medT);
+        const res = ok.length ? ok.reduce((a, b) => b.shrink > a.shrink ? b : a) : results.reduce((a, b) => near(b) > near(a) ? b : a);
+        res.seeds = results.map(q => ({seed: q.seed, shrink: +q.shrink.toFixed(3), gapMin: +q.gapMin.toFixed(1), gapMed: +q.gapMed.toFixed(1)})); res.seedOk = ok.length > 0;
+        res.ms.start = ms0.start; res.ms.fa2 = ms0.fa2; V.lastRun = res;   // til kontrol fra konsollen
+        setBase(res.x, res.y); V.rs = rs; V.roles = res.roles; V.kerne = true; V.backbone = opts.E3; V.edges = kerneEdges(opts.E3, res.roles);
+        refit(); V.draw();
+        res.secs = (performance.now()-t0)/1000;
+        const hr = V.home.roles; if(hr){ let d = 0; for(let i=0;i<n;i++) if(hr.core[i] !== res.roles.core[i] || hr.hub[i] !== res.roles.hub[i] || hr.via[i] !== res.roles.via[i]) d++; res.roleDiff = d; }
+        const di = V.discInfo || {};
+        console.info(`Kerne-layout (${res.canvas[0]} x ${res.canvas[1]} px, skiveregel ${res.rule}): ${res.nc} kerneaktører, ${res.nsat} satellitter, ${res.nloose} løse, ${res.ncedges} kernekanter, tilpasning ${res.shrink0.toFixed(2)} -> ${res.shrink.toFixed(2)}${res.uniform ? ` (uniform, vises med radius x ${res.viewS.toFixed(2)})` : ''}, pakket form ${res.packed.toFixed(2)} (mål ${res.aspect.toFixed(2)})${res.pick ? `, valgt ompakning ${res.pick.rnd}${res.pick.tries > 1 ? ` i forsøg ${res.pick.ti} af ${res.pick.tries}` : ''} (${res.pick.of} runder i alt)` : ''}${res.reserve > 0 ? `, fri stribe til løse aktører ${res.reserve.toFixed(1)} px` : ''}, skive-mellemrum min. ${res.gapMin.toFixed(1)} / median ${res.gapMed.toFixed(1)} px${res.clamped ? `, ${res.clamped} aktører flyttet ind på p90-skiven` : ''}${K > 1 ? `, frø ${res.seed} valgt af ${res.seeds.map(q => `${q.seed} (${q.shrink.toFixed(3)}; ${q.gapMin.toFixed(1)} / ${q.gapMed.toFixed(1)} px)`).join(', ')}${res.seedOk ? '' : ' (intet frø nåede målene; det nærmeste er valgt)'}${results.length < K ? (results.some(q => good(q) && q.shrink >= accS) ? ` (nåede målene; de øvrige ${K - results.length} frø er ikke prøvet)` : ` (tidsgrænsen på ${budS} s; ${K - results.length} frø er ikke prøvet)`) : ''}` : ''}; på skærmen ${di.shrunk != null ? di.shrunk : '?'} skiver krympet og ${di.clamped != null ? di.clamped : '?'} aktører flyttet ind, ${res.roleDiff === undefined ? '?' : res.roleDiff} aktører med andre roller end det gemte layout, ${res.secs.toFixed(1)} s`);
+        prog(1, res); if(o.onMode) o.onMode(); if(done) done(res); }, 30);
+    };
+    running = requestAnimationFrame(tick);
+  };
+  V.reset = function(){ if(running){ cancelAnimationFrame(running); running=null; } runId++;
+    setBase(V.home.x, V.home.y); V.edges = V.home.edges; V.roles = V.home.roles; V.kerne = V.home.kerne; V.backbone = V.home.backbone; V.rs = V.home.rs;
+    refit(); tr = {k:1,x:0,y:0}; d3.select(canvas).call(zoom.transform, d3.zoomIdentity); V.draw(); if(o.onMode) o.onMode(); if(V.onReset) V.onReset(); };
   V.hover = () => hov;
   const zoom = d3.zoom().scaleExtent([0.3,8]).on('zoom', ev => { tr = ev.transform; V.draw(); });
   d3.select(canvas).call(zoom);
   canvas.addEventListener('mousemove', e => { const r = canvas.getBoundingClientRect(); const px=(e.clientX-r.left-tr.x)/tr.k, py=(e.clientY-r.top-tr.y)/tr.k;
-    let best=null, bd=1e9; V.nodes.forEach((n,i) => { if(o.visible && !o.visible(n)) return; const d=(sx(i)-px)**2+(sy(i)-py)**2, rr=o.radius(n)+4; if(d<bd && d<rr*rr){ bd=d; best=i; } });
+    let best=null, bd=1e9; V.nodes.forEach((n,i) => { if(o.visible && !o.visible(n)) return; const d=(sx(i)-px)**2+(sy(i)-py)**2, rr=(V.kerne ? radI(i) : rad(n))+4; if(d<bd && d<rr*rr){ bd=d; best=i; } });
     if(best!==hov){ hov=best; V.draw(); } if(best!==null) showTip(o.tooltip(V.nodes[best]), e.clientX, e.clientY); else hideTip(); });
   canvas.addEventListener('mouseleave', () => { hov=null; hideTip(); V.draw(); });
   canvas.addEventListener('click', () => { if(hov!==null && o.onClick) o.onClick(V.nodes[hov]); });
-  window.addEventListener('resize', () => { const nw = canvas.clientWidth; if(nw && nw!==w){ w = nw; canvas.width = w*dpr; canvas.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); doFit(); V.draw(); } });
-  doFit(); V.draw();
+  // bredde: ny tilpasning; krydses 600 px, skiftes mellem desktop- og telefonplaceringen (xm, ym). Kaldes ved vinduets resize,
+  // når lærredet skifter størrelse (også fra skjult til synlig fane) og når fanen vises
+  V.checkSize = function(){
+    const nw = canvas.clientWidth, nd = window.devicePixelRatio||1; if(!nw || (nw===w && nd===dpr)) return false;
+    const was = w < 600; w = nw; dpr = nd; canvas.width = Math.round(w*dpr); canvas.height = Math.round(H*dpr); ctx.setTransform(dpr,0,0,dpr,0,0);
+    if(o.posFor && (w < 600) !== was){ const p = o.posFor(w < 600); V.home = Object.assign({}, V.home, {x:p.x.slice(), y:p.y.slice(), rs:p.rs}); V.reset(); return true; }
+    refit(); V.draw(); return true; };
+  window.addEventListener('resize', () => V.checkSize());
+  if(typeof ResizeObserver === 'function') new ResizeObserver(() => V.checkSize()).observe(canvas);
+  // navneskiltenes bredde måles med de rigtige skrifter, så beregnes de igen, når skrifterne er hentet
+  if(document.fonts && document.fonts.load) Promise.all(['11px "IBM Plex Sans"', '600 11px "IBM Plex Sans"', '600 10.5px "IBM Plex Sans"', 'italic 11px "IBM Plex Sans"'].map(f => document.fonts.load(f).catch(() => null))).then(() => { twCache.clear(); K = null; V.draw(); });
+  refit(); V.draw();
   return V;
 }
-// kontrolpanel til et netværk (tyngdekraft, afstand, LinLog, hub-dæmpning, forbindelser pr. aktør)
+// kontrolpanel til et netværk (kerne og satellitter eller fuld ForceAtlas2; tyngdekraft, lejre, luft, forbindelser pr. aktør)
 function netControls(prefix, V, withK){
   const el = document.getElementById(prefix+'-ctl'); if(!el) return;
+  const canK = !!(V.home && V.home.roles), padDef = () => (V.width ? V.width() : 1000) < 600 ? KP_MOBILE.camp_pad_px : KP.camp_pad_px;
+  // skydernes standard følger tilstanden: kerne og satellitter (network.json 'layout') eller den gamle fulde ForceAtlas2 ('layout.full')
+  const D0 = canK && V.home.kerne ? LAY : LAY_FULL;
   el.innerHTML = `${withK ? `<label title="Hvor mange af sine stærkeste forbindelser hver aktør viser. Færre = tydeligere lejre.">Forbindelser pr. aktør <input type="range" id="${prefix}-k" min="2" max="10" step="1" value="${LAY.k}"> <span class="mono" id="${prefix}-k-v">${LAY.k}</span></label>` : ''}
-    <label title="Hvor stærkt alle aktører trækkes mod midten. Lav tyngdekraft lader lejrene glide fra hinanden; høj samler kortet.">Tyngdekraft <input type="range" id="${prefix}-g" min="0" max="100" value="${logPos(LAY.gravity,0.01,10)}"> <span class="mono" id="${prefix}-g-v">${LAY.gravity}</span></label>
-    <label title="Hvor stærkt hver lejr samler sig om sin egen midte. Højere værdi giver tydeligere lejre med luft imellem; 0 er ren ForceAtlas2.">Saml lejre <input type="range" id="${prefix}-gg" min="0" max="100" value="${LAY.group_gravity>0 ? logPos(LAY.group_gravity,0.5,200) : 0}"> <span class="mono" id="${prefix}-gg-v">${LAY.group_gravity}</span></label>
-    <label title="Hvor meget aktørerne skubber fra hinanden. Påvirker mest kortets størrelse og luften mellem aktørerne.">Afstand <input type="range" id="${prefix}-s" min="0" max="100" value="${logPos(LAY.scaling,0.5,50)}"> <span class="mono" id="${prefix}-s-v">${LAY.scaling}</span></label>
-    <label title="LinLog-tilstand: tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${LAY.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
-    <label title="Store aktører trækkes mindre mod deres naboer, så de lægger sig mellem lejrene. Gør bindeled tydeligere."><input type="checkbox" id="${prefix}-dh" ${LAY.dissuade?'checked':''}> Dæmp store aktører</label>
+    ${canK ? `<label data-mode="kerne" title="En aktør er kerneaktør, når den har mindst så mange forbindelser i rygraden. De ${KP.core_top_mentioned} mest omtalte og de ${KP.core_top_btw} største bindeled er altid med. Kerneaktørerne placeres med ForceAtlas2, resten som satellitter. Et lavere tal giver flere kerneaktører.">Kerneaktører <input type="range" id="${prefix}-cd" min="4" max="20" step="1" value="${KP.core_deg}"> <span class="mono" id="${prefix}-cd-v">${KP.core_deg}</span></label>` : ''}
+    <label title="Hvor stærkt alle aktører trækkes mod midten. Lav tyngdekraft lader lejrene glide fra hinanden; høj samler kortet.">Tyngdekraft <input type="range" id="${prefix}-g" min="0" max="100" value="${logPos(D0.gravity,0.01,10)}"> <span class="mono" id="${prefix}-g-v">${D0.gravity}</span></label>
+    <label title="Hvor stærkt hver lejr samler sig om sin egen midte. Højere værdi giver tydeligere lejre med luft imellem; 0 er ren ForceAtlas2.">Saml lejre <input type="range" id="${prefix}-gg" min="0" max="100" value="${D0.group_gravity>0 ? logPos(D0.group_gravity,0.5,200) : 0}"> <span class="mono" id="${prefix}-gg-v">${D0.group_gravity}</span></label>
+    <label data-mode="fa2" title="Hvor meget aktørerne skubber fra hinanden. Påvirker mest kortets størrelse og luften mellem aktørerne.">Afstand <input type="range" id="${prefix}-s" min="0" max="100" value="${logPos(D0.scaling,0.5,50)}"> <span class="mono" id="${prefix}-s-v">${D0.scaling}</span></label>
+    ${canK ? `<label data-mode="kerne" title="Mindste afstand mellem lejrenes øer i pixel.">Luft mellem lejre <input type="range" id="${prefix}-pad" min="0" max="48" step="1" value="${padDef()}"> <span class="mono" id="${prefix}-pad-v">${padDef()}</span> px</label>` : ''}
+    <label title="LinLog-tilstand: tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${D0.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
+    <label title="Store aktører trækkes mindre mod deres naboer, så de lægger sig mellem lejrene. Gør bindeled tydeligere."><input type="checkbox" id="${prefix}-dh" ${D0.dissuade?'checked':''}> Dæmp store aktører</label>
+    ${canK ? `<label title="Med flueben placeres kerneaktørerne med ForceAtlas2, resten som satellitter omkring dem, og hver lejr pakkes som en ø. Uden flueben kører den gamle ForceAtlas2 på alle aktører på én gang (tager lidt længere tid). Kortet beregnes igen, når du skifter."><input type="checkbox" id="${prefix}-kerne" ${V.home.kerne?'checked':''}> Kerne og satellitter</label>` : ''}
     <button id="${prefix}-run">Kør layout igen</button> <button class="ghost" id="${prefix}-reset">Nulstil</button> <span class="count" id="${prefix}-prog"></span>`;
-  const g = () => +logSlider(+document.getElementById(prefix+'-g').value, 0.01, 10).toFixed(3);
-  const s = () => +logSlider(+document.getElementById(prefix+'-s').value, 0.5, 50).toFixed(2);
-  const gg = () => { const v = +document.getElementById(prefix+'-gg').value; return v === 0 ? 0 : +logSlider(v, 0.5, 200).toFixed(1); };
-  el.addEventListener('input', () => { document.getElementById(prefix+'-g-v').textContent = g(); document.getElementById(prefix+'-s-v').textContent = s(); document.getElementById(prefix+'-gg-v').textContent = gg(); if(withK) document.getElementById(prefix+'-k-v').textContent = document.getElementById(prefix+'-k').value; });
-  document.getElementById(prefix+'-run').addEventListener('click', () => {
-    if(withK){ V.setEdges(backboneEdges(+document.getElementById(prefix+'-k').value)); if(V.onEdges) V.onEdges(); }
-    const opts = {gravity:g(), scaling:s(), group_gravity:gg(), linlog:document.getElementById(prefix+'-ll').checked, dissuade:document.getElementById(prefix+'-dh').checked};
-    const prog = document.getElementById(prefix+'-prog'); V.opts.onProgress = p => { prog.textContent = p < 1 ? `beregner … ${Math.round(p*100)} %` : 'færdig'; };
-    V.run(opts, 400);
-  });
-  document.getElementById(prefix+'-reset').addEventListener('click', () => { V.reset(); document.getElementById(prefix+'-prog').textContent = ''; if(V.onEdges) V.onEdges(); el.querySelectorAll('input').forEach(i => { if(i.type==='range') i.value = i.defaultValue; if(i.type==='checkbox') i.checked = i.defaultChecked; }); el.dispatchEvent(new Event('input')); });
+  const $ = id => document.getElementById(prefix+'-'+id);
+  const kerneOn = () => !!($('kerne') && $('kerne').checked);
+  const Dm = () => kerneOn() ? LAY : LAY_FULL;
+  // står skyderen på standardpladsen, bruges standardværdien præcist (logskalaen runder fx 0,6 til 0,589)
+  const atDef = id => $(id).value === $(id).defaultValue;
+  const g = () => atDef('g') ? Dm().gravity : +logSlider(+$('g').value, 0.01, 10).toFixed(3);
+  const s = () => atDef('s') ? Dm().scaling : +logSlider(+$('s').value, 0.5, 50).toFixed(2);
+  const gg = () => { const v = +$('gg').value; return atDef('gg') ? Dm().group_gravity : v === 0 ? 0 : +logSlider(v, 0.5, 200).toFixed(1); };
+  const showVals = () => { $('g-v').textContent = g(); $('s-v').textContent = s(); $('gg-v').textContent = gg(); if(withK) $('k-v').textContent = $('k').value;
+    if($('cd')) $('cd-v').textContent = $('cd').value; if($('pad')) $('pad-v').textContent = $('pad').value; };
+  const setR = (id, v) => { const e = $(id); if(e){ e.defaultValue = String(v); e.value = String(v); } };
+  const setC = (id, v) => { const e = $(id); if(e){ e.defaultChecked = !!v; e.checked = !!v; } };
+  // tyngdekraft, saml lejre, afstand, LinLog og dæmpning sættes til den valgte tilstands standard (også som skydernes standardplads)
+  const applyDefs = () => { const d = Dm(); setR('g', logPos(d.gravity, 0.01, 10)); setR('s', logPos(d.scaling, 0.5, 50)); setR('gg', d.group_gravity > 0 ? logPos(d.group_gravity, 0.5, 200) : 0);
+    setC('ll', d.linlog); setC('dh', d.dissuade); showVals(); };
+  const sync = () => { const on = kerneOn(); el.querySelectorAll('[data-mode="kerne"]').forEach(l => { l.hidden = !on; }); el.querySelectorAll('[data-mode="fa2"]').forEach(l => { l.hidden = on; }); };
+  sync();
+  el.addEventListener('input', showVals);
+  const run = () => {
+    const prog = $('prog'), k = withK ? +$('k').value : LAY.k, linlog = $('ll').checked, dissuade = $('dh').checked;
+    // standardrygraden i network.json-rækkefølge, så genkørslen vælger samme kerne og hubs som pipelinen (og samme kanter som før)
+    const home = (k === LAY.k && V.home.backbone) ? V.home.backbone : null;
+    if(kerneOn()){
+      const E3 = home || backboneEdges(k);
+      // med flere ForceAtlas2-frø (layout.fa_seeds) lægges layoutet ud flere gange, og det bedste vælges; fremdriften gælder det hele
+      V.opts.onProgress = (p, info, st) => { const of = st && st.of > 1 ? ` (forsøg ${st.k} af ${st.of})` : '';
+        prog.textContent = p >= 1 ? (info && info.secs != null ? `færdig på ${info.secs.toFixed(1).replace('.', ',')} s` : 'færdig') : info === 'sat' ? `placerer satellitter og øer …${of}` : `beregner kernen … ${Math.round(p*100)} %${of}`; };
+      V.runKerne({E3, core_deg: +$('cd').value, camp_pad_px: +$('pad').value, gravity: g(), scaling: LAY.scaling, group_gravity: gg(), linlog, dissuade}, () => { if(V.onEdges) V.onEdges(); });
+      return;
+    }
+    if(withK){ V.setEdges(home || backboneEdges(k)); if(V.onEdges) V.onEdges(); }
+    const d = Dm(), opts = {gravity:g(), scaling:s(), group_gravity:gg(), linlog, dissuade}, iters = d.iterations || 400;
+    V.opts.onProgress = p => { prog.textContent = p < 1 ? `beregner … ${Math.round(p*100)} %` : 'færdig'; };
+    V.run(opts, iters);
+  };
+  $('run').addEventListener('click', run);
+  // skift af tilstand: skydernes standard skiftes, og kortet beregnes igen med det samme. Tilbage til kerne og satellitter med
+  // standardværdier giver det gemte layout (som Nulstil)
+  if($('kerne')) $('kerne').addEventListener('change', () => { sync(); applyDefs();
+    const atHome = V.home.kerne && kerneOn() && [...el.querySelectorAll('input[type="range"]')].every(i => i.value === i.defaultValue);
+    if(atHome) V.reset(); else run(); });
+  // Nulstil (også når telefon- og desktopplaceringen skifter): alle felter tilbage til standard for det gemte layout
+  V.onReset = () => { el.querySelectorAll('input').forEach(i => { if(i.type==='range') i.value = i.defaultValue; if(i.type==='checkbox' && i.id === prefix+'-kerne') i.checked = i.defaultChecked; });
+    if($('pad')) setR('pad', padDef()); sync(); applyDefs(); $('prog').textContent = ''; if(V.onEdges) V.onEdges(); };
+  $('reset').addEventListener('click', () => V.reset());
 }
 const RANK_BTW = {}; (N.nodes||[]).slice().sort((a,b)=>(b.betweenness||0)-(a.betweenness||0)).forEach((n,i) => RANK_BTW[n.id] = i+1);
 function actorTip(n){
@@ -790,28 +1848,69 @@ function commCentroids(V, colorFn){
 }
 function topLabels(V, key, n){ const idx = V.nodes.map((x,i)=>i).sort((a,b)=>(V.nodes[b][key]||0)-(V.nodes[a][key]||0)).slice(0,n); return new Set(idx); }
 
+// forudberegnede placeringer: desktop (x, y) eller stående telefon (xm, ym, radius x 0,52) under 600 px
+function kernePos(narrow){
+  const nodes = N.nodes;
+  return {x: nodes.map(n => narrow && n.xm != null ? n.xm : n.x), y: nodes.map(n => narrow && n.ym != null ? n.ym : n.y), rs: narrow ? KP_MOBILE.r_scale : 1};
+}
+// et lærred uden bredde (skjult fane, sammenklappet eller skjult indlejring) kan ikke tegnes: vent, til det får en bredde
+function whenSized(el, fn){
+  if(el && el.clientWidth > 0) return true;
+  if(!el || el._akWait) return false; el._akWait = true;
+  // ResizeObserver, når lærredet får en størrelse; derudover et roligt tjek hvert halve sekund (fx i en skjult indlejring,
+  // hvor ResizeObserver først melder sig ved næste tegning)
+  let ro = null, done = false;
+  const go = () => { if(done) return true; if(el.clientWidth > 0){ done = true; el._akWait = false; if(ro) ro.disconnect(); setTimeout(fn, 0); return true; } return false; };
+  if(typeof ResizeObserver === 'function'){ ro = new ResizeObserver(go); ro.observe(el); }
+  const poll = () => { if(!go()) setTimeout(poll, 500); }; setTimeout(poll, 500);
+  return false;
+}
+// lejrnavne i lejrens farve gøres mørkere (lysere i mørk tilstand), så de kan læses på de lyse øer
+function mixHex(a, b, t){
+  const p = h => { h = String(h||'').trim().replace('#', ''); if(h.length === 3) h = h.split('').map(c => c+c).join(''); const v = parseInt(h, 16); return h.length === 6 && !isNaN(v) ? [v >> 16 & 255, v >> 8 & 255, v & 255] : null; };
+  const A = p(a), B = p(b); if(!A || !B) return a;
+  return '#' + A.map((v,k) => Math.round(v + (B[k]-v)*t).toString(16).padStart(2, '0')).join('');
+}
+const campInk = c => mixHex(commColor(c), css('--ink'), 0.45);
 let netStarted = false, netHighlight = null, netView = null, netMinDocs = 1;
+window.akDebug = {net: () => netView, cnet: () => cView};   // til kontrol fra konsollen
 function startNet(){
-  if(netStarted || typeof d3==='undefined' || !(N.nodes||[]).length) return; netStarted = true;
-  document.getElementById('net-legend').innerHTML = GROUPS.map(g => { const n = N.nodes.filter(x => groupOf(x.type)===g.k).length; return n ? `<button data-g="${g.k}" aria-pressed="false"><span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${g.c}"></span> ${g.l} <span class="mono">${n}</span></button>` : ''; }).join('');
-  document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); netView.draw(); });
+  if(netStarted || typeof d3==='undefined' || !(N.nodes||[]).length) return;
+  if(!whenSized(document.getElementById('net'), startNet)) return;
+  netStarted = true;
   const colorMode = () => document.getElementById('net-color').value, sizeMode = () => document.getElementById('net-size').value;
-  const maxOf = k => Math.max(1e-9, ...N.nodes.map(n => n[k]||0));
+  // største værdi pr. mål gemmes (radius og vægt kaldes for hver aktør ved hver tegning og musebevægelse; før O(n) pr. kald)
+  const maxC = {}, maxOf = k => maxC[k] !== undefined ? maxC[k] : (maxC[k] = Math.max(1e-9, ...N.nodes.map(n => n[k]||0)));
   const imp = n => { const k = sizeMode(); return Math.sqrt((n[k]||0)/maxOf(k)); };
-  const radius = n => 1.6 + imp(n)*26;
+  const radius = n => 1.6 + imp(n)*26;   // desktop; kerne-tegningen ganger med telefonskala og min(1, tilpasning)
   const edges0 = N.links.map(l => [NIDX[l.source], NIDX[l.target], l.s]).filter(e => e[0]!==undefined && e[1]!==undefined);
   const ws = edges0.map(e=>e[2]).sort((a,b)=>a-b), med = ws.length ? ws[ws.length>>1] : 1;
-  netView = makeNetView({canvas:'net', nodes:N.nodes, edges:edges0.map(([a,b,s]) => [a,b,s/med]), radius,
-    color: n => colorMode()==='comm' ? commColor(n.community) : groupColor(n.type),
-    highlight: () => netHighlight ? (n => groupOf(n.type)===netHighlight) : null,
-    showMentions: () => document.getElementById('net-arrows').checked,
-    visible: n => (n.n||0) >= netMinDocs, importance: imp, edgeAlpha: 0.28,
-    labelSet: V => topLabels(V, sizeMode(), 24), groups: n => n.community, tooltip: actorTip,
-    groupLabels: V => commCentroids(V, k => colorMode()==='comm' ? commColor(k) : css('--ink-2') || '#6b7178'), onClick: n => window.akFindActor(n.name)});
-  document.getElementById('net-min').addEventListener('input', e => { const v = +e.target.value; netMinDocs = v; document.getElementById('net-min-v').textContent = v; count(); netView.draw(); });
-  const count = () => { const shown = N.nodes.filter(n => (n.n||0) >= netMinDocs).length; document.getElementById('net-count').textContent = `${shown} af ${N.nodes.length} aktører vist · ${netView.edges.length} forbindelser i rygraden · ${Object.keys(N.communities||{}).length} lejre`; };
-  netView.onEdges = count; count();
-  const setTop = () => { netView.opts.topSet = topLabels(netView, sizeMode(), 20); };
+  const E0 = edges0.map(([a,b,s]) => [a,b,s/med]); E0.med = med;
+  const roles0 = KERNE_OK ? storedRoles(N.nodes) : null;
+  try {
+    netView = makeNetView({canvas:'net', nodes:N.nodes, edges: roles0 ? kerneEdges(E0, roles0) : E0, backbone: E0, roles: roles0, kerne: !!roles0, posFor: roles0 ? kernePos : null, radius,
+      color: n => colorMode()==='comm' ? commColor(n.community) : groupColor(n.type),
+      highlight: () => netHighlight ? (n => groupOf(n.type)===netHighlight) : null,
+      showMentions: () => document.getElementById('net-arrows').checked,
+      visible: n => (n.n||0) >= netMinDocs, importance: imp, edgeAlpha: 0.28,
+      labelSet: V => topLabels(V, sizeMode(), 24), groups: n => n.community, tooltip: actorTip,
+      groupLabels: V => commCentroids(V, k => colorMode()==='comm' ? commColor(k) : css('--ink-2') || '#6b7178'), onClick: n => window.akFindActor(n.name),
+      labelKey: sizeMode, campColor: c => colorMode()==='comm' ? campInk(c) : css('--ink-2'),
+      screenOverlap: () => sizeMode() !== 'mentioned'});   // layoutet er lagt efter omtale; andre størrelser skubbes fri af hinanden
+  } catch(err){ console.error('Netværket kunne ikke tegnes', err); netView = null; netStarted = false; return; }
+  document.getElementById('net-legend').innerHTML = GROUPS.map(g => { const n = N.nodes.filter(x => groupOf(x.type)===g.k).length; return n ? `<button data-g="${g.k}" aria-pressed="false"><span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${g.c}"></span> ${g.l} <span class="mono">${n}</span></button>` : ''; }).join('');
+  document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); netView.draw(); });
+  const count = () => { const shown = N.nodes.filter(n => (n.n||0) >= netMinDocs).length, nb = netView.kerne ? netView.backbone.length : netView.edges.length;
+    const nc = netView.kerne && netView.roles ? netView.roles.core.reduce((a,b) => a+b, 0) : 0;
+    document.getElementById('net-count').textContent = `${shown} af ${N.nodes.length} aktører vist · ${nb} forbindelser i rygraden · ${nc ? nc + ' kerneaktører · ' : ''}${Object.keys(N.communities||{}).length} lejre`; };
+  document.getElementById('net-min').addEventListener('input', e => { const v = +e.target.value; netMinDocs = v; document.getElementById('net-min-v').textContent = v; count(); netView.invalidate(); netView.draw(); });
+  // signaturforklaringen under overskriften gælder kerne-tegningen
+  const key = document.getElementById('net-key'), keyTop = document.getElementById('net-key-top');
+  const TOPTXT = {mentioned:'de 20 mest omtalte aktører. Størrelsen følger omtale.', in_senders:'de 20 aktører, som flest andre aktører nævner. Størrelsen følger samme mål.',
+    pagerank:'de 20 mest indflydelsesrige aktører. Størrelsen følger indflydelse.', betweenness:'de 20 største bindeled. Størrelsen følger bindeled.', own:'de 20 aktører med flest egne ytringer. Størrelsen følger egne ytringer.'};
+  netView.onEdges = count; netView.opts.onMode = () => { key.hidden = !netView.kerne; count(); }; netView.opts.onMode();
+  // de 20 øverste sættes før den nye tilpasning, så overlap-skubbet regner deres tykke ring med
+  const setTop = () => { netView.opts.topSet = topLabels(netView, sizeMode(), 20); netView.refit(); netView.invalidate(); keyTop.textContent = 'Tyk ring viser ' + (TOPTXT[sizeMode()] || TOPTXT.mentioned); };
   setTop(); document.getElementById('net-size').addEventListener('change', setTop); netView.draw();
   ['net-color','net-size','net-arrows'].forEach(id => document.getElementById(id).addEventListener('change', () => netView.draw()));
   netControls('net', netView, true);
@@ -824,6 +1923,7 @@ function drawC(){ if(cView) cView.draw(); }
 function commColor(c){ return c < 0 ? css('--mark-dim') : (c < COMM_PAL.length ? COMM_PAL[c] : '#8a9299'); }
 function startCentral(){
   if(centralStarted){ return; }
+  if(N.nodes.length && typeof d3!=='undefined' && !whenSized(document.getElementById('cnet'), startCentral)) return;   // lærredet skal have en bredde
   centralStarted = true;
   if(!N.nodes.length || typeof d3==='undefined') return;
   const nodesC = N.nodes.slice().sort((a,b) => (b.betweenness||0)-(a.betweenness||0));
@@ -843,16 +1943,23 @@ function startCentral(){
   const leg = document.getElementById('c-legend');
   leg.innerHTML = comms.map(([k,v]) => { const n = N.nodes.filter(x=>x.community===k).length; return `<button data-c="${k}" aria-pressed="false" style="border-left:6px solid ${commColor(k)}">${esc(v)} <span class="mono">${n}</span></button>`; }).join('');
   leg.addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; leg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed','false')); cHighlight = on ? Number(b.dataset.c) : null; b.setAttribute('aria-pressed', on); drawC(); });
-  // lejr-kort: samme forudberegnede layout som Netværk-fanen, farvet efter lejr og med størrelse efter bindeled
+  // lejr-kort: samme forudberegnede placering og lejr-øer som Netværk-fanen, farvet efter lejr og med størrelse efter bindeled;
+  // et billigt overlap-skub i skærmens pixel efter tilpasningen, fordi bindeled-størrelserne er andre end omtale-størrelserne
   const edgesC = N.links.map(l => [NIDX[l.source], NIDX[l.target], l.s]).filter(e => e[0]!==undefined && e[1]!==undefined);
   const wsC = edgesC.map(e=>e[2]).sort((a,b)=>a-b), medC = wsC.length ? wsC[wsC.length>>1] : 1;
+  const EC = edgesC.map(([a,b,s]) => [a,b,s/medC]); EC.med = medC;
   const maxB = Math.max(1e-6, ...N.nodes.map(n => n.betweenness||0));
-  cView = makeNetView({canvas:'cnet', nodes:N.nodes, edges:edgesC.map(([a,b,s]) => [a,b,s/medC]),
-    radius: n => 1.6 + Math.sqrt((n.betweenness||0)/maxB)*26, color: n => commColor(n.community), importance: n => Math.sqrt((n.betweenness||0)/maxB), edgeAlpha: 0.28,
-    highlight: () => cHighlight===null ? null : (n => n.community===cHighlight), showMentions: () => true,
-    groupLabels: commCentroids, labelSet: V => topLabels(V, 'betweenness', 18), groups: n => n.community, tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
-  cView.opts.topSet = topLabels(cView, 'betweenness', 18); cView.draw();
-  netControls('cnet', cView, true);
+  const rolesC = KERNE_OK ? storedRoles(N.nodes) : null;
+  try {
+    cView = makeNetView({canvas:'cnet', nodes:N.nodes, edges: rolesC ? kerneEdges(EC, rolesC) : EC, backbone: EC, roles: rolesC, kerne: !!rolesC, posFor: rolesC ? kernePos : null, screenOverlap: true,
+      radius: n => 1.6 + Math.sqrt((n.betweenness||0)/maxB)*26, color: n => commColor(n.community), importance: n => Math.sqrt((n.betweenness||0)/maxB), edgeAlpha: 0.28,
+      highlight: () => cHighlight===null ? null : (n => n.community===cHighlight), showMentions: () => true,
+      groupLabels: commCentroids, labelSet: V => topLabels(V, 'betweenness', 18), groups: n => n.community, tooltip: actorTip, onClick: n => window.akFindActor(n.name),
+      labelKey: () => 'betweenness', labelBudget: narrow => ({top: narrow ? 8 : 18, bridges: 0}), campColor: campInk,
+      bridgeRings: false});   // størrelse og tyk ring følger allerede bindeled her
+    cView.opts.topSet = topLabels(cView, 'betweenness', 18); cView.refit(); cView.invalidate(); cView.draw();
+    netControls('cnet', cView, true);
+  } catch(err){ console.error('Lejrkortet kunne ikke tegnes', err); cView = null; }
   startBipartite();
   renderMatrix();
   renderQuad();

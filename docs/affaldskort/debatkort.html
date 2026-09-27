@@ -168,16 +168,15 @@ backdrop-filter:blur(8px);border-radius:12px;padding:12px 14px;box-shadow:0 2px 
 #ak-searchslot #search-container{position:static;margin:0;padding:0;background:none;box-shadow:none;width:100%}
 #ak-time{position:fixed;left:10px;bottom:10px;z-index:20;width:min(300px,calc(100vw - 20px));box-sizing:border-box;background:rgba(255,255,255,.94);
 backdrop-filter:blur(8px);border-radius:10px;padding:6px 10px 5px;box-shadow:0 2px 10px rgba(0,0,0,.16);font-family:Roboto,sans-serif;color:#1a2030}
-#ak-time .row{display:flex;align-items:center;gap:6px;min-height:22px}
+#ak-time .row{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;min-height:22px}
 #ak-time-tog{border:0;background:none;padding:0 2px 0 0;cursor:pointer;font:600 10.5px Roboto,sans-serif;text-transform:uppercase;letter-spacing:.04em;color:#556;display:flex;align-items:center;gap:3px}
 #ak-time-tog::before{content:"";width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:5px solid #556;transition:transform .15s}
 #ak-time.collapsed #ak-time-tog::before{transform:rotate(-90deg)}
 #ak-time .val{font-size:12.5px;font-weight:600;white-space:nowrap}
-#ak-time .n{font-size:10.5px;color:#667;white-space:nowrap}
-#ak-presets{margin-left:auto;font:11px Roboto,sans-serif;border:1px solid rgba(0,0,0,.18);border-radius:6px;padding:1px 2px;background:#fff;color:#1a2030;max-width:96px}
+#ak-time .n{font-size:10.5px;color:#667;white-space:nowrap;margin-left:auto}
 #ak-time-body{margin-top:2px}
 #ak-time.collapsed{width:auto;padding:4px 10px}
-#ak-time.collapsed #ak-time-body,#ak-time.collapsed #ak-presets,#ak-time.collapsed .n{display:none}
+#ak-time.collapsed #ak-time-body,#ak-time.collapsed .n{display:none}
 #ak-dual{position:relative;height:22px;margin:0 3px}
 #ak-dual .track{position:absolute;left:0;right:0;top:9px;height:3px;border-radius:2px;background:#d6dbe2}
 #ak-dual .fill{position:absolute;top:9px;height:3px;border-radius:2px;background:#0a4a7a}
@@ -299,8 +298,7 @@ backdrop-filter:blur(8px);border-radius:10px;padding:6px 10px 5px;box-shadow:0 2
   </div>
 </div>
 <div id="ak-time" role="group" aria-label="Vælg periode">
-  <div class="row"><button id="ak-time-tog" aria-expanded="true" title="Fold periodevælgeren sammen eller ud">Periode</button><span class="val" id="ak-time-val"></span><span class="n" id="ak-time-n"></span>
-    <select id="ak-presets" aria-label="Hurtigvalg af periode"></select></div>
+  <div class="row"><button id="ak-time-tog" aria-expanded="true" title="Fold periodevælgeren sammen eller ud">Periode</button><span class="val" id="ak-time-val"></span><span class="n" id="ak-time-n"></span></div>
   <div id="ak-time-body"><div id="ak-dual"><div class="track"></div><div class="fill" id="ak-time-fill"></div>
     <input type="range" id="ak-t0" aria-label="Fra"><input type="range" id="ak-t1" aria-label="Til"></div>
   <div id="ak-ticks"></div></div>
@@ -906,10 +904,9 @@ window._actorList = [];
   try { if (window.self !== window.top){ panel.style.top = '12px'; panel.style.maxHeight = 'calc(100vh - 24px)'; } } catch(e){}
   renderLegend();
   const t = setInterval(() => { if (window.datamap && window.datamap.originalColors){ clearInterval(t); apply(); } }, 400);
-  // periodevælger: to håndtag + hurtigvalg
+  // periodevælger: to håndtag (hurtigvalg fjernet 27-09-2026 efter Simons ønske; menuen kunne gå ud over boksens kant)
   const MON = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
   const lab = m => MON[(M0 + m) % 12] + ' ' + Math.floor((M0 + m) / 12);
-  const yearIdx = y => Math.max(0, Math.min(MN, y * 12 - M0));
   const i0 = document.getElementById('ak-t0'), i1 = document.getElementById('ak-t1');
   [i0, i1].forEach(el => { el.min = 0; el.max = MN; el.step = 1; });
   i0.value = 0; i1.value = MN;
@@ -917,10 +914,6 @@ window._actorList = [];
   const stepY = span > 24 ? 10 : span > 10 ? 5 : 2;
   const ticks = []; for (let y = Math.ceil(y0 / stepY) * stepY; y <= y1; y += stepY) ticks.push(y);
   document.getElementById('ak-ticks').innerHTML = '<span>' + y0 + '</span>' + ticks.filter(y => y > y0 + 1 && y < y1 - 1).map(y => '<span>' + y + '</span>').join('') + '<span>' + y1 + '</span>';
-  const presets = [['Alle år', 0, MN], ['Seneste år', MN - 11, MN], ['Seneste 5 år', MN - 59, MN], ['2020 til nu', yearIdx(2020), MN], ['2010-2019', yearIdx(2010), yearIdx(2020) - 1], ['Før 2010', 0, yearIdx(2010) - 1]];
-  const pbox = document.getElementById('ak-presets');
-  pbox.innerHTML = '<option value="">Hurtigvalg</option>' + presets.map(([t, a, b], k) => '<option value="' + k + '">' + t + '</option>').join('');
-  pbox.addEventListener('change', () => { const pr = presets[+pbox.value]; if (!pr) return; i0.value = Math.max(0, pr[1]); i1.value = Math.max(0, pr[2]); onTime(true); });
   let tTimer = null;
   function onTime(now){
     let a = +i0.value, b = +i1.value; if (a > b){ if (document.activeElement === i0){ b = a; i1.value = b; } else { a = b; i0.value = a; } }
@@ -929,7 +922,6 @@ window._actorList = [];
     const f = document.getElementById('ak-time-fill'); f.style.left = (100 * a / MN) + '%'; f.style.width = (100 * (b - a) / MN) + '%';
     let k = 0; for (let i = 0; i < n; i++) if (F.month[i] >= a && F.month[i] <= b) k++;
     document.getElementById('ak-time-n').textContent = k.toLocaleString('da-DK') + ' dok.';
-    const hit = presets.findIndex(([t, pa, pb]) => Math.max(0, pa) === a && Math.max(0, pb) === b); pbox.value = hit >= 0 ? String(hit) : '';
     clearTimeout(tTimer); tTimer = setTimeout(apply, now ? 0 : 120);
   }
   [i0, i1].forEach(el => el.addEventListener('input', () => onTime(false)));
