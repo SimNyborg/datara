@@ -3,11 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affaldskort: debatten om affald i Danmark | Datara</title>
-<meta name="description" content="Interaktivt kort over 50.973 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta name="description" content="Interaktivt kort over 57.181 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <link rel="canonical" href="https://datara.dk/affaldskort/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Affaldskort: debatten om affald i Danmark">
-<meta property="og:description" content="Interaktivt kort over 50.973 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta property="og:description" content="Interaktivt kort over 57.181 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <meta property="og:image" content="https://datara.dk/static/affaldskort-debatkort.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
@@ -290,7 +290,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-netvaerk" hidden>
-  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Det medie, der udgiver en artikel, tæller ikke som deltager, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd med ForceAtlas2: aktører, der ofte optræder sammen, trækkes mod hinanden, og alle andre skubber fra hinanden. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
+  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Alle aktører er med, også medierne, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd med ForceAtlas2: aktører, der ofte optræder sammen, trækkes mod hinanden, alle andre skubber fra hinanden, og hver lejr samler sig om sin egen midte. De store, tydeligt markerede aktører midt i en lejr er dem, der fylder mest. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
   <div class="legend" id="net-legend"></div>
   <div class="filters"><label>Farve <select id="net-color"><option value="type">aktørtype</option><option value="comm">lejr</option></select></label>
     <label>Størrelse <select id="net-size"><option value="mentioned">omtale (antal dokumenter)</option><option value="in_senders">nævnt af flest aktører</option><option value="pagerank">indflydelse</option><option value="betweenness">bindeled</option><option value="own">egne ytringer</option></select></label>
@@ -469,7 +469,7 @@ document.getElementById('kpis').innerHTML = [
   {v:fmt(S.n_docs), l:'dokumenter i korpus', d:`${dateDa(S.date_min)} – ${dateDa(S.date_max)}`},
   {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
   {v:fmt(Object.keys(S.by_theme||{}).length), l:'temaer', d:`${(S.debate_map&&S.debate_map.n_clusters)||'–'} klynger på debatkortet`},
-  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'1.825 kilder i alt'},
+  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'2.105 kilder i alt'},
 ].map(k => `<div class="kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="d">${k.d}</div></div>`).join('');
 
 /* ---------- months chart (single series column) ---------- */
@@ -533,7 +533,7 @@ document.getElementById('howto').innerHTML = md(`
 
 **Aktørkortet** gør det samme for aktørerne: placeringen bygger på beskrivelsen af hvad de laver og mener, størrelsen på hvor ofte de optræder i korpus.
 
-**Farver** kan skiftes i kortets panel: dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
+**Farver** kan skiftes i kortets panel: dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, lovgivning, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
 
 **Tiden** styres med histogrammet nederst på debatkortet: træk hen over en periode for at se kun dokumenter derfra. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
 `);
@@ -582,7 +582,7 @@ const GROUPS = [
 ];
 const groupOf = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).k;
 const groupColor = t => (GROUPS.find(g => g.types.includes(t)) || GROUPS[GROUPS.length-1]).c;
-const LAY = Object.assign({k:4, gravity:0.2, scaling:2, linlog:false, dissuade:false, iterations:1500}, N.layout||{});
+const LAY = Object.assign({k:4, gravity:0.2, scaling:2, linlog:false, dissuade:false, group_gravity:0, iterations:1500}, N.layout||{});
 const NIDX = {}; (N.nodes||[]).forEach((n,i) => NIDX[n.id] = i);
 // hvem nævner hvem (rettede omtaler fra aktørernes egne ytringer)
 const OUTM = {}, INM = {};
@@ -590,10 +590,15 @@ const OUTM = {}, INM = {};
 Object.values(OUTM).forEach(l => l.sort((a,b)=>b.w-a.w)); Object.values(INM).forEach(l => l.sort((a,b)=>b.w-a.w));
 
 /* ForceAtlas2 (Jacomy m.fl. 2014) – linje for linje som pipeline/fa2.py, så en genkørsel opfører sig som det forudberegnede layout */
-function fa2State(n, edges, xs, ys){
+function fa2State(n, edges, xs, ys, groups){
   const mass = new Float64Array(n).fill(1); edges.forEach(([a,b]) => { mass[a]++; mass[b]++; });
   let mm = 0; for(let i=0;i<n;i++) mm += mass[i];
-  return {n, edges, x:Float64Array.from(xs), y:Float64Array.from(ys), px:new Float64Array(n), py:new Float64Array(n), mass, meanMass: mm/n, speed:1, eff:1};
+  // lejre med mindst 3 aktører får deres egen tyngdekraft (gi = -1: ingen lejr)
+  const gi = new Int32Array(n).fill(-1); let G = 0;
+  if(groups){ const cnt = {}; groups.forEach(g => { if(g>=0) cnt[g] = (cnt[g]||0)+1; }); const map = {};
+    Object.keys(cnt).map(Number).sort((a,b)=>a-b).forEach(g => { if(cnt[g]>=3) map[g] = G++; }); groups.forEach((g,i) => { if(map[g]!==undefined) gi[i] = map[g]; }); }
+  const gcount = new Float64Array(G); gi.forEach(g => { if(g>=0) gcount[g]++; });
+  return {n, edges, x:Float64Array.from(xs), y:Float64Array.from(ys), px:new Float64Array(n), py:new Float64Array(n), mass, meanMass: mm/n, speed:1, eff:1, gi, G, gcount};
 }
 function fa2Step(st, o){
   const n = st.n, x = st.x, y = st.y, m = st.mass, fx = new Float64Array(n), fy = new Float64Array(n);
@@ -601,6 +606,10 @@ function fa2Step(st, o){
     for(let j=i+1;j<n;j++){ let dx=xi-x[j], dy=yi-y[j], d2=dx*dx+dy*dy; if(d2<1e-9){ dx=0.01*(i%3-1)+0.005; dy=0.01; d2=dx*dx+dy*dy; }
       const f = o.scaling*mi*m[j]/d2; fx[i]+=dx*f; fy[i]+=dy*f; fx[j]-=dx*f; fy[j]-=dy*f; } }
   for(let i=0;i<n;i++){ const r = Math.sqrt(x[i]*x[i]+y[i]*y[i])+1e-9; const g = o.gravity*m[i]/r; fx[i]-=x[i]*g; fy[i]-=y[i]*g; }
+  if(o.group_gravity > 0 && st.G > 0){ const cx = new Float64Array(st.G), cy = new Float64Array(st.G);
+    for(let i=0;i<n;i++){ const g = st.gi[i]; if(g>=0){ cx[g]+=x[i]; cy[g]+=y[i]; } }
+    for(let g=0; g<st.G; g++){ cx[g]/=st.gcount[g]; cy[g]/=st.gcount[g]; }
+    for(let i=0;i<n;i++){ const g = st.gi[i]; if(g<0) continue; const dx = x[i]-cx[g], dy = y[i]-cy[g], dl = Math.sqrt(dx*dx+dy*dy)+1e-9, f = o.group_gravity*m[i]/dl; fx[i]-=dx*f; fy[i]-=dy*f; } }
   const comp = o.dissuade ? st.meanMass : 1;
   for(const [a,b,w] of st.edges){ const dx=x[a]-x[b], dy=y[a]-y[b], d=Math.sqrt(dx*dx+dy*dy)+1e-9;
     const c = w*(o.dissuade ? comp/m[a] : 1); const f = o.linlog ? c*Math.log1p(d)/d : c; fx[a]-=dx*f; fy[a]-=dy*f; fx[b]+=dx*f; fy[b]+=dy*f; }
@@ -632,6 +641,41 @@ function ringOutliers(V){
   iso.forEach((i,k) => { const a = 2*Math.PI*k/Math.max(1,iso.length); V.x[i] = cx + R*1.06*Math.cos(a); V.y[i] = cy + R*1.06*Math.sin(a); });
   con.forEach(i => { if(r[i] > R){ const f = (R + (r[i]-R)*0.02)/r[i]; V.x[i] = cx + (V.x[i]-cx)*f; V.y[i] = cy + (V.y[i]-cy)*f; } });
 }
+// lejre (mindst 3 aktører) nummereres 0..G-1, andre får -1 (som _group_index i fa2.py)
+function groupIndex(groups){
+  const n = groups.length, gi = new Int32Array(n).fill(-1), cnt = {}, map = {}; let G = 0;
+  groups.forEach(g => { if(g>=0) cnt[g] = (cnt[g]||0)+1; });
+  Object.keys(cnt).map(Number).sort((a,b)=>a-b).forEach(g => { if(cnt[g]>=3) map[g] = G++; });
+  groups.forEach((g,i) => { if(map[g]!==undefined) gi[i] = map[g]; });
+  return {gi, G};
+}
+// pixel pr. layoutenhed på et lærred (som fit_scale i fa2.py); smalle skærme regnes som mindst 800 px brede
+function fitScale(V, W, H){ const pad = 36; let x0=1e9,x1=-1e9,y0=1e9,y1=-1e9; V.x.forEach((x,i)=>{ x0=Math.min(x0,x); x1=Math.max(x1,x); y0=Math.min(y0,V.y[i]); y1=Math.max(y1,V.y[i]); });
+  return Math.min((W-2*pad)/Math.max(1e-9,x1-x0), (H-2*pad)/Math.max(1e-9,y1-y0)); }
+// hele lejre skubbes fra hinanden som øer (samme regel som separate_groups i fa2.py)
+function separateGroups(V, groups, rad, pad, iters){
+  const {gi, G} = groupIndex(groups); if(G < 2) return;
+  const mem = Array.from({length:G}, () => []); gi.forEach((g,i) => { if(g>=0) mem[g].push(i); });
+  const r = V.nodes.map((n,i) => rad(i)), area = mem.map(m => m.reduce((a,i) => a + r[i]*r[i], 0));
+  const pct = (arr, q) => { const s = arr.slice().sort((a,b)=>a-b), pos = q*(s.length-1), lo = Math.floor(pos), hi = Math.ceil(pos); return s[lo] + (s[hi]-s[lo])*(pos-lo); };
+  for(let it=0; it<(iters||200); it++){
+    const cx = mem.map(m => m.reduce((a,i) => a + V.x[i], 0)/m.length), cy = mem.map(m => m.reduce((a,i) => a + V.y[i], 0)/m.length);
+    const R = mem.map((m,g) => pct(m.map(i => Math.hypot(V.x[i]-cx[g], V.y[i]-cy[g]) + r[i]), 0.9));
+    const mx = new Float64Array(G), my = new Float64Array(G); let any = false;
+    for(let a=0;a<G;a++) for(let b=a+1;b<G;b++){ const dx = cx[a]-cx[b], dy = cy[a]-cy[b], d = Math.hypot(dx,dy), need = R[a]+R[b]+pad-d;
+      if(need <= 0 || d < 1e-9) continue; any = true; const tot = Math.max(area[a]+area[b], 1e-12), k = need/d*0.5;
+      mx[a] += dx*k*area[b]/tot; my[a] += dy*k*area[b]/tot; mx[b] -= dx*k*area[a]/tot; my[b] -= dy*k*area[a]/tot; }
+    if(!any) break; mem.forEach((m,g) => m.forEach(i => { V.x[i] += mx[g]; V.y[i] += my[g]; }));
+  }
+}
+function resolveOverlap(V, rad, iters){
+  const n = V.nodes.length, r = V.nodes.map((nd,i) => rad(i)), r2 = r.map(v => v*v);
+  for(let it=0; it<(iters||80); it++){ const mx = new Float64Array(n), my = new Float64Array(n); let any = false;
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){ const dx = V.x[i]-V.x[j], dy = V.y[i]-V.y[j], d = Math.sqrt(dx*dx+dy*dy), need = r[i]+r[j]-d;
+      if(need <= 0 || d < 1e-9) continue; any = true; const tot = Math.max(r2[i]+r2[j], 1e-12), k = need/d*0.5;
+      mx[i] += dx*k*r2[j]/tot; my[i] += dy*k*r2[j]/tot; mx[j] -= dx*k*r2[i]/tot; my[j] -= dy*k*r2[i]/tot; }
+    if(!any) break; for(let i=0;i<n;i++){ V.x[i] += mx[i]; V.y[i] += my[i]; } }
+}
 function logSlider(v, lo, hi){ return lo*Math.pow(hi/lo, v/100); }
 function logPos(val, lo, hi){ return Math.round(100*Math.log(val/lo)/Math.log(hi/lo)); }
 
@@ -656,7 +700,7 @@ function makeNetView(o){
     const vis = o.visible ? o.visible : (() => true);
     ctx.lineCap = 'round';
     V.edges.forEach(([a,b,s]) => { if(!vis(V.nodes[a]) || !vis(V.nodes[b])) return; const on = hov!==null ? (a===hov||b===hov) : (!hl || (hl(V.nodes[a]) && hl(V.nodes[b])));
-      ctx.globalAlpha = hov!==null ? (on?0.85:0.05) : (on?0.45:0.06); ctx.strokeStyle = line; ctx.lineWidth = Math.min(5, 0.5+s*0.9)/tr.k;
+      ctx.globalAlpha = hov!==null ? (on?0.85:0.04) : (on?(o.edgeAlpha||0.45):0.05); ctx.strokeStyle = line; ctx.lineWidth = Math.min(5, 0.4+s*0.8)/tr.k;
       ctx.beginPath(); ctx.moveTo(sx(a),sy(a)); ctx.lineTo(sx(b),sy(b)); ctx.stroke(); });
     // hvem nævner hvem: pile ud (orange) og ind (blå) for aktøren under musen
     if(hov!==null && o.showMentions && o.showMentions()){
@@ -670,9 +714,10 @@ function makeNetView(o){
     ctx.globalAlpha = 1;
     V.nodes.forEach((n,i) => { if(!vis(n)) return; const r = o.radius(n); const faded = (hov!==null && i!==hov && !neigh.has(i)) || (hl && !hl(n));
       ctx.beginPath(); if(o.square && o.square(n)) ctx.rect(sx(i)-r, sy(i)-r, 2*r, 2*r); else ctx.arc(sx(i),sy(i),r,0,Math.PI*2);
-      ctx.globalAlpha = faded ? 0.25 : 1; ctx.fillStyle = faded ? dim : o.color(n); ctx.fill();
-      ctx.globalAlpha = 1; ctx.lineWidth = 1.2/tr.k; ctx.strokeStyle = surface; ctx.stroke(); });
-    if(o.groupLabels && hov===null){ ctx.textAlign='center'; o.groupLabels(V).forEach(g => { ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.lineWidth = 4/tr.k; ctx.strokeStyle = surface; ctx.strokeText(g.text, g.x*fit.s+fit.ox, g.y*fit.s+fit.oy); ctx.fillStyle = g.color; ctx.fillText(g.text, g.x*fit.s+fit.ox, g.y*fit.s+fit.oy); }); }
+      const imp = o.importance ? o.importance(n) : 1;
+      ctx.globalAlpha = faded ? 0.2 : (hov!==null ? 1 : 0.3 + 0.7*Math.min(1, imp*2.2)); ctx.fillStyle = faded ? dim : o.color(n); ctx.fill();
+      ctx.globalAlpha = 1; const top = o.topSet && o.topSet.has(i) && !faded; ctx.lineWidth = (top ? 2.2 : 1)/tr.k; ctx.strokeStyle = top ? ink : surface; ctx.stroke(); });
+    if(o.groupLabels && hov===null){ ctx.textAlign='center'; o.groupLabels(V).forEach(g => { ctx.font = `bold ${13/Math.sqrt(tr.k)}px "Bricolage Grotesque", sans-serif`; ctx.lineWidth = 4/tr.k; ctx.strokeStyle = surface; const gy = g.y*fit.s+fit.oy - (g.above ? 14 : 0); ctx.strokeText(g.text, g.x*fit.s+fit.ox, gy); ctx.fillStyle = g.color; ctx.fillText(g.text, g.x*fit.s+fit.ox, gy); }); }
     ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.font = `${11/Math.sqrt(tr.k)}px "IBM Plex Sans", sans-serif`;
     const lab = o.labelSet ? o.labelSet(V) : new Set();
     V.nodes.forEach((n,i) => { if(!vis(n)) return; const show = hov!==null ? (i===hov || neigh.has(i)) : (lab.has(i) && !(hl && !hl(n))); if(!show) return;
@@ -683,11 +728,17 @@ function makeNetView(o){
   V.setData = function(nodes, edges){ if(running){ cancelAnimationFrame(running); running=null; } V.nodes = nodes; V.edges = edges; V.x = nodes.map(n=>n.x); V.y = nodes.map(n=>n.y); V.home = {x:V.x.slice(), y:V.y.slice(), edges}; hov = null; doFit(); V.draw(); };
   V.run = function(opts, iters, done){
     if(running) cancelAnimationFrame(running);
-    const st = fa2State(V.nodes.length, V.edges, V.x, V.y); let left = iters;
+    const st = fa2State(V.nodes.length, V.edges, V.x, V.y, o.groups ? V.nodes.map(o.groups) : null); let left = iters;
     const per = V.nodes.length > 800 ? 3 : 12;   // få iterationer pr. skærmopdatering ved mange aktører, så siden ikke hakker
     const tick = () => { const n = Math.min(per, left); for(let i=0;i<n;i++) fa2Step(st, opts); left -= n;
       V.x = Array.from(st.x); V.y = Array.from(st.y); doFit(); V.draw(); if(o.onProgress) o.onProgress(1 - left/iters);
-      if(left > 0) running = requestAnimationFrame(tick); else { running = null; ringOutliers(V); doFit(); V.draw(); if(done) done(); } };
+      if(left > 0) running = requestAnimationFrame(tick); else { running = null;
+        if(o.groups && opts.group_gravity > 0){   // lejre som øer, derefter overlap (som i pipelinen)
+          const W = Math.max(w, 800), groups = V.nodes.map(o.groups), rad = s => (i => (o.radius(V.nodes[i]) + 1) / s);
+          for(let k=0;k<2;k++){ const s = fitScale(V, W, H); separateGroups(V, groups, rad(s), 8/s); }
+          ringOutliers(V); resolveOverlap(V, rad(fitScale(V, W, H)));
+        } else ringOutliers(V);
+        doFit(); V.draw(); if(done) done(); } };
     running = requestAnimationFrame(tick);
   };
   V.reset = function(){ if(running){ cancelAnimationFrame(running); running=null; } V.x = V.home.x.slice(); V.y = V.home.y.slice(); V.edges = V.home.edges; doFit(); tr = {k:1,x:0,y:0}; d3.select(canvas).call(zoom.transform, d3.zoomIdentity); V.draw(); };
@@ -708,16 +759,18 @@ function netControls(prefix, V, withK){
   const el = document.getElementById(prefix+'-ctl'); if(!el) return;
   el.innerHTML = `${withK ? `<label title="Hvor mange af sine stærkeste forbindelser hver aktør viser. Færre = tydeligere lejre.">Forbindelser pr. aktør <input type="range" id="${prefix}-k" min="2" max="10" step="1" value="${LAY.k}"> <span class="mono" id="${prefix}-k-v">${LAY.k}</span></label>` : ''}
     <label title="Hvor stærkt alle aktører trækkes mod midten. Lav tyngdekraft lader lejrene glide fra hinanden; høj samler kortet.">Tyngdekraft <input type="range" id="${prefix}-g" min="0" max="100" value="${logPos(LAY.gravity,0.01,10)}"> <span class="mono" id="${prefix}-g-v">${LAY.gravity}</span></label>
+    <label title="Hvor stærkt hver lejr samler sig om sin egen midte. Højere værdi giver tydeligere lejre med luft imellem; 0 er ren ForceAtlas2.">Saml lejre <input type="range" id="${prefix}-gg" min="0" max="100" value="${LAY.group_gravity>0 ? logPos(LAY.group_gravity,0.5,200) : 0}"> <span class="mono" id="${prefix}-gg-v">${LAY.group_gravity}</span></label>
     <label title="Hvor meget aktørerne skubber fra hinanden. Påvirker mest kortets størrelse og luften mellem aktørerne.">Afstand <input type="range" id="${prefix}-s" min="0" max="100" value="${logPos(LAY.scaling,0.5,50)}"> <span class="mono" id="${prefix}-s-v">${LAY.scaling}</span></label>
     <label title="LinLog-tilstand: tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${LAY.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
     <label title="Store aktører trækkes mindre mod deres naboer, så de lægger sig mellem lejrene. Gør bindeled tydeligere."><input type="checkbox" id="${prefix}-dh" ${LAY.dissuade?'checked':''}> Dæmp store aktører</label>
     <button id="${prefix}-run">Kør layout igen</button> <button class="ghost" id="${prefix}-reset">Nulstil</button> <span class="count" id="${prefix}-prog"></span>`;
   const g = () => +logSlider(+document.getElementById(prefix+'-g').value, 0.01, 10).toFixed(3);
   const s = () => +logSlider(+document.getElementById(prefix+'-s').value, 0.5, 50).toFixed(2);
-  el.addEventListener('input', () => { document.getElementById(prefix+'-g-v').textContent = g(); document.getElementById(prefix+'-s-v').textContent = s(); if(withK) document.getElementById(prefix+'-k-v').textContent = document.getElementById(prefix+'-k').value; });
+  const gg = () => { const v = +document.getElementById(prefix+'-gg').value; return v === 0 ? 0 : +logSlider(v, 0.5, 200).toFixed(1); };
+  el.addEventListener('input', () => { document.getElementById(prefix+'-g-v').textContent = g(); document.getElementById(prefix+'-s-v').textContent = s(); document.getElementById(prefix+'-gg-v').textContent = gg(); if(withK) document.getElementById(prefix+'-k-v').textContent = document.getElementById(prefix+'-k').value; });
   document.getElementById(prefix+'-run').addEventListener('click', () => {
     if(withK){ V.setEdges(backboneEdges(+document.getElementById(prefix+'-k').value)); if(V.onEdges) V.onEdges(); }
-    const opts = {gravity:g(), scaling:s(), linlog:document.getElementById(prefix+'-ll').checked, dissuade:document.getElementById(prefix+'-dh').checked};
+    const opts = {gravity:g(), scaling:s(), group_gravity:gg(), linlog:document.getElementById(prefix+'-ll').checked, dissuade:document.getElementById(prefix+'-dh').checked};
     const prog = document.getElementById(prefix+'-prog'); V.opts.onProgress = p => { prog.textContent = p < 1 ? `beregner … ${Math.round(p*100)} %` : 'færdig'; };
     V.run(opts, 400);
   });
@@ -730,9 +783,10 @@ function actorTip(n){
   return `<b>${esc(n.name)}</b>${TL[n.type]||n.type} · lejr: ${esc(commName(n.community, 40))}<br>${n.n} dok. · omtalt i ${n.mentioned||0} · nævnt af ${n.in_senders||0} aktører · nævner ${n.out_targets||0}<br>bindeled nr. ${RANK_BTW[n.id]||'–'}`
     + (inn.length ? `<br><span style="color:#2a78d6">nævnes mest af:</span> ${esc(inn.join(', '))}` : '') + (out.length ? `<br><span style="color:#eb6834">nævner mest:</span> ${esc(out.join(', '))}` : '');
 }
-function commCentroids(V){
-  const acc = {}; V.nodes.forEach((n,i) => { if(n.community<0) return; const a = acc[n.community] = acc[n.community] || {x:0,y:0,c:0,ymin:1e9}; a.x+=V.x[i]; a.y+=V.y[i]; a.c++; });
-  return Object.entries(acc).filter(([k,a]) => a.c >= 8).sort((p,q) => q[1].c - p[1].c).slice(0, 14).map(([k,a]) => ({x:a.x/a.c, y:a.y/a.c, text:commName(+k, 30).split(' · ')[0], color:commColor(+k)}));
+function commCentroids(V, colorFn){
+  const acc = {}; V.nodes.forEach((n,i) => { if(n.community<0) return; const a = acc[n.community] = acc[n.community] || {x:0,c:0,ys:[]}; a.x+=V.x[i]; a.ys.push(V.y[i]); a.c++; });
+  return Object.entries(acc).filter(([k,a]) => a.c >= 8).sort((p,q) => q[1].c - p[1].c).slice(0, 14).map(([k,a]) => { const ys = a.ys.sort((p,q)=>p-q);
+    return {x:a.x/a.c, y:ys[Math.floor(0.08*(ys.length-1))], above:true, text:commName(+k, 30).split(' · ')[0], color: colorFn ? colorFn(+k) : commColor(+k)}; });
 }
 function topLabels(V, key, n){ const idx = V.nodes.map((x,i)=>i).sort((a,b)=>(V.nodes[b][key]||0)-(V.nodes[a][key]||0)).slice(0,n); return new Set(idx); }
 
@@ -743,18 +797,22 @@ function startNet(){
   document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); netView.draw(); });
   const colorMode = () => document.getElementById('net-color').value, sizeMode = () => document.getElementById('net-size').value;
   const maxOf = k => Math.max(1e-9, ...N.nodes.map(n => n[k]||0));
-  const radius = n => { const k = sizeMode(); return 3 + Math.sqrt((n[k]||0)/maxOf(k))*20; };
+  const imp = n => { const k = sizeMode(); return Math.sqrt((n[k]||0)/maxOf(k)); };
+  const radius = n => 1.6 + imp(n)*26;
   const edges0 = N.links.map(l => [NIDX[l.source], NIDX[l.target], l.s]).filter(e => e[0]!==undefined && e[1]!==undefined);
   const ws = edges0.map(e=>e[2]).sort((a,b)=>a-b), med = ws.length ? ws[ws.length>>1] : 1;
   netView = makeNetView({canvas:'net', nodes:N.nodes, edges:edges0.map(([a,b,s]) => [a,b,s/med]), radius,
     color: n => colorMode()==='comm' ? commColor(n.community) : groupColor(n.type),
     highlight: () => netHighlight ? (n => groupOf(n.type)===netHighlight) : null,
     showMentions: () => document.getElementById('net-arrows').checked,
-    visible: n => (n.n||0) >= netMinDocs,
-    labelSet: V => topLabels(V, sizeMode(), 28), tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
+    visible: n => (n.n||0) >= netMinDocs, importance: imp, edgeAlpha: 0.28,
+    labelSet: V => topLabels(V, sizeMode(), 24), groups: n => n.community, tooltip: actorTip,
+    groupLabels: V => commCentroids(V, k => colorMode()==='comm' ? commColor(k) : css('--ink-2') || '#6b7178'), onClick: n => window.akFindActor(n.name)});
   document.getElementById('net-min').addEventListener('input', e => { const v = +e.target.value; netMinDocs = v; document.getElementById('net-min-v').textContent = v; count(); netView.draw(); });
   const count = () => { const shown = N.nodes.filter(n => (n.n||0) >= netMinDocs).length; document.getElementById('net-count').textContent = `${shown} af ${N.nodes.length} aktører vist · ${netView.edges.length} forbindelser i rygraden · ${Object.keys(N.communities||{}).length} lejre`; };
   netView.onEdges = count; count();
+  const setTop = () => { netView.opts.topSet = topLabels(netView, sizeMode(), 20); };
+  setTop(); document.getElementById('net-size').addEventListener('change', setTop); netView.draw();
   ['net-color','net-size','net-arrows'].forEach(id => document.getElementById(id).addEventListener('change', () => netView.draw()));
   netControls('net', netView, true);
 }
@@ -790,9 +848,10 @@ function startCentral(){
   const wsC = edgesC.map(e=>e[2]).sort((a,b)=>a-b), medC = wsC.length ? wsC[wsC.length>>1] : 1;
   const maxB = Math.max(1e-6, ...N.nodes.map(n => n.betweenness||0));
   cView = makeNetView({canvas:'cnet', nodes:N.nodes, edges:edgesC.map(([a,b,s]) => [a,b,s/medC]),
-    radius: n => 3 + Math.sqrt((n.betweenness||0)/maxB)*22, color: n => commColor(n.community),
+    radius: n => 1.6 + Math.sqrt((n.betweenness||0)/maxB)*26, color: n => commColor(n.community), importance: n => Math.sqrt((n.betweenness||0)/maxB), edgeAlpha: 0.28,
     highlight: () => cHighlight===null ? null : (n => n.community===cHighlight), showMentions: () => true,
-    groupLabels: commCentroids, labelSet: V => topLabels(V, 'betweenness', 18), tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
+    groupLabels: commCentroids, labelSet: V => topLabels(V, 'betweenness', 18), groups: n => n.community, tooltip: actorTip, onClick: n => window.akFindActor(n.name)});
+  cView.opts.topSet = topLabels(cView, 'betweenness', 18); cView.draw();
   netControls('cnet', cView, true);
   startBipartite();
   renderMatrix();
