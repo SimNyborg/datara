@@ -8,6 +8,8 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    {% include '_head_gate.html' %}
+
     <title>{% block title %}{% if strings.lang_code == 'da' %}Automatisering & analyse for virksomheder | Datara{% else %}Automation & analytics for businesses | Datara{% endif %}{% endblock %}</title>
 
     {% block meta_description %}
@@ -42,7 +44,7 @@
     
 
     <link rel="stylesheet" href="/static/style.css?v=site-review-20260926-projekt-hero">
-    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260827-uniform-nav">
+    <link rel="stylesheet" href="/static/site-refresh.css?v=site-review-20260928-menulinje-streger">
 
     <!-- Leaflet CSS til Indsigt-sektionen – midlertidigt deaktiveret
 
@@ -865,6 +867,7 @@ document.addEventListener('DOMContentLoaded', function() {
 #}
 
 <script defer src="/static/js/about-contact-path.js?v=20260728-seam-calibrated-ribbon"></script>
+<script defer src="/static/js/lines.js?v=20260928-skillestreger"></script>
 
 {% include '_loader.html' %}
 

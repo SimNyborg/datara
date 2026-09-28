@@ -1,0 +1,22 @@
+{# Koeres foer foerste maling. Ordmaerket i menulinjen staar som DTR fra foerste billede og samler
+   sig til DATARA, naar siden er faldet til ro: efter load, fontene og en ledig stund, og naar 8
+   billeder i traek er kommet til tiden. Saa deler bevaegelsen ikke skaermen med indlaesningen.
+   Kommer load ikke inden 4 s, venter den kun paa, at DOM'en er klar. Er billederne ikke faldet til
+   ro 2,5 s efter, spiller den alligevel. Grundlinjen under forsidens menu starter paa samme udloeser.
+   Uden JavaScript og ved reduceret bevaegelse staar ordmaerket faerdigt fra foerste billede.
+   Naar A'erne er tonet frem, fjernes wm-intro og wm-go: ingen transform og ingen will-change tilbage. #}
+<script>(function(){var d=document.documentElement;
+try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){return}
+d.classList.add('wm-intro');
+var gaaet=0,lytter=0;
+function slut(){d.classList.remove('wm-intro','wm-go');d.classList.add('wm-done')}
+function go(){if(gaaet)return;gaaet=1;d.classList.add('wm-go');
+d.addEventListener('animationend',function h(e){if(e.animationName==='wm-fade'){d.removeEventListener('animationend',h);slut()}});
+setTimeout(slut,4000)}
+function rolig(){if(lytter)return;lytter=1;var ok=0,sidst=0,min=1e9,t0=0;requestAnimationFrame(function f(t){if(!t0)t0=t;
+if(sidst){var iv=t-sidst;if(iv>0&&iv<min)min=iv;ok=iv<Math.max(20,min*1.6)?ok+1:0}sidst=t;
+if(ok>=8||t-t0>2500)go();else requestAnimationFrame(f)})}
+function ledig(){(window.requestIdleCallback||function(f){return setTimeout(f,50)})(rolig,{timeout:1000})}
+function efterLoad(){var f=document.fonts&&document.fonts.ready;(f||Promise.resolve()).then(ledig,ledig)}
+if(document.readyState==='complete')efterLoad();else addEventListener('load',efterLoad,{once:true});
+setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMContentLoaded',rolig,{once:true});else rolig()},4000)})();</script>
