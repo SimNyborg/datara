@@ -909,7 +909,9 @@ window._actorList = [];
   const lab = m => MON[(M0 + m) % 12] + ' ' + Math.floor((M0 + m) / 12);
   const i0 = document.getElementById('ak-t0'), i1 = document.getElementById('ak-t1');
   [i0, i1].forEach(el => { el.min = 0; el.max = MN; el.step = 1; });
-  i0.value = 0; i1.value = MN;
+  // standard ved indlæsning: 2020 og frem (Simon 28-09-2026); 'Nulstil filtre' går tilbage hertil
+  const D0 = Math.max(0, Math.min(MN, 2020 * 12 - M0));
+  i0.value = D0; i1.value = MN;
   const y0 = Math.floor(M0 / 12), y1 = Math.floor((M0 + MN) / 12), span = y1 - y0;
   const stepY = span > 24 ? 10 : span > 10 ? 5 : 2;
   const ticks = []; for (let y = Math.ceil(y0 / stepY) * stepY; y <= y1; y += stepY) ticks.push(y);
@@ -925,7 +927,7 @@ window._actorList = [];
     clearTimeout(tTimer); tTimer = setTimeout(apply, now ? 0 : 120);
   }
   [i0, i1].forEach(el => el.addEventListener('input', () => onTime(false)));
-  document.getElementById('ak-reset').addEventListener('click', () => { i0.value = 0; i1.value = MN; onTime(true); });
+  document.getElementById('ak-reset').addEventListener('click', () => { i0.value = D0; i1.value = MN; onTime(true); });
   onTime(true);
   // fold sammen: huskes; starter sammenfoldet på små skærme, så kortet kan bruges
   const tbox = document.getElementById('ak-time'), ttog = document.getElementById('ak-time-tog');
