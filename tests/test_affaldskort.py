@@ -1,3 +1,5 @@
+import base64
+import gzip
 import json
 import re
 import unittest
@@ -45,8 +47,10 @@ class AffaldskortProjectTests(unittest.TestCase):
                 self.assertIn(title, html)
                 self.assertIn(number, html)
                 self.assertIn('class="project-app-links"', html)
-                # kun én knap: den åbner kortet i fuld skærm
+                # to knapper: hele kortet i fuld skærm (først, også billedets link) og fokuskortet
                 self.assertIn('href="/affaldskort/debatkort.html"', html)
+                self.assertIn('href="/affaldskort/fokus/"', html)
+                self.assertLess(html.index('href="/affaldskort/debatkort.html"'), html.index('href="/affaldskort/fokus/"'))
                 self.assertNotIn('href="/affaldskort/"', html)
                 self.assertIn('/static/affaldskort-debatkort.jpg', html)
                 self.assertEqual(len(re.findall(r'<h1(?:\s|>)', html)), 1)
@@ -71,6 +75,7 @@ class AffaldskortProjectTests(unittest.TestCase):
         self.assertIn('https://datara.dk/projekter/affaldsdebatten</loc>', sitemap)
         self.assertIn('https://datara.dk/en/projekter/affaldsdebatten</loc>', sitemap)
         self.assertIn('https://datara.dk/affaldskort/</loc>', sitemap)
+        self.assertIn('https://datara.dk/affaldskort/fokus/</loc>', sitemap)
 
     def test_freeze_builds_the_article_and_copies_the_map_app(self):
         self.assertIn('/projekter/affaldsdebatten', freeze.DA_PAGES)
@@ -95,6 +100,63 @@ class AffaldskortProjectTests(unittest.TestCase):
         self.assertNotIn('FORTSAET', docs['docs'])
         self.assertNotIn('INDSAMLINGSPLAN', docs['docs'])
         self.assertTrue(all(set(s) <= {'name', 'url', 'kind', 'coverage'} for s in docs['sources']))
+
+    def test_project_pages_link_to_the_focused_map(self):
+        for path, label in (('/projekter/affaldsdebatten', 'Se fokuskortet'), ('/en/projekter/affaldsdebatten', 'See the focused map \(in Danish\)')):
+            with self.subTest(path=path):
+                html = self._html(path)
+                self.assertRegex(html, r'<a class="content-secondary-button" href="/affaldskort/fokus/">' + label + '</a>')
+
+    @unittest.skipUnless((affaldskort_content.APP_DIR / 'fokus' / 'index.html').is_file(), 'fokuskortet er ikke publiceret endnu')
+    def test_focused_map_is_public_and_links_back(self):
+        fokus = self._html('/affaldskort/fokus/')
+        self.assertIn('<html lang="da">', fokus)
+        self.assertIn('| Datara</title>', fokus)
+        self.assertIn('<link rel="canonical" href="https://datara.dk/affaldskort/fokus/">', fokus)
+        self.assertIn('<meta name="description"', fokus)
+        self.assertIn('href="/static/favicon-32x32.png"', fokus)
+        self.assertIn('<a id="akf-back" href="../#debatkort" target="_top">Se hele debatten</a>', fokus)
+        self.assertNotIn('ECHO', fokus)
+        self.assertNotIn('DTU', fokus)
+        for m in re.findall(r'src="(index_data_\d+\.js)"', fokus):
+            self.assertTrue((affaldskort_content.APP_DIR / 'fokus' / m).is_file(), m)
+        # dashboardets debatkort-fane kan skifte til fokuskortet
+        index = self._html('/affaldskort/')
+        self.assertIn('id="kortvalg"', index)
+        self.assertIn('data-kort="fokus" aria-pressed="false"', index)
+        self.assertIn('data-kort="hele" aria-pressed="true"', index)
+        self.assertIn("fokus/index.html", index)
+        self.assertIn('iframe id="kort-frame" data-src="debatkort.html"', index)
+
+    @unittest.skipUnless((freeze.DEST / 'affaldskort' / 'index.html').is_file(), 'sitet er ikke frosset endnu')
+    def test_frozen_site_has_the_focused_map(self):
+        page = freeze.DEST / 'affaldskort' / 'fokus' / 'index.html'
+        self.assertTrue(page.is_file(), page)
+        html = page.read_text(encoding='utf-8')
+        self.assertIn('Se hele debatten', html)
+        self.assertIn('href="../#debatkort"', html)
+        self.assertNotIn('ECHO', html)
+        self.assertNotIn('DTU ECHO', html)
+        self.assertTrue(list(page.parent.glob('index_data_*.js')))
+
+    @unittest.skipUnless(list((affaldskort_content.APP_DIR / 'fokus').glob('index_data_*.js')), 'fokuskortet er ikke publiceret endnu')
+    def test_focused_map_has_no_media_teasers(self):
+        # svæveteksten (summary_short) og søgeteksten må ikke indeholde mediernes manchetter, som på hele kortet
+        blob = ''
+        for f in sorted((affaldskort_content.APP_DIR / 'fokus').glob('index_data_*.js')):
+            blob += ''.join(re.findall(r'AKD\["hoverDataEncoded"\] = \(AKD\["hoverDataEncoded"\] \|\| ""\) \+ "([^"]*)"',
+                                       f.read_text(encoding='utf-8')))
+        self.assertTrue(blob, 'fandt ikke hoverDataEncoded i fokuskortets datafiler')
+        hover = json.loads(gzip.decompress(base64.b64decode(blob)))
+        self.assertIn('summary_short', hover)
+        self.assertIn('search_text', hover)
+        self.assertGreater(sum(not s for s in hover['summary_short']), 1000)   # mange mediedokumenter uden manchet
+        for teaser in ('Vi får ikke genanvendt elektronik mere og bedre',   # Information
+                       'Aktiekursen i renovationsselskabet RenoN',          # Finans
+                       'Flere kommuner har fjernet skraldespande'):         # DR
+            with self.subTest(teaser=teaser):
+                self.assertFalse(any(teaser in s for s in hover['summary_short']))
+                self.assertFalse(any(teaser.lower() in s for s in hover['search_text']))
 
     def test_unknown_map_file_is_a_404(self):
         self._html('/affaldskort/findes-ikke.html', status=404)

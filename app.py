@@ -151,6 +151,8 @@ def index():
 @app.route('/affaldskort/')
 @app.route('/affaldskort/<path:filename>')
 def affaldskort_app(filename='index.html'):
+    if filename.endswith('/'):   # fx /affaldskort/fokus/ -> fokus/index.html
+        filename += 'index.html'
     if not (affaldskort_content.APP_DIR / filename).is_file():
         abort(404)
     return send_from_directory(affaldskort_content.APP_DIR, filename)
@@ -627,6 +629,7 @@ def sitemap():
 
     # The interactive waste-debate map exists in Danish only.
     urls.append((affaldskort_content.APP_URL, 'weekly', '0.7'))
+    urls.append((affaldskort_content.APP_URL + 'fokus/', 'weekly', '0.6'))
 
     # Build XML
     xml = '<?xml version="1.0" encoding="UTF-8"?>\n'

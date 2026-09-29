@@ -78,6 +78,7 @@ PROJECT = {
             ),
             'app_links': [
                 {'label': 'Åbn kortet', 'href': APP_URL + 'debatkort.html', 'primary': True},
+                {'label': 'Se fokuskortet', 'href': APP_URL + 'fokus/'},
             ],
             'sections': [
                 {
@@ -159,6 +160,7 @@ PROJECT = {
             ),
             'app_links': [
                 {'label': 'Open the map (in Danish)', 'href': APP_URL + 'debatkort.html', 'primary': True},
+                {'label': 'See the focused map (in Danish)', 'href': APP_URL + 'fokus/'},
             ],
             'sections': [
                 {

@@ -9,6 +9,10 @@
  "n_clusters_fine": 201,
  "n_sources": 2105,
  "year_from": 1996,
+ "year_min": 1984,
+ "n_docs_fokus": 22525,
+ "n_docs_fokus_da": "22.525",
+ "year_fokus": 2017,
  "date_max": "2026-09-27",
  "item_types": {
   "artikel": 30973,

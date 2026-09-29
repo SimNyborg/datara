@@ -211,6 +211,16 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 .datara-bar .brand{font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .datara-bar .sep{opacity:.45}
 .datara-bar .right{margin-left:auto;opacity:.8}
+
+.kortvalg{display:flex;gap:4px;margin:0 0 12px;padding:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;width:fit-content;max-width:100%}
+.kortvalg button{appearance:none;border:1px solid transparent;background:none;border-radius:9px;padding:7px 14px 8px;font:inherit;color:var(--ink-2);cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:1px;min-width:0}
+.kortvalg button b{font-weight:600;font-size:14px;color:var(--ink)}
+.kortvalg button span{font-size:12px;line-height:1.35;color:var(--ink-2)}
+.kortvalg button:hover{background:var(--surface)}
+.kortvalg button[aria-pressed="true"]{background:var(--surface);border-color:var(--line);box-shadow:var(--shadow)}
+.kortvalg button[aria-pressed="true"] b{color:var(--accent)}
+.kortvalg button[aria-pressed="true"] span{color:var(--ink-2)}
+@media (max-width:600px){.kortvalg{width:100%}.kortvalg button{flex:1 1 0;padding:7px 10px 8px}}
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -278,8 +288,12 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 
 <section class="tab" id="tab-debatkort" hidden>
   <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Farvelæg og filtrér i panelet til højre, søg i feltet øverst til venstre, og træk i tidshistogrammet nederst for at afgrænse perioden. Klik på et punkt for at åbne kilden.</p></div>
-    <a class="chip" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
-  <div class="frame"><iframe data-src="debatkort.html" title="Debatkort"></iframe><a class="fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
+    <a class="chip" id="kort-full" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
+  <div class="kortvalg" id="kortvalg" role="group" aria-label="Vælg kort">
+    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 57.181 dokumenter fra 1984 til i dag</span></button>
+    <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>22.525 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
+  </div>
+  <div class="frame"><iframe id="kort-frame" data-src="debatkort.html" title="Debatkort, hele debatten"></iframe><a class="fallback" id="kort-fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
 </section>
 
 <section class="tab" id="tab-aktoerkort" hidden>
@@ -467,6 +481,43 @@ function show(name){
 tabs.addEventListener('click', e => { const b = e.target.closest('button'); if(b) show(b.dataset.tab); });
 let initial='overblik'; try{ initial = localStorage.getItem('ak-tab') || 'overblik'; }catch(e){}
 if(!document.getElementById('tab-'+initial)) initial='overblik';
+
+/* ---------- debatkort: hele debatten eller fokuskortet ---------- */
+const KORT = {hele:{src:'debatkort.html', title:'Debatkort, hele debatten'}, fokus:{src:'fokus/index.html', title:'Debatkort, fokus'}};
+function setKort(k, remember){
+  if(!KORT[k]) k = 'hele';
+  const f = document.getElementById('kort-frame'), src = KORT[k].src;
+  if(f.hasAttribute('data-src')) f.dataset.src = src;   // fanen er ikke vist endnu: kortet indlæses først, når den vises
+  else if(f.getAttribute('src') !== src) f.src = src;
+  f.title = KORT[k].title;
+  document.getElementById('kort-full').href = src;
+  document.getElementById('kort-fallback').href = src;
+  document.querySelectorAll('#kortvalg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.kort===k ? 'true' : 'false'));
+  if(remember){ try{ localStorage.setItem('ak-kort', k); }catch(e){} }
+  return k;
+}
+// direkte links: ?kort=fokus eller #fokus viser fokuskortet, ?kort=hele eller #debatkort hele debatten
+function kortFromUrl(){
+  let q = null; try{ q = new URLSearchParams(location.search).get('kort'); }catch(e){}
+  const h = (location.hash || '').slice(1);
+  if(q==='fokus' || h==='fokus') return 'fokus';
+  if(q==='hele' || h==='hele' || h==='debatkort') return 'hele';
+  return null;
+}
+let kort0 = kortFromUrl();
+if(kort0) initial = 'debatkort';
+else { try{ kort0 = localStorage.getItem('ak-kort'); }catch(e){} }
+setKort(kort0 || 'hele', !!kort0);
+document.getElementById('kortvalg').addEventListener('click', e => {
+  const b = e.target.closest('button[data-kort]'); if(!b) return;
+  const k = setKort(b.dataset.kort, true);
+  try{ history.replaceState(null, '', location.pathname + (k==='fokus' ? '#fokus' : '#debatkort')); }catch(e){}
+});
+window.addEventListener('hashchange', () => { const k = kortFromUrl(); if(k){ setKort(k, true); show('debatkort'); } });
+tabs.addEventListener('click', e => {   // en anden fane: adressen skal ikke længere pege på debatkortet
+  const b = e.target.closest('button');
+  if(b && b.dataset.tab !== 'debatkort' && /^#(fokus|hele|debatkort)$/.test(location.hash)){ try{ history.replaceState(null, '', location.pathname); }catch(e){} }
+});
 
 /* ---------- tooltip ---------- */
 const tip = document.getElementById('tip');
