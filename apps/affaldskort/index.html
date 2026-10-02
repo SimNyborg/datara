@@ -3,11 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affaldskort: debatten om affald i Danmark | Datara</title>
-<meta name="description" content="Interaktivt kort over 57.181 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta name="description" content="Interaktivt kort over 77.754 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <link rel="canonical" href="https://datara.dk/affaldskort/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Affaldskort: debatten om affald i Danmark">
-<meta property="og:description" content="Interaktivt kort over 57.181 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta property="og:description" content="Interaktivt kort over 77.754 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <meta property="og:image" content="https://datara.dk/static/affaldskort-debatkort.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
@@ -64,6 +64,7 @@ nav.tabs button:hover{color:var(--ink)}
 main .wrap{padding-top:26px;padding-bottom:60px}
 section.tab>header{display:flex;justify-content:space-between;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:16px}
 section.tab>header p{margin:4px 0 0;color:var(--ink-2);max-width:70ch}
+section.tab>header p.scope-note{margin-top:8px;font-size:13px;color:var(--muted)}
 /* KPI */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
 .kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px 12px}
@@ -76,8 +77,10 @@ section.tab>header p{margin:4px 0 0;color:var(--ink-2);max-width:70ch}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px 14px;min-width:0}
 .panel>header{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}
 .panel>header small{color:var(--muted);font-size:12px}
-.panel .tools{display:flex;gap:6px;align-items:center}
-button.ghost{appearance:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:6px;padding:3px 8px;cursor:pointer}
+.panel .tools{display:flex;gap:6px;align-items:center;flex:none}
+#adj-gaps{white-space:normal;text-align:left}
+@media (max-width:600px){.panel>header:has(#adj-gaps){flex-wrap:wrap}.panel .tools:has(#adj-gaps){flex:1 1 100%}}
+button.ghost{white-space:nowrap;appearance:none;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:6px;padding:3px 8px;cursor:pointer}
 button.ghost[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .stack{display:grid;gap:16px;margin-top:16px}
 svg.chart{width:100%;height:auto;display:block;font-family:"IBM Plex Mono",monospace;font-size:11px}
@@ -224,13 +227,12 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 
-<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 27. september 2026</span></div></div>
+<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 2. oktober 2026</span></div></div>
 <header class="mast">
   <div class="wrap">
     <div>
-      <div class="eyebrow">Løbende kortlægning af affaldsdebatten</div>
       <h1>Affaldskort</h1>
-      <p class="lede">Hvem taler om affaldsbranchen, hvad taler de om, og hvordan flytter debatten sig? Hvert punkt på kortene er et dokument eller en aktør, placeret tæt på dem det ligner.</p>
+      <p class="lede">Hvem taler om affaldsbranchen i Danmark, hvad taler de om, og hvordan flytter debatten sig? Hvert punkt på kortene er et dokument eller en aktør, placeret tæt på dem det ligner.</p>
     </div>
     <div class="status" id="status"></div>
     <nav class="tabs" role="tablist" id="tabs">
@@ -260,7 +262,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
       <div id="months-table" class="tablewrap" hidden></div>
     </div>
     <div class="panel">
-      <header><div><h3>Mest omtalte aktører</h3><small>antal dokumenter aktøren optræder i</small></div></header>
+      <header><div><h3>Mest omtalte aktører</h3><small>antal dokumenter på debatkortet, hvor aktøren optræder</small></div></header>
       <div class="hbars" id="top-actors"></div>
     </div>
   </div>
@@ -271,7 +273,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
     </div>
     <div class="grid2">
       <div class="panel">
-        <header><div><h3>Klynger på debatkortet</h3><small>automatiske overskrifter (HDBSCAN + nøgleord) indtil de er navngivet</small></div></header>
+        <header><div><h3>Klynger på debatkortet</h3><small>antal dokumenter i hver klynge</small></div></header>
         <div class="hbars" id="clusters"></div>
       </div>
       <div class="panel">
@@ -287,27 +289,27 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-debatkort" hidden>
-  <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Farvelæg og filtrér i panelet til højre, søg i feltet øverst til venstre, og træk i tidshistogrammet nederst for at afgrænse perioden. Klik på et punkt for at åbne kilden.</p></div>
+  <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Søg og filtrér i panelet til højre, og vælg periode med de to håndtag nederst til venstre. Kortet viser fra start 2020 og frem, og tallene i panelet følger den valgte periode. Klik på et punkt for at åbne kilden.</p></div>
     <a class="chip" id="kort-full" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
   <div class="kortvalg" id="kortvalg" role="group" aria-label="Vælg kort">
-    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 57.181 dokumenter fra 1984 til i dag</span></button>
-    <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>22.525 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
+    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 77.754 dokumenter fra 1959 til i dag</span></button>
+    <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>42.180 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
   </div>
   <div class="frame"><iframe id="kort-frame" data-src="debatkort.html" title="Debatkort, hele debatten"></iframe><a class="fallback" id="kort-fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
 </section>
 
 <section class="tab" id="tab-aktoerkort" hidden>
-  <header><div><h2>Aktørkort</h2><p>Hvert punkt er én aktør, placeret efter hvad de laver og mener. Størrelsen viser hvor mange dokumenter aktøren optræder i. Klik åbner aktørens hjemmeside.</p></div>
+  <header><div><h2>Aktørkort</h2><p>Hvert punkt er én aktør, placeret efter hvad de laver og mener. Størrelsen viser, hvor mange dokumenter aktøren optræder i<span class="corpus-scope"></span>. Klik åbner aktørens hjemmeside.</p></div>
     <a class="chip" href="aktoerkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
   <div class="frame"><iframe data-src="aktoerkort.html" title="Aktørkort"></iframe><a class="fallback" href="aktoerkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
 </section>
 
 <section class="tab" id="tab-aktoerer" hidden>
-  <header><div><h2>Aktørregister</h2><p>Alle aktører der er fundet indtil nu. Klik på en række for beskrivelse, nøglepersoner, holdning og seneste udtalelser.</p></div></header>
+  <header><div><h2>Aktørregister</h2><p>Alle aktører, der er fundet indtil nu. Kolonnen Dok. viser, hvor mange dokumenter på debatkortet aktøren optræder i. Klik på en række for beskrivelse, nøglepersoner, holdning og seneste udtalelser.</p></div></header>
   <div class="filters">
     <input id="a-q" type="search" placeholder="Søg navn, beskrivelse, person …">
     <select id="a-type"><option value="">Alle typer</option></select>
-    <select id="a-sort"><option value="n">Sortér: flest dokumenter</option><option value="rel">Sortér: relevans</option><option value="name">Sortér: navn</option></select>
+    <select id="a-sort" aria-label="Sortering"><option value="n">Flest dokumenter først</option><option value="rel">Mest relevante først</option><option value="name">Navn fra A til Å</option></select>
     <input type="checkbox" id="a-ver" hidden>
     <span class="count" id="a-count"></span>
   </div>
@@ -315,7 +317,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-netvaerk" hidden>
-  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Alle aktører er med, også medierne, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd. De centrale aktører er placeret med ForceAtlas2, så aktører, der ofte optræder sammen, trækkes mod hinanden. De øvrige ligger som satellitter rundt om den centrale aktør, de hænger mest sammen med, og hver lejr er pakket som en ø med luft omkring. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p></div></header>
+  <header><div><h2>Aktørnetværk</h2><p>To aktører er forbundet, når de optræder i de samme dokumenter. Alle aktører er med, også medierne, og hver aktør viser kun sine stærkeste forbindelser, så lejre og bindeled træder frem. Layoutet er beregnet på forhånd. De centrale aktører er placeret med ForceAtlas2, så aktører, der ofte optræder sammen, trækkes mod hinanden. De øvrige ligger som satellitter rundt om den centrale aktør, de hænger mest sammen med, og hver lejr er pakket som en ø med luft omkring. Hold musen over en aktør for at se, hvem den nævner (orange pile), og hvem der nævner den (blå pile). Klik slår aktøren op.</p><p class="scope-note" hidden></p></div></header>
   <div class="netkey" id="net-key" hidden>
     <span><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.6" fill="var(--mark-dim)" stroke="var(--ink)" stroke-width="2"/></svg><span id="net-key-top">Tyk ring viser de 20 mest omtalte aktører. Størrelsen følger omtale.</span></span>
     <span><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="3" fill="var(--mark-dim)"/><circle cx="9" cy="9" r="7.2" fill="none" stroke="var(--bridge)" stroke-width="1.8" stroke-dasharray="3 2.2"/></svg>Rustfarvet stiplet ring viser de 12 største bindeled mellem lejre (nr. 1 til 12 i tooltip).</span>
@@ -335,16 +337,16 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-centrale" hidden>
-  <header><div><h2>Hvem driver debatten</h2><p>Fire spørgsmål, fire mål. Grundlaget er de dokumenter, hvor aktørerne optræder sammen: hvem der selv ytrer sig, hvem der bliver omtalt, hvem der optræder med hvem, og hvem der forbinder grupper, der ellers ikke deler dokumenter.</p></div></header>
+  <header><div><h2>Hvem driver debatten</h2><p>Fire spørgsmål og fire mål. Grundlaget er de dokumenter, hvor aktørerne optræder sammen. Vi ser på, hvem der selv ytrer sig, hvem der bliver omtalt, hvem der optræder med hvem, og hvem der forbinder grupper, som ellers ikke deler dokumenter.</p><p class="scope-note" hidden></p></div></header>
   <div class="measures">
-    <div class="measure"><b>Bidrag</b>Antal egne ytringer: pressemeddelelser, debatindlæg, høringssvar, opslag. Hvem taler mest?</div>
+    <div class="measure"><b>Bidrag</b>Antal egne ytringer som pressemeddelelser, debatindlæg, høringssvar og opslag. Hvem taler mest?</div>
     <div class="measure"><b>Omtale</b>Antal dokumenter, hvor andre nævner aktøren. Hvem tales der mest om?</div>
-    <div class="measure"><b>Bindeled</b>Betweenness-centralitet i netværkets rygrad: hvor ofte aktøren ligger på den korteste vej mellem to andre. Hvem forbinder lejrene?</div>
-    <div class="measure"><b>Lejre og indflydelse</b>Lejre er grupper, der oftere optræder sammen end med andre (Louvain). Indflydelse er PageRank på hvem der nævner hvem: at blive nævnt af aktører, som selv nævnes meget, tæller mest.</div>
+    <div class="measure"><b>Bindeled</b>Hvor ofte aktøren ligger på den korteste vej mellem to andre aktører i netværkets rygrad (betweenness). Hvem forbinder lejrene?</div>
+    <div class="measure"><b>Lejre og indflydelse</b>Lejre er grupper, der oftere optræder sammen end med andre (Louvain). Indflydelse måles med PageRank på, hvem der nævner hvem. Det tæller mest at blive nævnt af aktører, som selv nævnes meget.</div>
   </div>
   <div class="grid2">
     <div class="panel">
-      <header><div><h3>Bidrag og bindeled</h3><small>x: egne ytringer · y: bindeled-centralitet · størrelse: omtale · farve: lejr</small></div></header>
+      <header><div><h3>Bidrag og bindeled</h3><small>vandret egne ytringer · lodret bindeled · størrelse efter omtale · farve efter lejr</small></div></header>
       <div id="quad"></div>
     </div>
     <div class="panel">
@@ -354,7 +356,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   </div>
   <div class="grid2" style="margin-top:16px">
     <div class="panel">
-      <header><div><h3>Lejrene, og hvor meget de taler sammen</h3><small>båndets tykkelse = fælles dokumenter mellem lejrene; tynde eller manglende bånd = lejre, der sjældent mødes</small></div></header>
+      <header><div><h3>Lejrene, og hvor meget de taler sammen</h3><small>jo tykkere bånd, jo flere fælles dokumenter; tynde eller manglende bånd viser lejre, der sjældent mødes</small></div></header>
       <div id="chord"></div>
     </div>
     <div class="panel">
@@ -364,30 +366,30 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   </div>
   <div class="stack">
     <div class="panel">
-      <header><div><h3>Hvem optræder sammen, og hvem gør ikke</h3><small>de 40 mest indflydelsesrige, ordnet efter lejr; mørkere = flere fælles dokumenter; grå = aldrig i samme dokument</small></div>
+      <header><div><h3>Hvem optræder sammen, og hvem gør ikke</h3><small>de 40 mest indflydelsesrige, ordnet efter lejr; jo mørkere felt, jo flere fælles dokumenter, og grå felter betyder, at de aldrig er i samme dokument</small></div>
         <div class="tools"><button class="ghost" id="adj-gaps" aria-pressed="false">Markér manglende samspil blandt de 20 mest centrale</button></div></header>
       <div class="tablewrap" id="adj"></div>
     </div>
     <div class="panel">
-      <header><div><h3>Netværkskort efter lejr</h3><small>farve: lejr · størrelse: bindeled · pile: hvem der nævner hvem · klik slår aktøren op</small></div></header>
+      <header><div><h3>Netværkskort efter lejr</h3><small>farve efter lejr · størrelse efter bindeled · pilene viser, hvem der nævner hvem · klik slår aktøren op</small></div></header>
       <div class="legend" id="c-legend"></div>
       <div class="filters netctl" id="cnet-ctl"></div>
       <canvas id="cnet" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
     </div>
     <div class="panel">
-      <header><div><h3>Hvem taler om hvad</h3><small>aktør × tema: temaer som firkanter, aktører som cirkler; layoutet er beregnet på forhånd og køres igen, når du flytter skyderen</small></div></header>
+      <header><div><h3>Hvem taler om hvad</h3><small>temaer er firkanter og aktører cirkler; layoutet er beregnet på forhånd og køres igen, når du flytter skyderen</small></div></header>
       <div class="filters"><label>Min. dokumenter pr. kant <input type="range" id="bip-min" min="1" max="8" value="3" style="min-width:120px"> <span class="mono" id="bip-min-v">3</span></label><span class="count" id="bip-count"></span></div>
       <canvas id="bip" width="1200" height="640" style="width:100%;height:640px;display:block;border:1px solid var(--line);border-radius:10px;background:var(--surface)"></canvas>
     </div>
     <div class="panel">
-      <header><div><h3>Hvem får taletid hvor</h3><small>kilde × aktør: antal dokumenter fra kilden, hvor aktøren optræder</small></div></header>
+      <header><div><h3>Hvem får taletid hvor</h3><small>antal dokumenter fra hver kilde, hvor aktøren optræder</small></div></header>
       <div class="tablewrap" id="matrix"></div>
     </div>
   </div>
 </section>
 
 <section class="tab" id="tab-tone" hidden>
-  <header><div><h2>Tone</h2><p>Hvordan tales der om emnerne? Hvert dokument er scoret af en dansk sprogmodel (Alexandra Instituttets <i>da-sentiment-base</i>) som negativt, neutralt eller positivt ud fra titel og resumé. Tone er ikke holdning: en kritisk pressemeddelelse er negativ i tone, uanset hvad afsenderen mener om liberalisering. Nyheder om konflikter trækker naturligt mod det negative, så læs forskellene mellem emner og aktører, ikke niveauet.</p></div></header>
+  <header><div><h2>Tone</h2><p>Hvordan tales der om emnerne? Hvert dokument er scoret af en dansk sprogmodel (Alexandra Instituttets <i>da-sentiment-base</i>) som negativt, neutralt eller positivt ud fra titel og resumé. Tone er ikke det samme som holdning. En kritisk pressemeddelelse er negativ i tonen, uanset hvad afsenderen mener om liberalisering. Nyheder om konflikter trækker naturligt mod det negative, så læs forskellene mellem emner og aktører, ikke niveauet.</p><p class="scope-note" hidden></p></div></header>
   <div class="grid2">
     <div class="panel">
       <header><div><h3>Tonen pr. emne</h3><small>andel negative, neutrale og positive dokumenter; sorteret efter mest negative</small></div></header>
@@ -402,18 +404,18 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   </div>
   <div class="stack">
     <div class="panel">
-      <header><div><h3>Tonen over tid</h3><small>gennemsnit pr. kvartal pr. emne; over stregen = mere positivt end nul, under = mere negativt</small></div></header>
+      <header><div><h3>Tonen over tid</h3><small>gennemsnit pr. kvartal pr. emne; over stregen er mere positivt end nul, under stregen mere negativt</small></div></header>
       <div class="smalls" id="tone-time"></div>
     </div>
     <div class="panel">
-      <header><div><h3>Hvem er mest kritiske om hvad</h3><small>gennemsnitlig tone for aktør × emne (mindst 3 dokumenter); rød = negativ, blå = positiv</small></div></header>
+      <header><div><h3>Hvem er mest kritiske om hvad</h3><small>gennemsnitlig tone for hver aktør og hvert emne med mindst 3 dokumenter; rød er negativ, blå er positiv</small></div></header>
       <div class="tablewrap" id="tone-matrix"></div>
     </div>
   </div>
 </section>
 
 <section class="tab" id="tab-tidslinje" hidden>
-  <header><div><h2>Tidslinje</h2><p>Alle dokumenter i korpus, nyeste først. Filtrér på tema, type eller aktør.</p></div></header>
+  <header><div><h2>Tidslinje</h2><p>Alle dokumenter på debatkortet, nyeste først. Filtrér på tema, type, år eller aktør.</p></div></header>
   <div class="filters">
     <input id="t-q" type="search" placeholder="Søg titel, resumé, aktør …">
     <select id="t-theme"><option value="">Alle temaer</option></select>
@@ -439,8 +441,6 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   </div>
   <div class="stack">
     <div class="panel"><header><div><h3>Faste nyhedskilder</h3><small id="src-sub"></small></div></header><div class="tablewrap" id="sources"></div></div>
-    <div id="arch-wrap"></div>
-    <div id="docs-wrap"></div>
   </div>
 </section>
 
@@ -459,11 +459,11 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 <script>
 (function(){
 const S = window.AK_SUMMARY, A = window.AK_ACTORS || [], D = window.AK_DOCUMENTS || [], N = window.AK_NETWORK || {nodes:[],links:[]}, X = window.AK_DOCS || {docs:{},sources:[]};
-const fmt = n => (n==null?'–':Number(n).toLocaleString('da-DK'));
+const fmt = n => (n==null?'-':Number(n).toLocaleString('da-DK'));
 const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const byId = {}; A.forEach(a => byId[a.id] = a);
 const TL = (S && S.actor_type_labels) || {}; const IL = (S && S.item_type_labels) || {};
-const daMonth = m => { const [y,mo] = m.split('-'); return ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+mo-1] + ' ' + y; };
+const daMonth = m => { if(!m || !/^\d{4}-\d\d/.test(m)) return 'Uden kendt dato'; const [y,mo] = m.split('-'); return ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+mo-1] + ' ' + y; };
 const dateDa = d => { if(!d) return ''; const [y,m,dd] = d.split('-'); return `${+dd}. ${['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+m-1]} ${y}`; };
 
 /* ---------- tabs ---------- */
@@ -525,29 +525,54 @@ function showTip(html, x, y){ tip.innerHTML = html; tip.classList.add('show'); c
 function hideTip(){ tip.classList.remove('show'); }
 
 if(!S){
-  document.getElementById('kpis').innerHTML = '<div class="note">Ingen data endnu. Kør <code>python build_map.py</code> i pipeline-mappen.</div>';
+  document.getElementById('kpis').innerHTML = '<div class="note">Der er ingen data endnu.</div>';
   show(initial); return;
 }
 
 /* ---------- status + KPIs ---------- */
+// 01-10-2026: alle grafer, lister og tal på siden bygger på dokumenterne på debatkortet (S.map: relevante, uden dubletter).
+// Før stod hele korpusset (110.517) ved siden af kortets 85.691, og temaernes tal kom fra tre forskellige udvalg.
+const SM = S.map || S;
 const nVer = S.n_actors_verified || 0;
 document.getElementById('status').innerHTML = [
-  [fmt(S.n_docs),'dokumenter'],[fmt(S.n_actors),'aktører'],[(S.debate_map&&S.debate_map.n_clusters)||'–','klynger'],[(S.generated_at||'').slice(0,10),'opdateret']
+  [fmt(SM.n_docs),'dokumenter på kortet'],[fmt(S.n_actors),'aktører'],[fmt((S.debate_map&&S.debate_map.n_clusters)||null),'klynger'],[(S.generated_at||'').slice(0,10),'opdateret']
 ].map(([v,l]) => `<div><b class="mono">${v}</b><span>${l}</span></div>`).join('');
 const years = {}; D.forEach(d => { const y = (d.date||'').slice(0,4); if(y) years[y]=(years[y]||0)+1; });
 const yrs = Object.keys(years).sort();
 const last90 = D.filter(d => d.date && (new Date(S.generated_at) - new Date(d.date)) < 90*864e5).length;
 document.getElementById('kpis').innerHTML = [
-  {v:fmt(S.n_docs), l:'dokumenter i korpus', d:`${dateDa(S.date_min)} – ${dateDa(S.date_max)}`},
+  {v:fmt(SM.n_docs), l:'dokumenter på debatkortet', d:`${dateDa(SM.date_min)} til ${dateDa(SM.date_max)}`},
   {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
-  {v:fmt(Object.keys(S.by_theme||{}).length), l:'temaer', d:`${(S.debate_map&&S.debate_map.n_clusters)||'–'} klynger på debatkortet`},
-  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:'2.105 kilder i alt'},
+  {v:fmt(Object.keys(SM.by_theme||{}).length), l:'temaer', d:`${fmt((S.debate_map&&S.debate_map.n_clusters)||null)} klynger på debatkortet`},
+  {v:fmt(last90), l:'dokumenter seneste 90 dage', d:`${fmt(new Set(D.map(d => d.source).filter(Boolean)).size)} kilder på kortet`},
 ].map(k => `<div class="kpi"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="d">${k.d}</div></div>`).join('');
+// 01-10-2026: Aktørkortet, Netværk, Hvem driver debatten og Tone beregnes i pipelinen på hele korpusset (også dubletterne og, i den
+// interne udgave, dokumenterne uden for affaldsdebatten). Det står nu ved hver fane i stedet for at blive blandet sammen med kortets tal.
+const nIrr = (S.map && SM.n_irrelevant) || 0, nDup = (S.map && SM.n_duplicates_hidden) || 0, nUnd = SM.n_undated || 0;
+const corpusExtra = !!(S.map && S.n_docs > SM.n_docs);
+const corpusWhat = [nIrr ? `${fmt(nIrr)} dokumenter uden for affaldsdebatten` : '', nDup ? `${fmt(nDup)} dubletter` : ''].filter(Boolean).join(' og ');
+if(corpusExtra){
+  const p = document.createElement('p'); p.className = 'note'; p.id = 'kpi-note'; p.style.margin = '10px 0 0';
+  p.textContent = `Samlingen rummer ${fmt(S.n_docs)} dokumenter.`
+    + (corpusWhat ? ` Af dem er ${corpusWhat}, så debatkortet, Overblik, Aktører og Tidslinje bygger på de ${fmt(SM.n_docs)} andre.` : ` Debatkortet, Overblik, Aktører og Tidslinje bygger på ${fmt(SM.n_docs)} af dem.`)
+    + ' Aktørkortet, Netværk, Hvem driver debatten og Tone er regnet på hele samlingen, og det står ved hver fane.'
+    + (nUnd ? ` ${fmt(nUnd)} dokumenter på kortet har ingen kendt dato og er derfor ikke med i graferne over tid.` : '')
+    + ' Tallene i debatkortets panel følger den valgte periode, som fra start er 2020 og frem.';
+  document.getElementById('kpis').after(p);
+}
+const corpusScope = corpusExtra ? `alle ${fmt(S.n_docs)} dokumenter i samlingen` + (corpusWhat ? `, også de ${corpusWhat}, som ikke er på debatkortet` : '') : '';
+function scopeNote(tab, what){
+  const el = document.querySelector(`#tab-${tab} .scope-note`); if(!el || !corpusScope) return;
+  el.textContent = `${what} ${corpusScope}. Derfor er tallene her højere end på debatkortet og i Aktørregistret.`; el.hidden = false;
+}
+scopeNote('netvaerk', 'Netværket er beregnet på');
+scopeNote('centrale', 'Målene er beregnet på');
+document.querySelectorAll('#tab-aktoerkort .corpus-scope').forEach(el => { if(corpusExtra) el.textContent = ` blandt ${corpusScope}`; });
 
 /* ---------- months chart (single series column) ---------- */
 (function(){
-  const M = S.by_month_theme || {};
-  const keys = Object.keys(M).sort();
+  const M = SM.by_month_theme || {};
+  const keys = Object.keys(M).filter(k => /^\d{4}-\d\d$/.test(k)).sort();
   if(!keys.length) return;
   // fyld manglende måneder ud
   const [y0,m0] = keys[0].split('-').map(Number), [y1,m1] = keys[keys.length-1].split('-').map(Number);
@@ -558,16 +583,18 @@ document.getElementById('kpis').innerHTML = [
   const iw = W-pl-pr, ih = H-pt-pb, bw = iw/months.length;
   const yTicks = niceTicks(max, 4);
   let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dokumenter pr. måned"><g class="grid">`;
-  yTicks.forEach(t => { const y = pt+ih - t/max*ih; s += `<line x1="${pl}" x2="${W-pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${pl-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${t}</text>`; });
+  yTicks.forEach(t => { const y = pt+ih - t/max*ih; s += `<line x1="${pl}" x2="${W-pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${pl-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${fmt(t)}</text>`; });
   s += `</g>`;
   months.forEach((k,i) => { const v = vals[i]; const h = v/max*ih; const x = pl+i*bw+1, y = pt+ih-h; const w = Math.max(bw-2, 1.5);
-    s += `<path class="bar" data-i="${i}" d="${roundTop(x, y, w, h, Math.min(3, w/2))}"><title>${daMonth(k)}: ${v}</title></path>`; });
-  months.forEach((k,i) => { if(k.endsWith('-01') || months.length < 14){ const x = pl+i*bw+bw/2; s += `<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${k.slice(0,4)}</text>`; } });
+    s += `<path class="bar" data-i="${i}" d="${roundTop(x, y, w, h, Math.min(3, w/2))}"><title>${daMonth(k)}, ${fmt(v)} dokumenter</title></path>`; });
+  // årstal på x-aksen med samme trin som periodevælgerens (01-10-2026: før stod alle 67 år fra 1960 oven i hinanden)
+  const span = y1 - y0, stepY = span > 24 ? 10 : span > 10 ? 5 : span > 3 ? 2 : 1;
+  months.forEach((k,i) => { const y = +k.slice(0,4); if(months.length < 14 || (k.endsWith('-01') && y % stepY === 0)){ const x = pl+i*bw+bw/2; s += `<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${months.length < 14 ? daMonth(k) : y}</text>`; } });
   s += `<line class="axis" x1="${pl}" x2="${W-pr}" y1="${pt+ih}" y2="${pt+ih}" stroke="var(--line)"/></svg>`;
   const el = document.getElementById('months-chart'); el.innerHTML = s;
-  el.querySelectorAll('.bar').forEach(b => { b.addEventListener('mousemove', e => { const i = +b.dataset.i; const themes = Object.entries(M[months[i]]||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t,n])=>`${t}: ${n}`).join('<br>'); showTip(`<b>${daMonth(months[i])} · ${vals[i]} dok.</b>${themes}`, e.clientX, e.clientY); }); b.addEventListener('mouseleave', hideTip); });
-  document.getElementById('months-sub').textContent = `${months[0].slice(0,4)}–${months[months.length-1].slice(0,4)} · maks. ${max}/md.`;
-  document.getElementById('months-table').innerHTML = `<table class="data"><thead><tr><th>Måned</th><th class="num">Dokumenter</th><th>Største tema</th></tr></thead><tbody>` + months.map((k,i) => { const top = Object.entries(M[k]||{}).sort((a,b)=>b[1]-a[1])[0]; return `<tr><td class="mono">${k}</td><td class="num">${vals[i]}</td><td>${top?esc(top[0])+' ('+top[1]+')':''}</td></tr>`; }).reverse().join('') + '</tbody></table>';
+  el.querySelectorAll('.bar').forEach(b => { b.addEventListener('mousemove', e => { const i = +b.dataset.i; const themes = Object.entries(M[months[i]]||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t,n])=>`${t} ${fmt(n)}`).join('<br>'); showTip(`<b>${daMonth(months[i])} · ${fmt(vals[i])} dok.</b>${themes}`, e.clientX, e.clientY); }); b.addEventListener('mouseleave', hideTip); });
+  document.getElementById('months-sub').textContent = `${months[0].slice(0,4)} til ${months[months.length-1].slice(0,4)} · højst ${fmt(max)} pr. måned · kun dokumenter med kendt dato`;
+  document.getElementById('months-table').innerHTML = `<table class="data"><thead><tr><th>Måned</th><th class="num">Dokumenter</th><th>Største tema</th></tr></thead><tbody>` + months.map((k,i) => { const top = Object.entries(M[k]||{}).sort((a,b)=>b[1]-a[1])[0]; return `<tr><td class="mono">${k}</td><td class="num">${fmt(vals[i])}</td><td>${top?esc(top[0])+' ('+fmt(top[1])+')':''}</td></tr>`; }).reverse().join('') + '</tbody></table>';
 })();
 function niceTicks(max, n){ const raw = max/n; const p = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1,2,5,10].map(m=>m*p).find(v => v >= raw) || p*10; const out=[]; for(let t=step;t<=max;t+=step) out.push(t); return out; }
 function roundTop(x,y,w,h,r){ if(h<=0) return ''; r = Math.min(r, h); return `M${x},${y+h} V${y+r} Q${x},${y} ${x+r},${y} H${x+w-r} Q${x+w},${y} ${x+w},${y+r} V${y+h} Z`; }
@@ -578,13 +605,17 @@ function hbars(el, rows, opts={}){
   const max = Math.max(...rows.map(r=>r.v), 1);
   el.innerHTML = rows.map(r => `<div class="row" ${r.title?`title="${esc(r.title)}"`:''}><div class="lab">${esc(r.l)}${r.chip?` <span class="chip">${esc(r.chip)}</span>`:''}</div><div class="trk"><div class="fil" style="width:${(r.v/max*100).toFixed(1)}%"></div></div><div class="val">${fmt(r.v)}</div></div>`).join('');
 }
-hbars(document.getElementById('top-actors'), (S.top_actors||[]).slice(0,18).map(a => ({l:a.name, v:a.n, chip:TL[a.type]||a.type})));
+// 01-10-2026: tælles i dokumenterne på debatkortet som resten af siden (før i hele korpusset)
+(function(){ const c = {}; D.forEach(d => (d.actor_ids||[]).forEach(i => { c[i] = (c[i]||0) + 1; }));
+  const top = Object.keys(c).length ? Object.entries(c).filter(([i]) => byId[i]).sort((a,b) => b[1]-a[1]).slice(0,18).map(([i,n]) => ({name:byId[i].name, type:byId[i].type, n}))
+                                    : (S.top_actors||[]).slice(0,18);
+  hbars(document.getElementById('top-actors'), top.map(a => ({l:a.name, v:a.n, chip:TL[a.type]||a.type}))); })();
 hbars(document.getElementById('actor-types'), Object.entries(S.by_actor_type||{}).sort((a,b)=>b[1]-a[1]).map(([t,n]) => ({l:TL[t]||t, v:n})));
 hbars(document.getElementById('clusters'), ((S.debate_map&&S.debate_map.clusters)||[]).slice().sort((a,b)=>b.n-a.n).map(c => ({l:c.label||'(uden navn)', v:c.n})));
 
 /* ---------- small multiples per theme (quarters) ---------- */
 (function(){
-  const M = S.by_month_theme || {}; const themes = Object.entries(S.by_theme||{}).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
+  const M = SM.by_month_theme || {}; const themes = Object.entries(SM.by_theme||{}).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
   const qs = {}; Object.entries(M).forEach(([m, obj]) => { const q = m.slice(0,4)+'-K'+(Math.floor((+m.slice(5,7)-1)/3)+1); qs[q] = qs[q]||{}; Object.entries(obj).forEach(([t,n]) => qs[q][t]=(qs[q][t]||0)+n); });
   const qkeys = Object.keys(qs).sort(); if(!qkeys.length) return;
   const gmax = Math.max(1, ...qkeys.flatMap(q => Object.values(qs[q])));
@@ -595,7 +626,7 @@ hbars(document.getElementById('clusters'), ((S.debate_map&&S.debate_map.clusters
     const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
     const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${pt+ih} L${pts[0][0].toFixed(1)},${pt+ih} Z`;
     const last = pts[pts.length-1]; const peak = v.indexOf(Math.max(...v));
-    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t)}: ${n} dokumenter"><path class="area" d="${area}"/><path class="lineP" d="${line}"/><circle class="end" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/><text x="${pl}" y="${H-3}">${qkeys[0].replace('-K',' K')}</text><text x="${W-pr}" y="${H-3}" text-anchor="end">${qkeys[qkeys.length-1].replace('-K',' K')}</text></svg><div class="n">${n} dok. · top ${qkeys[peak].replace('-K',' K')} (${v[peak]})</div></div>`;
+    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(t)}, ${fmt(n)} dokumenter"><path class="area" d="${area}"/><path class="lineP" d="${line}"/><circle class="end" cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.5"/><text x="${pl}" y="${H-3}">${qkeys[0].replace('-K',' K')}</text><text x="${W-pr}" y="${H-3}" text-anchor="end">${qkeys[qkeys.length-1].replace('-K',' K')}</text></svg><div class="n">${fmt(n)} dok. · flest i ${qkeys[peak].replace('-K',' K')} (${fmt(v[peak])})</div></div>`;
   }).join('');
 })();
 
@@ -603,36 +634,39 @@ hbars(document.getElementById('clusters'), ((S.debate_map&&S.debate_map.clusters
 document.getElementById('howto').innerHTML = md(`
 **Debatkortet** viser dokumenter. Vi måler den semantiske lighed mellem teksterne med en sprogmodel (embedding, *multilingual-e5*), finder klynger af beslægtede dokumenter (HDBSCAN) og reducerer til to dimensioner (UMAP), så nærhed på kortet betyder lignende indhold. Klyngerne får overskrifter, først automatisk ud fra nøgleord, derefter navngivet af Claude og rettet manuelt.
 
-**Aktørkortet** gør det samme for aktørerne: placeringen bygger på beskrivelsen af hvad de laver og mener, størrelsen på hvor ofte de optræder i korpus.
+**Aktørkortet** gør det samme for aktørerne. Placeringen bygger på beskrivelsen af, hvad de laver og mener, og størrelsen på, hvor ofte de optræder i hele samlingen af dokumenter.
 
-**Farver** kan skiftes i kortets panel: dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, lovgivning, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
+**Farver** kan skiftes i kortets panel til dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, lovgivning, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
 
-**Tiden** styres med histogrammet nederst på debatkortet: træk hen over en periode for at se kun dokumenter derfra. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
+**Søg og filtrér** i panelet til højre på debatkortet, og vælg periode med de to håndtag nederst til venstre. Fra start vises 2020 og frem. Dokumenter uden kendt dato kan slås fra under håndtagene. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
 `);
 
 /* ---------- actors table ---------- */
 (function(){
+  // 01-10-2026: Dok. tælles i dokumenterne på debatkortet (D) som resten af siden; doc_count fra pipelinen gælder hele korpusset
+  const dc = {}; D.forEach(d => (d.actor_ids||[]).forEach(i => { dc[i] = (dc[i]||0) + 1; }));
+  A.forEach(a => { a.n_map = dc[a.id] || 0; });
   const sel = document.getElementById('a-type');
-  Object.entries(S.by_actor_type||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o = document.createElement('option'); o.value=t; o.textContent=`${TL[t]||t} (${n})`; sel.appendChild(o); });
+  Object.entries(S.by_actor_type||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o = document.createElement('option'); o.value=t; o.textContent=`${TL[t]||t} (${fmt(n)})`; sel.appendChild(o); });
   const q = document.getElementById('a-q'), sort = document.getElementById('a-sort'), ver = document.getElementById('a-ver'), tbody = document.querySelector('#a-table tbody'), cnt = document.getElementById('a-count');
   function links(a){ return ['website','linkedin','x','facebook','instagram','youtube','news_url','rss'].filter(k=>a[k]).map(k => `<a href="${esc(a[k])}" target="_blank" rel="noopener">${{website:'web',linkedin:'LinkedIn',x:'X',facebook:'Facebook',instagram:'Instagram',youtube:'YouTube',news_url:'nyheder',rss:'RSS'}[k]}</a>`).join(''); }
   function render(){
     const s = q.value.toLowerCase().trim(), t = sel.value, v = ver.checked;
     let rows = A.filter(a => (!t || a.type===t) && (!v || a.verified) && (!s || `${a.name} ${a.description||''} ${a.subtype||''} ${(a.key_people||[]).map(p=>p.name).join(' ')} ${(a.aliases||[]).join(' ')}`.toLowerCase().includes(s)));
-    const key = sort.value; rows.sort((x,y) => key==='name' ? x.name.localeCompare(y.name,'da') : key==='rel' ? ((y.relevance||0)-(x.relevance||0) || (y.doc_count||0)-(x.doc_count||0)) : ((y.doc_count||0)-(x.doc_count||0) || (y.relevance||0)-(x.relevance||0)));
-    cnt.textContent = `${rows.length} af ${A.length} aktører`;
-    tbody.innerHTML = rows.slice(0,400).map(a => `<tr data-id="${a.id}" tabindex="0"><td><b>${esc(a.name)}</b>${a.party?` <span class="chip">${esc(a.party)}</span>`:''}${a.verified?` <span class="chip v">verificeret</span>`:''}</td><td><span class="chip">${esc(TL[a.type]||a.type)}</span><div style="font-size:11.5px;color:var(--muted)">${esc(a.subtype||'')}</div></td><td style="max-width:420px;color:var(--ink-2)">${esc((a.description||'').slice(0,160))}${(a.description||'').length>160?'…':''}</td><td style="font-size:12.5px">${(a.key_people||[]).slice(0,2).map(p=>esc(p.name)).join('<br>')}</td><td class="linkrow">${links(a)}</td><td class="num">${fmt(a.doc_count||0)}</td><td class="dots">${'●'.repeat(a.relevance||0)}${'○'.repeat(Math.max(0,5-(a.relevance||0)))}</td></tr>`).join('') + (rows.length>400?`<tr><td colspan="7" style="color:var(--muted)">… ${rows.length-400} flere – indsnævr søgningen</td></tr>`:'');
+    const key = sort.value; rows.sort((x,y) => key==='name' ? x.name.localeCompare(y.name,'da') : key==='rel' ? ((y.relevance||0)-(x.relevance||0) || y.n_map-x.n_map) : (y.n_map-x.n_map || (y.relevance||0)-(x.relevance||0)));
+    cnt.textContent = `${fmt(rows.length)} af ${fmt(A.length)} aktører`;
+    tbody.innerHTML = rows.slice(0,400).map(a => `<tr data-id="${a.id}" tabindex="0"><td><b>${esc(a.name)}</b>${a.party?` <span class="chip">${esc(a.party)}</span>`:''}${a.verified?` <span class="chip v">verificeret</span>`:''}</td><td><span class="chip">${esc(TL[a.type]||a.type)}</span><div style="font-size:11.5px;color:var(--muted)">${esc(a.subtype||'')}</div></td><td style="max-width:420px;color:var(--ink-2)">${esc((a.description||'').slice(0,160))}${(a.description||'').length>160?'…':''}</td><td style="font-size:12.5px">${(a.key_people||[]).slice(0,2).map(p=>esc(p.name)).join('<br>')}</td><td class="linkrow">${links(a)}</td><td class="num">${fmt(a.n_map)}</td><td class="dots">${'●'.repeat(a.relevance||0)}${'○'.repeat(Math.max(0,5-(a.relevance||0)))}</td></tr>`).join('') + (rows.length>400?`<tr><td colspan="7" style="color:var(--muted)">… og ${fmt(rows.length-400)} flere. Indsnævr søgningen.</td></tr>`:'');
   }
   tbody.addEventListener('click', e => { const tr = e.target.closest('tr[data-id]'); if(!tr || e.target.closest('a')) return; toggleRow(tr); });
   tbody.addEventListener('keydown', e => { if(e.key==='Enter'){ const tr = e.target.closest('tr[data-id]'); if(tr) toggleRow(tr); } });
   function toggleRow(tr){
     const next = tr.nextElementSibling; if(next && next.classList.contains('exp')){ next.remove(); return; }
     const a = byId[tr.dataset.id]; if(!a) return;
-    const people = (a.key_people||[]).map(p => `<li><b>${esc(p.name)}</b> – ${esc(p.role||'')}${p.linkedin?` · <a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`:''}${p.note?` <span style="color:var(--muted)">(${esc(p.note)})</span>`:''}</li>`).join('');
-    const st = (a.recent_statements||[]).map(r => `<li>${r.date?`<span class="mono">${esc(r.date)}</span> `:''}<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${r.summary?` – ${esc(r.summary)}`:''}</li>`).join('');
+    const people = (a.key_people||[]).map(p => `<li><b>${esc(p.name)}</b>${p.role?`, ${esc(p.role)}`:''}${p.linkedin?` · <a href="${esc(p.linkedin)}" target="_blank" rel="noopener">LinkedIn</a>`:''}${p.note?` <span style="color:var(--muted)">(${esc(p.note)})</span>`:''}</li>`).join('');
+    const st = (a.recent_statements||[]).map(r => `<li>${r.date?`<span class="mono">${esc(r.date)}</span> `:''}<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a>${r.summary?`. ${esc(r.summary)}`:''}</li>`).join('');
     const docs = D.filter(d => (d.actor_ids||[]).includes(a.id)).sort((x,y)=>y.date.localeCompare(x.date)).slice(0,6).map(d => `<li><span class="mono">${esc(d.date)}</span> <a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a> <span style="color:var(--muted)">(${esc(d.source)})</span></li>`).join('');
     const row = document.createElement('tr'); row.className='exp';
-    row.innerHTML = `<td colspan="7"><div class="exp-body"><div>${esc(a.description||'')}</div>${a.stance?`<div><b>Holdning:</b> ${esc(a.stance)}</div>`:''}${(a.themes||[]).length?`<div><b>Temaer:</b> ${a.themes.map(t=>`<span class="chip">${esc(t)}</span>`).join(' ')}</div>`:''}${(a.aliases||[]).length?`<div><b>Også kendt som:</b> ${esc(a.aliases.join(', '))}</div>`:''}${people?`<div><b>Nøglepersoner</b><ul>${people}</ul></div>`:''}${st?`<div><b>Seneste udtalelser</b><ul>${st}</ul></div>`:''}${docs?`<div><b>Optræder i</b><ul>${docs}</ul></div>`:''}${a.verified?'':'<div style="color:var(--rust)">Endnu ikke verificeret mod aktørens egen hjemmeside.</div>'}</div></td>`;
+    row.innerHTML = `<td colspan="7"><div class="exp-body"><div>${esc(a.description||'')}</div>${a.stance?`<div><b>Holdning</b><br>${esc(a.stance)}</div>`:''}${(a.themes||[]).length?`<div><b>Temaer</b><br>${a.themes.map(t=>`<span class="chip">${esc(t)}</span>`).join(' ')}</div>`:''}${(a.aliases||[]).length?`<div><b>Også kendt som</b><br>${esc(a.aliases.join(', '))}</div>`:''}${people?`<div><b>Nøglepersoner</b><ul>${people}</ul></div>`:''}${st?`<div><b>Seneste udtalelser</b><ul>${st}</ul></div>`:''}${docs?`<div><b>Seneste dokumenter på debatkortet</b><ul>${docs}</ul></div>`:''}${a.verified?'':'<div style="color:var(--rust)">Endnu ikke verificeret mod aktørens egen hjemmeside.</div>'}</div></td>`;
     tr.after(row);
   }
   [q,sel,sort,ver].forEach(el => el.addEventListener('input', render));
@@ -1829,13 +1863,13 @@ function netControls(prefix, V, withK){
   const canK = !!(V.home && V.home.roles), padDef = () => (V.width ? V.width() : 1000) < 600 ? KP_MOBILE.camp_pad_px : KP.camp_pad_px;
   // skydernes standard følger tilstanden: kerne og satellitter (network.json 'layout') eller den gamle fulde ForceAtlas2 ('layout.full')
   const D0 = canK && V.home.kerne ? LAY : LAY_FULL;
-  el.innerHTML = `${withK ? `<label title="Hvor mange af sine stærkeste forbindelser hver aktør viser. Færre = tydeligere lejre.">Forbindelser pr. aktør <input type="range" id="${prefix}-k" min="2" max="10" step="1" value="${LAY.k}"> <span class="mono" id="${prefix}-k-v">${LAY.k}</span></label>` : ''}
+  el.innerHTML = `${withK ? `<label title="Hvor mange af sine stærkeste forbindelser hver aktør viser. Færre forbindelser giver tydeligere lejre.">Forbindelser pr. aktør <input type="range" id="${prefix}-k" min="2" max="10" step="1" value="${LAY.k}"> <span class="mono" id="${prefix}-k-v">${LAY.k}</span></label>` : ''}
     ${canK ? `<label data-mode="kerne" title="En aktør er kerneaktør, når den har mindst så mange forbindelser i rygraden. De ${KP.core_top_mentioned} mest omtalte og de ${KP.core_top_btw} største bindeled er altid med. Kerneaktørerne placeres med ForceAtlas2, resten som satellitter. Et lavere tal giver flere kerneaktører.">Kerneaktører <input type="range" id="${prefix}-cd" min="4" max="20" step="1" value="${KP.core_deg}"> <span class="mono" id="${prefix}-cd-v">${KP.core_deg}</span></label>` : ''}
     <label title="Hvor stærkt alle aktører trækkes mod midten. Lav tyngdekraft lader lejrene glide fra hinanden; høj samler kortet.">Tyngdekraft <input type="range" id="${prefix}-g" min="0" max="100" value="${logPos(D0.gravity,0.01,10)}"> <span class="mono" id="${prefix}-g-v">${D0.gravity}</span></label>
     <label title="Hvor stærkt hver lejr samler sig om sin egen midte. Højere værdi giver tydeligere lejre med luft imellem; 0 er ren ForceAtlas2.">Saml lejre <input type="range" id="${prefix}-gg" min="0" max="100" value="${D0.group_gravity>0 ? logPos(D0.group_gravity,0.5,200) : 0}"> <span class="mono" id="${prefix}-gg-v">${D0.group_gravity}</span></label>
     <label data-mode="fa2" title="Hvor meget aktørerne skubber fra hinanden. Påvirker mest kortets størrelse og luften mellem aktørerne.">Afstand <input type="range" id="${prefix}-s" min="0" max="100" value="${logPos(D0.scaling,0.5,50)}"> <span class="mono" id="${prefix}-s-v">${D0.scaling}</span></label>
     ${canK ? `<label data-mode="kerne" title="Mindste afstand mellem lejrenes øer i pixel.">Luft mellem lejre <input type="range" id="${prefix}-pad" min="0" max="48" step="1" value="${padDef()}"> <span class="mono" id="${prefix}-pad-v">${padDef()}</span> px</label>` : ''}
-    <label title="LinLog-tilstand: tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${D0.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
+    <label title="LinLog. Tiltrækningen vokser langsommere med afstanden, så lejre bliver tættere og mere adskilte."><input type="checkbox" id="${prefix}-ll" ${D0.linlog?'checked':''}> Tydelige lejre (LinLog)</label>
     <label title="Store aktører trækkes mindre mod deres naboer, så de lægger sig mellem lejrene. Gør bindeled tydeligere."><input type="checkbox" id="${prefix}-dh" ${D0.dissuade?'checked':''}> Dæmp store aktører</label>
     ${canK ? `<label title="Med flueben placeres kerneaktørerne med ForceAtlas2, resten som satellitter omkring dem, og hver lejr pakkes som en ø. Uden flueben kører den gamle ForceAtlas2 på alle aktører på én gang (tager lidt længere tid). Kortet beregnes igen, når du skifter."><input type="checkbox" id="${prefix}-kerne" ${V.home.kerne?'checked':''}> Kerne og satellitter</label>` : ''}
     <button id="${prefix}-run">Kør layout igen</button> <button class="ghost" id="${prefix}-reset">Nulstil</button> <span class="count" id="${prefix}-prog"></span>`;
@@ -1889,8 +1923,8 @@ const RANK_BTW = {}; (N.nodes||[]).slice().sort((a,b)=>(b.betweenness||0)-(a.bet
 function actorTip(n){
   const out = (OUTM[n.id]||[]).slice(0,3).map(e => (N.nodes[NIDX[e.target]]||{}).name).filter(Boolean);
   const inn = (INM[n.id]||[]).slice(0,3).map(e => (N.nodes[NIDX[e.source]]||{}).name).filter(Boolean);
-  return `<b>${esc(n.name)}</b>${TL[n.type]||n.type} · lejr: ${esc(commName(n.community, 40))}<br>${n.n} dok. · omtalt i ${n.mentioned||0} · nævnt af ${n.in_senders||0} aktører · nævner ${n.out_targets||0}<br>bindeled nr. ${RANK_BTW[n.id]||'–'}`
-    + (inn.length ? `<br><span style="color:#2a78d6">nævnes mest af:</span> ${esc(inn.join(', '))}` : '') + (out.length ? `<br><span style="color:#eb6834">nævner mest:</span> ${esc(out.join(', '))}` : '');
+  return `<b>${esc(n.name)}</b>${TL[n.type]||n.type} · lejren ${esc(commName(n.community, 40))}<br>${fmt(n.n)} dok. i samlingen · omtalt i ${fmt(n.mentioned||0)} · nævnt af ${fmt(n.in_senders||0)} aktører · nævner ${fmt(n.out_targets||0)}<br>bindeled nr. ${RANK_BTW[n.id]||'-'}`
+    + (inn.length ? `<br><span style="color:#2a78d6">nævnes mest af</span> ${esc(inn.join(', '))}` : '') + (out.length ? `<br><span style="color:#eb6834">nævner mest</span> ${esc(out.join(', '))}` : '');
 }
 function commCentroids(V, colorFn){
   const acc = {}; V.nodes.forEach((n,i) => { if(n.community<0) return; const a = acc[n.community] = acc[n.community] || {x:0,c:0,ys:[]}; a.x+=V.x[i]; a.ys.push(V.y[i]); a.c++; });
@@ -1953,7 +1987,7 @@ function startNet(){
   document.getElementById('net-legend').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; const on = b.getAttribute('aria-pressed')!=='true'; document.querySelectorAll('#net-legend button').forEach(x => x.setAttribute('aria-pressed','false')); netHighlight = on ? b.dataset.g : null; b.setAttribute('aria-pressed', on); netView.draw(); });
   const count = () => { const shown = N.nodes.filter(n => (n.n||0) >= netMinDocs).length, nb = netView.kerne ? netView.backbone.length : netView.edges.length;
     const nc = netView.kerne && netView.roles ? netView.roles.core.reduce((a,b) => a+b, 0) : 0;
-    document.getElementById('net-count').textContent = `${shown} af ${N.nodes.length} aktører vist · ${nb} forbindelser i rygraden · ${nc ? nc + ' kerneaktører · ' : ''}${Object.keys(N.communities||{}).length} lejre`; };
+    document.getElementById('net-count').textContent = `${fmt(shown)} af ${fmt(N.nodes.length)} aktører vist · ${fmt(nb)} forbindelser i rygraden · ${nc ? fmt(nc) + ' kerneaktører · ' : ''}${Object.keys(N.communities||{}).length} lejre`; };
   document.getElementById('net-min').addEventListener('input', e => { const v = +e.target.value; netMinDocs = v; document.getElementById('net-min-v').textContent = v; count(); netView.invalidate(); netView.draw(); });
   // signaturforklaringen under overskriften gælder kerne-tegningen
   const key = document.getElementById('net-key'), keyTop = document.getElementById('net-key-top');
@@ -2034,9 +2068,17 @@ function renderQuad(){
   s += `<line class="med" x1="${sx(medX).toFixed(1)}" x2="${sx(medX).toFixed(1)}" y1="${pt}" y2="${pt+ih}"/><line class="med" x1="${pl}" x2="${W-pr}" y1="${sy(medY).toFixed(1)}" y2="${sy(medY).toFixed(1)}"/>`;
   s += `<text class="cap" x="${W-pr-4}" y="${pt+12}" text-anchor="end">taler meget og binder sammen</text><text class="cap" x="${pl+4}" y="${pt+12}">taler lidt, men er bindeled</text><text class="cap" x="${W-pr-4}" y="${pt+ih-6}" text-anchor="end">taler meget, mest i eget hjørne</text><text class="cap" x="${pl+4}" y="${pt+ih-6}">perifer</text>`;
   const sorted = pts.slice().sort((a,b) => (b.mentioned||0)-(a.mentioned||0));
-  sorted.forEach(p => { const r = 3 + Math.sqrt(p.mentioned||0)*0.9; s += `<circle data-id="${p.id}" cx="${sx(p.own||0).toFixed(1)}" cy="${sy(p.betweenness||0).toFixed(1)}" r="${r.toFixed(1)}" fill="${commColor(p.community)}" fill-opacity="0.75" stroke="var(--surface)" stroke-width="1"><title>${esc(p.name)}: ${p.own||0} egne ytringer, omtalt i ${p.mentioned||0}, bindeled ${(p.betweenness||0).toFixed(3)}</title></circle>`; });
+  sorted.forEach(p => { const r = 3 + Math.sqrt(p.mentioned||0)*0.9; s += `<circle data-id="${p.id}" cx="${sx(p.own||0).toFixed(1)}" cy="${sy(p.betweenness||0).toFixed(1)}" r="${r.toFixed(1)}" fill="${commColor(p.community)}" fill-opacity="0.75" stroke="var(--surface)" stroke-width="1"><title>${esc(p.name)}, ${fmt(p.own||0)} egne ytringer, omtalt i ${fmt(p.mentioned||0)}, bindeled ${fmt(+(p.betweenness||0).toFixed(3))}</title></circle>`; });
   const top = pts.slice().sort((a,b) => ((b.betweenness||0)*3 + Math.sqrt(b.own||0)*0.01) - ((a.betweenness||0)*3 + Math.sqrt(a.own||0)*0.01)).slice(0, 16);
-  top.forEach(p => { s += `<text class="lab" x="${(sx(p.own||0)+6).toFixed(1)}" y="${(sy(p.betweenness||0)-5).toFixed(1)}">${esc(p.name.length>24?p.name.slice(0,22)+'…':p.name)}</text>`; });
+  // navnene lægges ud uden overlap (01-10-2026: før stod fx 'Jyllands-Posten' oven i 'Ingeniøren / WasteTech'). Hvert navn
+  // prøver fire pladser om sit punkt; rører det et navn, der allerede er sat, eller en hjørnetekst, udelades det
+  const cw = 5.9, lh = 12, boxes = [[W-pr-4-170, pt, W-pr-4, pt+14], [pl+4, pt, pl+4+150, pt+14], [W-pr-4-185, pt+ih-18, W-pr-4, pt+ih-4], [pl+4, pt+ih-18, pl+4+50, pt+ih-4]];
+  const hit = b => boxes.some(o => b[0] < o[2] && b[2] > o[0] && b[1] < o[3] && b[3] > o[1]);
+  top.forEach(p => { const nm = p.name.length>24?p.name.slice(0,22)+'…':p.name, w = nm.length*cw, cx = sx(p.own||0), cy = sy(p.betweenness||0);
+    for(const [dx, dy, anc] of [[6,-5,'start'],[-6,-5,'end'],[6,12,'start'],[-6,12,'end']]){
+      const x0 = anc==='start' ? cx+dx : cx+dx-w, b = [x0-1, cy+dy-lh+2, x0+w+1, cy+dy+2];
+      if(b[0] < 2 || b[2] > W-2 || b[1] < 2 || b[3] > pt+ih || hit(b)) continue;
+      boxes.push(b); s += `<text class="lab" x="${(cx+dx).toFixed(1)}" y="${(cy+dy).toFixed(1)}" text-anchor="${anc}">${esc(nm)}</text>`; break; } });
   s += '</svg>'; el.innerHTML = s;
   el.querySelectorAll('circle[data-id]').forEach(c => c.addEventListener('click', () => { const n = N.nodes.find(x => x.id===c.dataset.id); if(n) window.akFindActor(n.name); }));
 }
@@ -2059,8 +2101,13 @@ function renderChord(){
   g.append('g').selectAll('path').data(chord).join('path').attr('d', ribbon).attr('fill', d => commColor(d.source.index)).attr('fill-opacity', d => d.source.index===d.target.index ? 0.15 : 0.55).attr('stroke', 'var(--surface)').attr('stroke-width', 0.5)
     .append('title').text(d => `${names[d.source.index]} ↔ ${names[d.target.index]}: ${d.source.value} fælles dokumenter`);
   const grp = g.append('g').selectAll('g').data(chord.groups).join('g');
-  grp.append('path').attr('d', arc).attr('fill', d => commColor(d.index)).attr('stroke', 'var(--surface)');
-  grp.append('text').each(d => { d.angle = (d.startAngle + d.endAngle) / 2; }).attr('dy', '0.35em')
+  grp.append('path').attr('d', arc).attr('fill', d => commColor(d.index)).attr('stroke', 'var(--surface)').append('title').text(d => names[d.index]);
+  // navne uden overlap (01-10-2026): små lejre ved siden af hinanden fik navne oven i hinanden. De største lejre får navn
+  // først; et navn, der ligger tættere end én linjehøjde på et vist navn, udelades (navnet står stadig i buens tooltip)
+  const minA = 14 / (R + 6), shownA = [];
+  chord.groups.slice().sort((a, b) => b.value - a.value).forEach(d => { const a = (d.startAngle + d.endAngle) / 2;
+    d.showLab = !shownA.some(o => Math.abs(o - a) < minA || Math.abs(o - a) > 2 * Math.PI - minA); if(d.showLab) shownA.push(a); });
+  grp.filter(d => d.showLab).append('text').each(d => { d.angle = (d.startAngle + d.endAngle) / 2; }).attr('dy', '0.35em')
     .attr('transform', d => `rotate(${(d.angle*180/Math.PI - 90)}) translate(${R + 6}) ${d.angle > Math.PI ? 'rotate(180)' : ''}`)
     .attr('text-anchor', d => d.angle > Math.PI ? 'end' : null).attr('fill', 'var(--ink)').text(d => names[d.index]);
   el.innerHTML = ''; el.appendChild(svg.node());
@@ -2074,7 +2121,7 @@ function renderAdjacency(){
   let gaps = false;
   function draw(){
     let h = '<table class="adj"><tr><th></th><th></th>' + acts.map(a => `<th class="colh" style="border-bottom:3px solid ${commColor(a.community)}">${esc(a.name.length>26?a.name.slice(0,24)+'…':a.name)}</th>`).join('') + '</tr>';
-    acts.forEach((a,i) => { h += `<tr><th class="rowh">${esc(a.name)}</th><td style="width:4px;background:${commColor(a.community)}"></td>` + acts.map((b,j) => { const v = cells[i][j]; if(i===j) return '<td class="cell" style="background:var(--line)"></td>'; if(!v){ const g = gaps && top20.has(a.id) && top20.has(b.id); return `<td class="cell zero${g?' gap':''}" title="${esc(a.name)} og ${esc(b.name)}: ingen fælles dokumenter"></td>`; } const t = Math.log1p(v)/Math.log1p(max); return `<td class="cell" style="background:rgba(17,138,102,${(0.15+0.85*t).toFixed(2)})" title="${esc(a.name)} × ${esc(b.name)}: ${v} fælles dokumenter"></td>`; }).join('') + '</tr>'; });
+    acts.forEach((a,i) => { h += `<tr><th class="rowh">${esc(a.name)}</th><td style="width:4px;background:${commColor(a.community)}"></td>` + acts.map((b,j) => { const v = cells[i][j]; if(i===j) return '<td class="cell" style="background:var(--line)"></td>'; if(!v){ const g = gaps && top20.has(a.id) && top20.has(b.id); return `<td class="cell zero${g?' gap':''}" title="${esc(a.name)} og ${esc(b.name)} har ingen fælles dokumenter"></td>`; } const t = Math.log1p(v)/Math.log1p(max); return `<td class="cell" style="background:rgba(17,138,102,${(0.15+0.85*t).toFixed(2)})" title="${esc(a.name)} × ${esc(b.name)}, ${fmt(v)} fælles dokumenter"></td>`; }).join('') + '</tr>'; });
     el.innerHTML = h + '</table>';
   }
   document.getElementById('adj-gaps').addEventListener('click', e => { gaps = !gaps; e.currentTarget.setAttribute('aria-pressed', gaps); draw(); });
@@ -2082,17 +2129,19 @@ function renderAdjacency(){
 }
 /* ---------- tone ---------- */
 function renderTone(){
-  const T = N.tone; if(!T || !T.n_scored){ document.getElementById('tone-themes').innerHTML = '<p style="color:var(--muted)">Tone er ikke beregnet endnu. Kør <code>python sentiment.py</code> og byg kortene igen.</p>'; return; }
+  const T = N.tone; if(!T || !T.n_scored){ document.getElementById('tone-themes').innerHTML = '<p style="color:var(--muted)">Tonen er ikke beregnet endnu.</p>'; return; }
+  { const nT = T.by_theme.reduce((a,t) => a + t.n, 0), el = document.querySelector('#tab-tone .scope-note');
+    if(el && corpusScope && nT > SM.n_docs){ el.textContent = `Tonen er målt på ${fmt(nT)} dokumenter med kendt dato blandt ${corpusScope}. Derfor er tallene her højere end på debatkortet.`; el.hidden = false; } }
   // 1) pr. emne: divergerende stablede søjler
   const th = T.by_theme.filter(t => t.n >= 10).map(t => Object.assign({}, t, {negS: t.neg/t.n, neuS: t.neu/t.n, posS: t.pos/t.n})).sort((a,b) => b.negS - a.negS);
   const W = 700, rowH = 26, pl = 210, pr = 120, H = th.length*rowH + 30, iw = W-pl-pr;
   let s = `<svg class="chart tone" viewBox="0 0 ${W} ${H}">`;
-  th.forEach((t,i) => { const y = 8 + i*rowH; let x = pl; [['neg',t.negS],['neu',t.neuS],['pos',t.posS]].forEach(([c,v]) => { const w = v*iw; s += `<rect class="${c}" x="${x.toFixed(1)}" y="${y}" width="${Math.max(0,w-1).toFixed(1)}" height="${rowH-8}" rx="2"><title>${esc(t.theme)}: ${c==='neg'?'negativ':c==='neu'?'neutral':'positiv'} ${(v*100).toFixed(0)} %</title></rect>`; x += w; });
-    s += `<text class="lbl" x="${pl-8}" y="${y+13}" text-anchor="end">${esc(t.theme.length>30?t.theme.slice(0,28)+'…':t.theme)}</text><text class="mono" x="${pl+iw+6}" y="${y+13}">${(t.negS*100).toFixed(0)} % neg · n=${t.n}</text>`; });
+  th.forEach((t,i) => { const y = 8 + i*rowH; let x = pl; [['neg',t.negS],['neu',t.neuS],['pos',t.posS]].forEach(([c,v]) => { const w = v*iw; s += `<rect class="${c}" x="${x.toFixed(1)}" y="${y}" width="${Math.max(0,w-1).toFixed(1)}" height="${rowH-8}" rx="2"><title>${esc(t.theme)}, ${(v*100).toFixed(0)} % ${c==='neg'?'negative':c==='neu'?'neutrale':'positive'}</title></rect>`; x += w; });
+    s += `<text class="lbl" x="${pl-8}" y="${y+13}" text-anchor="end">${esc(t.theme.length>30?t.theme.slice(0,28)+'…':t.theme)}</text><text class="mono" x="${pl+iw+6}" y="${y+13}">${(t.negS*100).toFixed(0)} % neg. · ${fmt(t.n)} dok.</text>`; });
   s += '</svg>'; document.getElementById('tone-themes').innerHTML = s;
   // 2) aktører: dumbbell egne vs. omtale
   const acts = N.nodes.filter(n => (n.tone_own_n||0) >= 5 && (n.tone_about_n||0) >= 5).sort((a,b) => (a.tone_about||0) - (b.tone_about||0)).slice(0, 30);
-  document.getElementById('tone-actors').innerHTML = acts.map(n => { const px = v => ((v+1)/2*100).toFixed(1); const lo = Math.min(n.tone_own, n.tone_about), hi = Math.max(n.tone_own, n.tone_about); return `<div class="dumb" title="${esc(n.name)}: egne ${n.tone_own} (n=${n.tone_own_n}), omtale ${n.tone_about} (n=${n.tone_about_n})"><div class="lab">${esc(n.name.length>30?n.name.slice(0,28)+'…':n.name)}</div><div class="trk"><div class="zero"></div><div class="bar" style="left:${px(lo)}%;width:${(px(hi)-px(lo)).toFixed(1)}%"></div><div class="dot own" style="left:calc(${px(n.tone_own)}% - 5px)"></div><div class="dot about" style="left:calc(${px(n.tone_about)}% - 5px)"></div></div></div>`; }).join('') || '<p style="color:var(--muted)">For få dokumenter pr. aktør endnu.</p>';
+  document.getElementById('tone-actors').innerHTML = acts.map(n => { const px = v => ((v+1)/2*100).toFixed(1); const lo = Math.min(n.tone_own, n.tone_about), hi = Math.max(n.tone_own, n.tone_about); return `<div class="dumb" title="${esc(n.name)}, egne ytringer ${fmt(n.tone_own)} i ${fmt(n.tone_own_n)} dok., omtale ${fmt(n.tone_about)} i ${fmt(n.tone_about_n)} dok."><div class="lab">${esc(n.name.length>30?n.name.slice(0,28)+'…':n.name)}</div><div class="trk"><div class="zero"></div><div class="bar" style="left:${px(lo)}%;width:${(px(hi)-px(lo)).toFixed(1)}%"></div><div class="dot own" style="left:calc(${px(n.tone_own)}% - 5px)"></div><div class="dot about" style="left:calc(${px(n.tone_about)}% - 5px)"></div></div></div>`; }).join('') || '<p style="color:var(--muted)">For få dokumenter pr. aktør endnu.</p>';
   // 3) over tid: småfigurer pr. emne (kvartaler)
   const byT = {}; T.by_theme_quarter.forEach(r => { (byT[r.theme] = byT[r.theme] || []).push(r); });
   const quarters = [...new Set(T.by_theme_quarter.map(r => r.quarter))].sort();
@@ -2102,14 +2151,14 @@ function renderTone(){
     const pts = rows.map(r => [xs(r.quarter), ys(r.mean)]); const line = pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
     const area = line + ` L${pts[pts.length-1][0].toFixed(1)},${zero.toFixed(1)} L${pts[0][0].toFixed(1)},${zero.toFixed(1)} Z`;
     const last = rows[rows.length-1];
-    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart tone" viewBox="0 0 ${Ws} ${Hs}"><line x1="${plS}" x2="${Ws-prS}" y1="${zero.toFixed(1)}" y2="${zero.toFixed(1)}" stroke="var(--muted)" stroke-dasharray="3 3"/><path d="${area}" fill="${last.mean<0?'#e34948':'#2a78d6'}" fill-opacity="0.18"/><path d="${line}" fill="none" stroke="var(--ink-2)" stroke-width="1.6"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3" fill="${last.mean<0?'#e34948':'#2a78d6'}"/><text x="${plS}" y="${Hs-3}" class="mono">${rows[0].quarter.replace('-K',' K')}</text><text x="${Ws-prS}" y="${Hs-3}" text-anchor="end" class="mono">${last.quarter.replace('-K',' K')}</text></svg><div class="n">seneste: ${last.mean>0?'+':''}${last.mean.toFixed(2)} (n=${last.n})</div></div>`; }).join('');
+    return `<div class="small"><h4>${esc(t)}</h4><svg class="chart tone" viewBox="0 0 ${Ws} ${Hs}"><line x1="${plS}" x2="${Ws-prS}" y1="${zero.toFixed(1)}" y2="${zero.toFixed(1)}" stroke="var(--muted)" stroke-dasharray="3 3"/><path d="${area}" fill="${last.mean<0?'#e34948':'#2a78d6'}" fill-opacity="0.18"/><path d="${line}" fill="none" stroke="var(--ink-2)" stroke-width="1.6"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="3" fill="${last.mean<0?'#e34948':'#2a78d6'}"/><text x="${plS}" y="${Hs-3}" class="mono">${rows[0].quarter.replace('-K',' K')}</text><text x="${Ws-prS}" y="${Hs-3}" text-anchor="end" class="mono">${last.quarter.replace('-K',' K')}</text></svg><div class="n">seneste kvartal ${last.mean>0?'+':''}${last.mean.toFixed(2).replace('.', ',')} (${fmt(last.n)} dok.)</div></div>`; }).join('');
   // 4) aktør × emne
   const AT = T.actor_theme || []; const byId = {}; N.nodes.forEach(n => byId[n.id] = n);
   const actorIds = [...new Set(AT.map(r => r.actor))].filter(a => byId[a]).sort((a,b) => (byId[b].n||0)-(byId[a].n||0)).slice(0, 22);
   const cols = themes.filter(t => AT.some(r => r.theme===t));
   const cell = {}; AT.forEach(r => cell[r.actor+'|'+r.theme] = r);
   let h = '<table class="data" style="font-size:12px"><thead><tr><th>Aktør</th>' + cols.map(c => `<th style="writing-mode:vertical-rl;transform:rotate(180deg);text-transform:none;letter-spacing:0;font-size:11px;padding:6px 2px">${esc(c.length>26?c.slice(0,24)+'…':c)}</th>`).join('') + '</tr></thead><tbody>';
-  actorIds.forEach(a => { h += `<tr><td style="white-space:nowrap">${esc(byId[a].name.length>32?byId[a].name.slice(0,30)+'…':byId[a].name)}</td>` + cols.map(c => { const r = cell[a+'|'+c]; if(!r) return '<td></td>'; const v = r.mean; const bg = v < 0 ? `rgba(227,73,72,${(Math.min(1,-v)*0.85+0.1).toFixed(2)})` : `rgba(42,120,214,${(Math.min(1,v)*0.85+0.1).toFixed(2)})`; return `<td class="num" style="background:${bg};color:${Math.abs(v)>0.45?'#fff':'var(--ink)'};text-align:center" title="${esc(byId[a].name)} × ${esc(c)}: ${v.toFixed(2)} (n=${r.n})">${v>0?'+':''}${v.toFixed(1)}</td>`; }).join('') + '</tr>'; });
+  actorIds.forEach(a => { h += `<tr><td style="white-space:nowrap">${esc(byId[a].name.length>32?byId[a].name.slice(0,30)+'…':byId[a].name)}</td>` + cols.map(c => { const r = cell[a+'|'+c]; if(!r) return '<td></td>'; const v = r.mean; const bg = v < 0 ? `rgba(227,73,72,${(Math.min(1,-v)*0.85+0.1).toFixed(2)})` : `rgba(42,120,214,${(Math.min(1,v)*0.85+0.1).toFixed(2)})`; return `<td class="num" style="background:${bg};color:${Math.abs(v)>0.45?'#fff':'var(--ink)'};text-align:center" title="${esc(byId[a].name)} om ${esc(c)}, gennemsnit ${fmt(+v.toFixed(2))} i ${fmt(r.n)} dok.">${v>0?'+':''}${v.toFixed(1)}</td>`; }).join('') + '</tr>'; });
   document.getElementById('tone-matrix').innerHTML = h + '</tbody></table>';
 }
 let toneStarted = false;
@@ -2131,7 +2180,7 @@ function startBipartite(){
     nodes.forEach((n,i) => { const p = BL[n.id]; if(p){ n.x = p[0]; n.y = p[1]; } });
     nodes.forEach((n,i) => { if(n.x===undefined){ const t = n.kind==='actor' ? nodes[ix['t:'+strongest[n.aid].theme]] : null; n.x = (t && t.x!==undefined ? t.x : 0) + (Math.sin(i*12.9898)*43758.5453 % 1) * 20; n.y = (t && t.y!==undefined ? t.y : 0) + (Math.sin(i*78.233)*43758.5453 % 1) * 20; } });
     const edges = bl.map(b => [ix['t:'+b.theme], ix['a:'+b.actor], Math.log1p(b.w)]);
-    document.getElementById('bip-count').textContent = `${themes.length} temaer · ${acts.length} aktører · ${edges.length} kanter`;
+    document.getElementById('bip-count').textContent = `${themes.length} temaer · ${fmt(acts.length)} aktører · ${fmt(edges.length)} forbindelser`;
     return {nodes, edges, fresh: nodes.some(n => !BL[n.id])};
   }
   const d0 = data();
@@ -2139,7 +2188,7 @@ function startBipartite(){
     radius: n => n.kind==='theme' ? Math.min(26, 10 + Math.sqrt(n.tw||1)*0.5) : 2.5 + Math.sqrt(n.n||1)*1.0,
     square: n => n.kind==='theme', color: n => n.kind==='theme' ? (TP[n.name]||css('--accent')) : groupColor(n.type),
     labelSet: V => { const s = new Set(); V.nodes.forEach((n,i) => { if(n.kind==='theme') s.add(i); }); V.nodes.map((n,i)=>i).filter(i => V.nodes[i].kind==='actor').sort((a,b)=>(V.nodes[b].n||0)-(V.nodes[a].n||0)).slice(0,14).forEach(i => s.add(i)); return s; },
-    tooltip: n => n.kind==='theme' ? `<b>${esc(n.name)}</b>tema · ${n.tw} dokument-aktør-par` : actorTip(byId[n.aid]),
+    tooltip: n => n.kind==='theme' ? `<b>${esc(n.name)}</b>tema · ${fmt(n.tw)} par af dokument og aktør` : actorTip(byId[n.aid]),
     onClick: n => { if(n.kind==='actor') window.akFindActor(n.name); }});
   if(d0.fresh) view.run({gravity:0.5, scaling:3, linlog:false, dissuade:false}, 250);
   slider.addEventListener('change', e => { minW = +e.target.value; const d = data(); view.setData(d.nodes, d.edges); view.run({gravity:0.5, scaling:3, linlog:false, dissuade:false}, 300); });
@@ -2156,17 +2205,19 @@ function renderMatrix(){
 /* ---------- timeline ---------- */
 (function(){
   const tq = document.getElementById('t-q'), tt = document.getElementById('t-theme'), ty = document.getElementById('t-type'), tyr = document.getElementById('t-year'), list = document.getElementById('t-list'), cnt = document.getElementById('t-count');
-  Object.entries(S.by_theme||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${t} (${n})`; tt.appendChild(o); });
-  Object.entries(S.by_item_type||{}).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${IL[t]||t} (${n})`; ty.appendChild(o); });
-  yrs.slice().reverse().forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=`${y} (${years[y]})`; tyr.appendChild(o); });
+  // tallene i menuerne tælles i den samme liste, som tidslinjen viser (01-10-2026)
+  const cTh = {}, cIt = {}; D.forEach(d => { cTh[d.theme] = (cTh[d.theme]||0) + 1; cIt[d.item_type] = (cIt[d.item_type]||0) + 1; });
+  Object.entries(cTh).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${t} (${fmt(n)})`; tt.appendChild(o); });
+  Object.entries(cIt).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${IL[t]||t} (${fmt(n)})`; ty.appendChild(o); });
+  yrs.slice().reverse().forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=`${y} (${fmt(years[y])})`; tyr.appendChild(o); });
   function render(){
     const s = tq.value.toLowerCase().trim();
-    const rows = D.filter(d => (!tt.value || d.theme===tt.value) && (!ty.value || d.item_type===ty.value) && (!tyr.value || (d.date||'').startsWith(tyr.value)) && (!s || `${d.title} ${d.summary||''} ${d.source||''} ${(d.actor_ids||[]).map(i=>byId[i]?byId[i].name:'').join(' ')}`.toLowerCase().includes(s))).sort((a,b) => b.date.localeCompare(a.date));
-    cnt.textContent = `${rows.length} af ${D.length} dokumenter`;
-    let out = '', cur = ''; rows.slice(0,500).forEach(d => { const m = d.date.slice(0,7); if(m!==cur){ cur=m; out += `<div class="month"><h3>${daMonth(m)}</h3><div class="rule"></div></div>`; }
+    const rows = D.filter(d => (!tt.value || d.theme===tt.value) && (!ty.value || d.item_type===ty.value) && (!tyr.value || (d.date||'').startsWith(tyr.value)) && (!s || `${d.title} ${d.summary||''} ${d.source||''} ${(d.actor_ids||[]).map(i=>byId[i]?byId[i].name:'').join(' ')}`.toLowerCase().includes(s))).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    cnt.textContent = `${fmt(rows.length)} af ${fmt(D.length)} dokumenter`;
+    let out = '', cur = ''; rows.slice(0,500).forEach(d => { const m = (d.date||'').slice(0,7); if(m!==cur){ cur=m; out += `<div class="month"><h3>${daMonth(m)}</h3><div class="rule"></div></div>`; }
       const acts = (d.actor_ids||[]).map(i => byId[i]).filter(Boolean).slice(0,5).map(a => `<a href="#" data-actor="${esc(a.name)}">${esc(a.name)}</a>`).join(', ');
-      out += `<div class="doc"><div class="dt">${esc(d.date)}</div><div><div class="t"><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div><div class="m">${esc(d.source||'')} · ${esc(IL[d.item_type]||d.item_type||'')} · ${esc(d.theme||'')}</div><div class="s">${esc(d.summary||'')}${d.stance_summary?` <span style="color:var(--muted)">— ${esc(d.stance_summary)}</span>`:''}</div>${acts?`<div class="acts">${acts}</div>`:''}</div></div>`; });
-    if(rows.length>500) out += `<p style="color:var(--muted)">… ${rows.length-500} flere. Indsnævr søgningen.</p>`;
+      out += `<div class="doc"><div class="dt">${esc(d.date)}</div><div><div class="t"><a href="${esc(d.url)}" target="_blank" rel="noopener">${esc(d.title)}</a></div><div class="m">${esc(d.source||'')} · ${esc(IL[d.item_type]||d.item_type||'')} · ${esc(d.theme||'')}</div><div class="s">${esc(d.summary||'')}${d.stance_summary?` <span style="color:var(--muted)">${esc(d.stance_summary)}</span>`:''}</div>${acts?`<div class="acts">${acts}</div>`:''}</div></div>`; });
+    if(rows.length>500) out += `<p style="color:var(--muted)">… og ${fmt(rows.length-500)} flere. Indsnævr søgningen.</p>`;
     list.innerHTML = out || '<p style="color:var(--muted)">Ingen dokumenter matcher.</p>';
   }
   list.addEventListener('click', e => { const a = e.target.closest('a[data-actor]'); if(a){ e.preventDefault(); window.akFindActor(a.dataset.actor); } });
@@ -2177,23 +2228,30 @@ function renderMatrix(){
 
 /* ---------- method, sources, docs ---------- */
 document.getElementById('method').innerHTML = md(`
-Kortet dækker **alle offentlige spor af debatten om affaldsbranchen**: nyhedsartikler, pressemeddelelser, debatindlæg, høringssvar, folketingsdokumenter, rapporter og (hvor de kan findes offentligt) opslag på LinkedIn og X.
+Kortet samler offentlige dokumenter om affaldsbranchen i Danmark, fx nyhedsartikler, pressemeddelelser, debatindlæg, høringssvar, folketingsdokumenter, kommunale dagsordener og rapporter. Enkelte opslag fra sociale medier er også med.
 
-1. **Indsamling.** Dokumenterne findes ad flere veje: RSS-feeds fra fagmedier, myndigheder og TV 2-regionerne, Folketingets åbne data (oda.ft.dk: alle spørgsmål, svar og sager om affald siden 2010 med spørgerens navn og parti), Altingets åbne artikel-API, sitemaps og WordPress-API'er hos medier, myndigheder, organisationer, partier og aktørernes egne websteder (hele arkiver tilbage til 2007 hos Ingeniøren, 2009 hos Kommunen.dk, 2019 hos WasteTech), Ritzaus pressemeddelelser, kommunernes dagsordener og referater (FirstAgenda-portalernes åbne API: hvert udvalgs- og byrådspunkt om affald med indstilling og beslutning), Bluesky og YouTube, Wayback Machine for ældre årgange, og research-agenter, der løser opgaver fra en kø (kommune for kommune, politiker for politiker, organisation for organisation, tema for tema) og finder offentlige opslag via søgemaskiner. Et relevansfilter (afstand til debattens temaer i embedding-rummet) sorterer dokumenter fra, der ikke handler om affald.
-2. **Aktørregister.** Hver aktør har type, beskrivelse, links, nøglepersoner, aliaser og holdning. Aktører matches i dokumenterne via navne og aliaser; nye navne, der dukker op gentagne gange, lægges til gennemsyn som kandidater (snowballing).
-3. **Embeddings.** Titel, resumé og citat embeddes med *intfloat/multilingual-e5-base* (god på dansk, kører lokalt på CPU).
-4. **Kort.** UMAP reducerer til to dimensioner; HDBSCAN finder klynger; klyngerne navngives. Nye dokumenter projiceres ind på det frosne kort, og når korpus er vokset meget, tilpasses kortet igen og roteres på plads (Procrustes), så det ligner sig selv.
-5. **Visualisering.** Open source-biblioteket DataMapPlot genererer kortene med deck.gl; panelet med filtre og tidshistogram er tilføjet oven på.
+Dokumenterne hentes automatisk fra medier, Folketinget, ministerier og styrelser, kommuner, affaldsselskaber, organisationer, partier og forskere. Vi bruger nyhedsfeeds, åbne data og de oversigter over sider, som mange hjemmesider selv lægger frem. Ældre årgange kommer til dels fra internetarkivet Wayback Machine, og en AI-assistent søger desuden efter offentlige indlæg og opslag på nettet. Hvert dokument gemmes med titel, dato, kilde, link og et kort resumé.
 
-**Forbehold.** På datara.dk viser kortet ikke nyhedsartiklernes egen tekst. Klik på et punkt for at læse artiklen hos mediet. Aktørernes beskrivelser og holdninger er skrevet ud fra offentlige kilder og er ikke gennemgået af aktørerne selv. Dækningen er skæv mod kilder uden betalingsmur; Infomedia ville give fuld mediedækning. LinkedIn og Facebook har ingen åben API, så opslag derfra kommer kun med, når de findes via søgning eller lægges ind manuelt.
+Hjemmesider, der i deres robots.txt beder AI-værktøjer om at lade siden være, bliver ikke hentet. Det gælder også gamle kopier af siderne i internetarkiver.
+
+Ikke alt, der nævner affald, handler om affaldsdebatten. En sprogmodel måler, hvor tæt hvert dokument ligger på debattens temaer, og et automatisk hentet dokument skal desuden handle om affald i titel eller resumé. Flere kilder er også gennemgået i hånden. Dokumenter, der falder uden for debatten, vises ikke på kortet, og et dokument, som flere kilder har bragt, vises kun én gang.
+
+Aktørregistret rummer politikere, partier, myndigheder, kommuner, selskaber, organisationer, medier og forskere. Aktørerne findes i dokumenterne ud fra deres navne og de andre navne, de er kendt under. Beskrivelser og holdninger er skrevet ud fra offentlige kilder.
+
+Selve kortet laves ved, at en sprogmodel omsætter titel og resumé til tal, der beskriver indholdet. Dokumenter om det samme ender derfor tæt på hinanden, og hver gruppe får en overskrift. Nye dokumenter lægges ind på det kort, der allerede findes, så de gamle punkter bliver, hvor de er.
+
+Indsamlingen kører hele tiden, og kortet bygges igen med de nye dokumenter cirka en gang om ugen.
+
+**Forbehold.** På datara.dk viser kortet ikke nyhedsartiklernes egen tekst. Klik på et punkt for at læse artiklen hos mediet. Dækningen er bedst for kilder uden betalingsmur. Opslag fra LinkedIn og Facebook kommer kun med, hvis de kan findes offentligt. Nogle dokumenter har ingen kendt dato og indgår ikke i graferne over tid. Aktørernes beskrivelser og holdninger er skrevet ud fra offentlige kilder og er ikke gennemgået af aktørerne selv.
 `);
 (function(){
-  const src = X.sources || [];
-  document.getElementById('src-sub').textContent = src.length ? `${src.length} kilder` : '';
-  document.getElementById('sources').innerHTML = src.length ? `<table class="data"><thead><tr><th>Kilde</th><th>Type</th><th>Dækning</th></tr></thead><tbody>` + src.map(s => `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></td><td><span class="chip">${esc(s.kind||'')}</span></td><td style="max-width:520px">${esc(s.coverage||'')}</td></tr>`).join('') + '</tbody></table>' : '<p style="color:var(--muted)">Standardkilder: Altinget (miljø, forsyning, klima), Ingeniøren, Folketingets ODA-API og Claude-høsteren.</p>';
-  const arch = X.docs && X.docs.ANBEFALET_ARKITEKTUR; if(arch) document.getElementById('arch-wrap').innerHTML = `<details class="md-block" open><summary>Anbefalet arkitektur (fra arkitekturpanelet)</summary><div class="md">${md(arch)}</div></details>`;
-  const others = Object.entries((X.docs)||{}).filter(([k]) => !['ANBEFALET_ARKITEKTUR','DEBAT_TIDSLINJE'].includes(k));
-  document.getElementById('docs-wrap').innerHTML = others.map(([k,v]) => `<details class="md-block"><summary>${esc(k.replace(/_/g,' '))}</summary><div class="md">${md(v)}</div></details>`).join('');
+  // de faste nyhedsfeeds, der tjekkes hver dag (fravalgte kilder, betalte tjenester og interne arbejdsgange vises ikke)
+  const KIND = {rss:'nyhedsfeed', bing:'nyhedssøgning', oda:'åbne data'};
+  const src = (X.sources || []).filter(s => s.enabled !== false && KIND[s.kind]);
+  const nAll = new Set(D.map(d => d.source).filter(Boolean)).size;
+  document.getElementById('src-sub').textContent = src.length ? `${fmt(src.length)} feeds, der tjekkes hver dag. Dokumenterne på kortet kommer i alt fra ${fmt(nAll)} kilder.` : '';
+  const cov = t => String(t||'').replace(/\s*:\s*/g, ', ').replace(/\s+[–—]\s+/g, ', ');
+  document.getElementById('sources').innerHTML = src.length ? `<table class="data"><thead><tr><th>Kilde</th><th>Type</th><th>Dækning</th></tr></thead><tbody>` + src.map(s => `<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a></td><td><span class="chip">${esc(KIND[s.kind])}</span></td><td style="max-width:520px">${esc(cov(s.coverage))}</td></tr>`).join('') + '</tbody></table>' : '<p style="color:var(--muted)">Listen over faste kilder er ikke med i denne udgave.</p>';
 })();
 
 /* ---------- tiny markdown ---------- */
