@@ -292,7 +292,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
   <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Søg og filtrér i panelet til højre, og vælg periode med de to håndtag nederst til venstre. Kortet viser fra start 2020 og frem, og tallene i panelet følger den valgte periode. Klik på et punkt for at åbne kilden.</p></div>
     <a class="chip" id="kort-full" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
   <div class="kortvalg" id="kortvalg" role="group" aria-label="Vælg kort">
-    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 77.754 dokumenter fra 1959 til i dag</span></button>
+    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 77.754 dokumenter fra før 2000 til i dag</span></button>
     <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>42.180 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
   </div>
   <div class="frame"><iframe id="kort-frame" data-src="debatkort.html" title="Debatkort, hele debatten"></iframe><a class="fallback" id="kort-fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
@@ -541,7 +541,7 @@ const years = {}; D.forEach(d => { const y = (d.date||'').slice(0,4); if(y) year
 const yrs = Object.keys(years).sort();
 const last90 = D.filter(d => d.date && (new Date(S.generated_at) - new Date(d.date)) < 90*864e5).length;
 document.getElementById('kpis').innerHTML = [
-  {v:fmt(SM.n_docs), l:'dokumenter på debatkortet', d:`${dateDa(SM.date_min)} til ${dateDa(SM.date_max)}`},
+  {v:fmt(SM.n_docs), l:'dokumenter på debatkortet', d:`${(SM.date_min||'') < '2000' ? 'før 2000' : dateDa(SM.date_min)} til ${dateDa(SM.date_max)}`},   // 02-10-2026: tidsaksen starter i 2000
   {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
   {v:fmt(Object.keys(SM.by_theme||{}).length), l:'temaer', d:`${fmt((S.debate_map&&S.debate_map.n_clusters)||null)} klynger på debatkortet`},
   {v:fmt(last90), l:'dokumenter seneste 90 dage', d:`${fmt(new Set(D.map(d => d.source).filter(Boolean)).size)} kilder på kortet`},
@@ -575,25 +575,37 @@ document.querySelectorAll('#tab-aktoerkort .corpus-scope').forEach(el => { if(co
   const keys = Object.keys(M).filter(k => /^\d{4}-\d\d$/.test(k)).sort();
   if(!keys.length) return;
   // fyld manglende måneder ud
-  const [y0,m0] = keys[0].split('-').map(Number), [y1,m1] = keys[keys.length-1].split('-').map(Number);
-  const months = []; for(let y=y0,m=m0; y<y1 || (y===y1 && m<=m1); ){ months.push(`${y}-${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;} }
-  const vals = months.map(k => Object.values(M[k]||{}).reduce((a,b)=>a+b,0));
-  const max = Math.max(...vals, 1);
+  // 02-10-2026 (Simon): aksen starter i 2000; alle ældre dokumenter står i én søjle 'før 2000' yderst til venstre.
+  // Søjlen er lysere og højst lige så høj som den højeste måned, og antallet står over den.
+  const FOER = 'før 2000';
+  let [y0,m0] = keys[0].split('-').map(Number); const [y1,m1] = keys[keys.length-1].split('-').map(Number);
+  const early = {}; let hasEarly = false;
+  if (y0 < 2000){ keys.filter(k => k < '2000').forEach(k => { hasEarly = true; Object.entries(M[k]).forEach(([t,n]) => { early[t] = (early[t]||0) + n; }); }); y0 = 2000; m0 = 1; }
+  const MM = Object.assign({}, M, hasEarly ? {[FOER]: early} : {});
+  const months = hasEarly ? [FOER] : []; for(let y=y0,m=m0; y<y1 || (y===y1 && m<=m1); ){ months.push(`${y}-${String(m).padStart(2,'0')}`); m++; if(m>12){m=1;y++;} }
+  const mLab = k => k === FOER ? FOER : daMonth(k);
+  const vals = months.map(k => Object.values(MM[k]||{}).reduce((a,b)=>a+b,0));
+  const max = Math.max(...vals.filter((v,i) => months[i] !== FOER), 1);
   const W = 720, H = 220, pl = 34, pr = 8, pt = 12, pb = 28;
   const iw = W-pl-pr, ih = H-pt-pb, bw = iw/months.length;
   const yTicks = niceTicks(max, 4);
   let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Dokumenter pr. måned"><g class="grid">`;
   yTicks.forEach(t => { const y = pt+ih - t/max*ih; s += `<line x1="${pl}" x2="${W-pr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}"/><text x="${pl-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${fmt(t)}</text>`; });
   s += `</g>`;
-  months.forEach((k,i) => { const v = vals[i]; const h = v/max*ih; const x = pl+i*bw+1, y = pt+ih-h; const w = Math.max(bw-2, 1.5);
-    s += `<path class="bar" data-i="${i}" d="${roundTop(x, y, w, h, Math.min(3, w/2))}"><title>${daMonth(k)}, ${fmt(v)} dokumenter</title></path>`; });
+  const fw = hasEarly ? Math.max(bw * 6, 10) : 0;   // søjlen 'før 2000' er bredere, så den kan ses og klikkes
+  const xOf = i => hasEarly ? (i === 0 ? pl : pl + fw + 4 + (i - 1) * (iw - fw - 4) / (months.length - 1)) : pl + i * bw;
+  const bwOf = i => hasEarly ? (i === 0 ? fw : (iw - fw - 4) / (months.length - 1)) : bw;
+  months.forEach((k,i) => { const v = vals[i]; const h = Math.min(v, max)/max*ih; const x = xOf(i)+1, y = pt+ih-h; const w = Math.max(bwOf(i)-2, 1.5);
+    s += `<path class="bar" data-i="${i}"${k === FOER ? ' style="opacity:.45"' : ''} d="${roundTop(x, y, w, h, Math.min(3, w/2))}"><title>${mLab(k)}, ${fmt(v)} dokumenter</title></path>`;
+    if (k === FOER) s += `<text x="${(x + w/2).toFixed(1)}" y="${(y - 4).toFixed(1)}" text-anchor="middle">${fmt(v)}</text>`; });
   // årstal på x-aksen med samme trin som periodevælgerens (01-10-2026: før stod alle 67 år fra 1960 oven i hinanden)
   const span = y1 - y0, stepY = span > 24 ? 10 : span > 10 ? 5 : span > 3 ? 2 : 1;
-  months.forEach((k,i) => { const y = +k.slice(0,4); if(months.length < 14 || (k.endsWith('-01') && y % stepY === 0)){ const x = pl+i*bw+bw/2; s += `<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${months.length < 14 ? daMonth(k) : y}</text>`; } });
+  months.forEach((k,i) => { if (k === FOER){ s += `<text x="${(xOf(0) + bwOf(0)/2).toFixed(1)}" y="${H-8}" text-anchor="middle">før 2000</text>`; return; }
+    const y = +k.slice(0,4); if(months.length < 14 || (k.endsWith('-01') && y % stepY === 0 && !(hasEarly && y === 2000))){ const x = xOf(i)+bwOf(i)/2; s += `<text x="${x.toFixed(1)}" y="${H-8}" text-anchor="middle">${months.length < 14 ? daMonth(k) : y}</text>`; } });
   s += `<line class="axis" x1="${pl}" x2="${W-pr}" y1="${pt+ih}" y2="${pt+ih}" stroke="var(--line)"/></svg>`;
   const el = document.getElementById('months-chart'); el.innerHTML = s;
-  el.querySelectorAll('.bar').forEach(b => { b.addEventListener('mousemove', e => { const i = +b.dataset.i; const themes = Object.entries(M[months[i]]||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t,n])=>`${t} ${fmt(n)}`).join('<br>'); showTip(`<b>${daMonth(months[i])} · ${fmt(vals[i])} dok.</b>${themes}`, e.clientX, e.clientY); }); b.addEventListener('mouseleave', hideTip); });
-  document.getElementById('months-sub').textContent = `${months[0].slice(0,4)} til ${months[months.length-1].slice(0,4)} · højst ${fmt(max)} pr. måned · kun dokumenter med kendt dato`;
+  el.querySelectorAll('.bar').forEach(b => { b.addEventListener('mousemove', e => { const i = +b.dataset.i; const themes = Object.entries(MM[months[i]]||{}).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([t,n])=>`${t} ${fmt(n)}`).join('<br>'); showTip(`<b>${mLab(months[i])} · ${fmt(vals[i])} dok.</b>${themes}`, e.clientX, e.clientY); }); b.addEventListener('mouseleave', hideTip); });
+  document.getElementById('months-sub').textContent = `${hasEarly ? 'før 2000 og ' + y0 : months[0].slice(0,4)} til ${months[months.length-1].slice(0,4)} · højst ${fmt(max)} pr. måned · kun dokumenter med kendt dato`;
   document.getElementById('months-table').innerHTML = `<table class="data"><thead><tr><th>Måned</th><th class="num">Dokumenter</th><th>Største tema</th></tr></thead><tbody>` + months.map((k,i) => { const top = Object.entries(M[k]||{}).sort((a,b)=>b[1]-a[1])[0]; return `<tr><td class="mono">${k}</td><td class="num">${fmt(vals[i])}</td><td>${top?esc(top[0])+' ('+fmt(top[1])+')':''}</td></tr>`; }).reverse().join('') + '</tbody></table>';
 })();
 function niceTicks(max, n){ const raw = max/n; const p = Math.pow(10, Math.floor(Math.log10(raw))); const step = [1,2,5,10].map(m=>m*p).find(v => v >= raw) || p*10; const out=[]; for(let t=step;t<=max;t+=step) out.push(t); return out; }
@@ -616,7 +628,8 @@ hbars(document.getElementById('clusters'), ((S.debate_map&&S.debate_map.clusters
 /* ---------- small multiples per theme (quarters) ---------- */
 (function(){
   const M = SM.by_month_theme || {}; const themes = Object.entries(SM.by_theme||{}).sort((a,b)=>b[1]-a[1]).map(e=>e[0]);
-  const qs = {}; Object.entries(M).forEach(([m, obj]) => { const q = m.slice(0,4)+'-K'+(Math.floor((+m.slice(5,7)-1)/3)+1); qs[q] = qs[q]||{}; Object.entries(obj).forEach(([t,n]) => qs[q][t]=(qs[q][t]||0)+n); });
+  // 02-10-2026: kurverne pr. tema starter i 2000
+  const qs = {}; Object.entries(M).filter(([m]) => m >= '2000').forEach(([m, obj]) => { const q = m.slice(0,4)+'-K'+(Math.floor((+m.slice(5,7)-1)/3)+1); qs[q] = qs[q]||{}; Object.entries(obj).forEach(([t,n]) => qs[q][t]=(qs[q][t]||0)+n); });
   const qkeys = Object.keys(qs).sort(); if(!qkeys.length) return;
   const gmax = Math.max(1, ...qkeys.flatMap(q => Object.values(qs[q])));
   const W=200,H=70,pl=4,pr=4,pt=8,pb=14, iw=W-pl-pr, ih=H-pt-pb;
@@ -2209,10 +2222,13 @@ function renderMatrix(){
   const cTh = {}, cIt = {}; D.forEach(d => { cTh[d.theme] = (cTh[d.theme]||0) + 1; cIt[d.item_type] = (cIt[d.item_type]||0) + 1; });
   Object.entries(cTh).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${t} (${fmt(n)})`; tt.appendChild(o); });
   Object.entries(cIt).sort((a,b)=>b[1]-a[1]).forEach(([t,n]) => { const o=document.createElement('option'); o.value=t; o.textContent=`${IL[t]||t} (${fmt(n)})`; ty.appendChild(o); });
-  yrs.slice().reverse().forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=`${y} (${fmt(years[y])})`; tyr.appendChild(o); });
+  // 02-10-2026 (Simon): år fra 2000 og frem, ældre dokumenter samlet under 'før 2000'
+  yrs.filter(y => y >= '2000').reverse().forEach(y => { const o=document.createElement('option'); o.value=y; o.textContent=`${y} (${fmt(years[y])})`; tyr.appendChild(o); });
+  const nFoer = yrs.filter(y => y < '2000').reduce((a, y) => a + years[y], 0);
+  if (nFoer){ const o=document.createElement('option'); o.value='foer2000'; o.textContent=`før 2000 (${fmt(nFoer)})`; tyr.appendChild(o); }
   function render(){
     const s = tq.value.toLowerCase().trim();
-    const rows = D.filter(d => (!tt.value || d.theme===tt.value) && (!ty.value || d.item_type===ty.value) && (!tyr.value || (d.date||'').startsWith(tyr.value)) && (!s || `${d.title} ${d.summary||''} ${d.source||''} ${(d.actor_ids||[]).map(i=>byId[i]?byId[i].name:'').join(' ')}`.toLowerCase().includes(s))).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+    const rows = D.filter(d => (!tt.value || d.theme===tt.value) && (!ty.value || d.item_type===ty.value) && (!tyr.value || (tyr.value === 'foer2000' ? ((d.date||'') !== '' && (d.date||'') < '2000') : (d.date||'').startsWith(tyr.value))) && (!s || `${d.title} ${d.summary||''} ${d.source||''} ${(d.actor_ids||[]).map(i=>byId[i]?byId[i].name:'').join(' ')}`.toLowerCase().includes(s))).sort((a,b) => (b.date||'').localeCompare(a.date||''));
     cnt.textContent = `${fmt(rows.length)} af ${fmt(D.length)} dokumenter`;
     let out = '', cur = ''; rows.slice(0,500).forEach(d => { const m = (d.date||'').slice(0,7); if(m!==cur){ cur=m; out += `<div class="month"><h3>${daMonth(m)}</h3><div class="rule"></div></div>`; }
       const acts = (d.actor_ids||[]).map(i => byId[i]).filter(Boolean).slice(0,5).map(a => `<a href="#" data-actor="${esc(a.name)}">${esc(a.name)}</a>`).join(', ');

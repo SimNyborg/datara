@@ -57,9 +57,9 @@
 
 
 
-<script src="debatkort_data_0.js?v=e6913f2861"></script>
-<script src="debatkort_data_1.js?v=31cd7ea4e5"></script>
-<script src="debatkort_data_2.js?v=4ced00ce2e"></script>
+<script src="debatkort_data_0.js?v=c220610059"></script>
+<script src="debatkort_data_1.js?v=6272ef0a4b"></script>
+<script src="debatkort_data_2.js?v=7ca9f4a90f"></script>
 <script>
   // Offline mode disabled
   const OFFLINE_MODE = false;
@@ -250,7 +250,7 @@ backdrop-filter:blur(6px);box-shadow:2px 3px 10px rgba(0,0,0,.18);overflow-wrap:
         <span
           style="font-family:Roboto;font-size:18pt;color:#777777"
         >
-          77.754 dokumenter · 1959-02-19 til 2026-09-29 · hvert punkt er et dokument, og dokumenter med lignende indhold ligger på samme ø. Afstanden mellem øgrupperne betyder ikke så meget
+          77.754 dokumenter · før 2000 til 2026-09-29 · hvert punkt er et dokument, og dokumenter med lignende indhold ligger på samme ø. Afstanden mellem øgrupperne betyder ikke så meget
         </span>
       </div>
       
@@ -1108,8 +1108,11 @@ window._actorList = [];
   F.month.forEach(m => { if (m >= 0){ const y = Math.floor((M0 + m) / 12); perYear[y] = (perYear[y] || 0) + 1; } });
   const yearsAll = Object.keys(perYear).map(Number).sort((a, b) => a - b);
   const yDense = yearsAll.find(y => perYear[y] >= 100);
-  const DS = yDense === undefined ? 0 : Math.max(0, Math.min(MN, yDense * 12 - M0));
-  const NO = F.month.reduce((a, m) => a + (m >= 0 && m < DS ? 1 : 0), 0);
+  // 02-10-2026 (Simon): 'start i 2000 og så bare hav før 2000'. Venstre håndtag helt ude betyder 'før 2000' (alle ældre dokumenter),
+  // næste trin er jan 2000. Starter kortet selv efter 2000, gælder reglen med det første tætte år som før.
+  const DS = M0 < 2000 * 12 ? Math.max(0, Math.min(MN, 2000 * 12 - M0 - 1)) : (yDense === undefined ? 0 : Math.max(0, Math.min(MN, yDense * 12 - M0)));
+  const FOER = M0 < 2000 * 12;
+  const NO = F.month.reduce((a, m) => a + (m >= 0 && (FOER ? m <= DS : m < DS) ? 1 : 0), 0);
   let t0 = 0, t1 = MN, withUndated = true;
   // fritekstsøgningen (DataMapPlots søgefelt) tæller med i udvalget på lige fod med listerne og perioden (30-09-2026,
   // som på fokuskortet). Før viste tælleren '49871 af 85691' under en søgning, og et klik på et tema glemte søgningen.
@@ -1231,26 +1234,27 @@ window._actorList = [];
   }, 400);
   // periodevælger: to håndtag (hurtigvalg fjernet 27-09-2026 efter Simons ønske; menuen kunne gå ud over boksens kant)
   const MON = ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'];
-  const lab = m => MON[(M0 + m) % 12] + ' ' + Math.floor((M0 + m) / 12);
+  const lab = m => (FOER && m <= DS) ? 'før 2000' : MON[(M0 + m) % 12] + ' ' + Math.floor((M0 + m) / 12);
   const i0 = document.getElementById('ak-t0'), i1 = document.getElementById('ak-t1');
   [i0, i1].forEach(el => { el.min = DS; el.max = MN; el.step = 1; });
   // standard ved indlæsning: 2020 og frem (Simon 28-09-2026); 'Nulstil filtre' går tilbage hertil
   const D0 = Math.max(DS, Math.min(MN, 2020 * 12 - M0));
   i0.value = D0; i1.value = MN;
-  const y0 = Math.floor((M0 + DS) / 12), y1 = Math.floor((M0 + MN) / 12), span = y1 - y0;
+  const y0 = FOER ? 2000 : Math.floor((M0 + DS) / 12), y1 = Math.floor((M0 + MN) / 12), span = y1 - y0;
   const older = document.getElementById('ak-older');
   if (older && NO){
-    older.textContent = 'Står venstre håndtag helt ude, kommer også ' + fmt(NO) + ' ældre dokumenter fra ' + (yearsAll[0] < y0 - 1 ? yearsAll[0] + ' til ' + (y0 - 1) : yearsAll[0]) + ' med.';
+    older.textContent = FOER ? 'Helt til venstre står før 2000. Så kommer også de ' + fmt(NO) + ' ældre dokumenter med.'
+      : 'Står venstre håndtag helt ude, kommer også ' + fmt(NO) + ' ældre dokumenter fra ' + (yearsAll[0] < y0 - 1 ? yearsAll[0] + ' til ' + (y0 - 1) : yearsAll[0]) + ' med.';
     older.style.display = '';
   }
   const stepY = span > 24 ? 10 : span > 10 ? 5 : 2;
   const ticks = []; for (let y = Math.ceil(y0 / stepY) * stepY; y <= y1; y += stepY) ticks.push(y);
-  document.getElementById('ak-ticks').innerHTML = '<span>' + y0 + '</span>' + ticks.filter(y => y > y0 + 1 && y < y1 - 1).map(y => '<span>' + y + '</span>').join('') + '<span>' + y1 + '</span>';
+  document.getElementById('ak-ticks').innerHTML = '<span>' + (FOER ? 'før 2000' : y0) + '</span>' + ticks.filter(y => y > y0 + 1 && y < y1 - 1).map(y => '<span>' + y + '</span>').join('') + '<span>' + y1 + '</span>';
   let tTimer = null;
   function onTime(now){
     let a = +i0.value, b = +i1.value; if (a > b){ if (document.activeElement === i0){ b = a; i1.value = b; } else { a = b; i0.value = a; } }
     t0 = a; t1 = b;
-    document.getElementById('ak-time-val').textContent = (a === DS && b === MN) ? 'alle år' : (a === DS && NO) ? 'til og med ' + lab(b) : lab(a) + ' til ' + lab(b);
+    document.getElementById('ak-time-val').textContent = (a === DS && b === MN) ? 'alle år' : (a === DS && NO) ? (FOER ? 'før 2000 til ' + lab(b) : 'til og med ' + lab(b)) : lab(a) + ' til ' + lab(b);
     const W = Math.max(1, MN - DS);
     const f = document.getElementById('ak-time-fill'); f.style.left = (100 * (a - DS) / W) + '%'; f.style.width = (100 * (b - a) / W) + '%';
     clearTimeout(tTimer); tTimer = setTimeout(apply, now ? 0 : 120);
