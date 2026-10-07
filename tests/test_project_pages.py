@@ -42,6 +42,7 @@ class ProjectPageTests(unittest.TestCase):
         self.assertIn('Fra papirskema til færdigt datasæt', automation)
         self.assertIn('Et AI-workflow er en arbejdsgang med faste trin', automation)
         self.assertIn('Et AI-workflow reducerede selve tastearbejdet', self._html('/'))
+        self.assertIn('<h3>Automatisering og AI</h3>', self._html('/'))
         self.assertIn('Hvor kan fjernvarme ved lav temperatur fungere?', heating)
         self.assertIn('Formålet med projektet er at identificere de bygninger og områder', heating)
         self.assertIn('områder i Lyngby-Taarbæk, der har højt potentiale', heating)

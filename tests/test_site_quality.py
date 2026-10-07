@@ -277,7 +277,7 @@ class SiteQualityTests(unittest.TestCase):
         self.assertIn('Automatisering af arbejdsgange', danish_pages['/services/automatisering'])
         self.assertIn('Mindre manuel håndtering', danish_pages['/services/automatisering'])
         self.assertIn(
-            'kan AI indgå som et afgrænset trin',
+            'kan AI indgå som et trin',
             danish_pages['/services/automatisering'],
         )
         self.assertIn(
@@ -324,7 +324,7 @@ class SiteQualityTests(unittest.TestCase):
         self.assertIn('Workflow automation', english_pages['/services/automatisering'])
         self.assertIn('Less manual handling', english_pages['/services/automatisering'])
         self.assertIn(
-            'AI can be used as a clearly defined step',
+            'AI can be used as a step',
             english_pages['/services/automatisering'],
         )
         self.assertIn(

@@ -228,7 +228,7 @@ SERVICE_PAGES = {
                 'seo_title': 'Automatisering af gentagne arbejdsgange | Datara',
                 'meta_description': 'Vi gennemgår arbejdsgange og automatiserer de trin, der følger faste regler.',
                 'title': 'Automatisering af arbejdsgange',
-                'lead': 'Vi gennemgår en arbejdsgang trin for trin og automatiserer de dele, der følger faste regler. Når en opgave handler om at læse, sortere eller udtrække oplysninger fra tekst, kan AI indgå som et afgrænset trin. Løsningen kobles til de systemer, I allerede bruger.',
+                'lead': 'Vi gennemgår en arbejdsgang trin for trin og automatiserer de dele, der følger faste regler. Når en opgave handler om at læse, sortere eller udtrække oplysninger fra tekst, kan AI indgå som et trin. Løsningen kobles til de systemer, I allerede bruger.',
                 'benefits_title': 'Hvad automatiseringen ændrer',
                 'process_title': 'Fra arbejdsgang til løsning',
                 'benefits': [
@@ -257,7 +257,7 @@ SERVICE_PAGES = {
                 'seo_title': 'Automation of repetitive workflows | Datara',
                 'meta_description': 'We review workflows and automate the steps governed by fixed rules.',
                 'title': 'Workflow automation',
-                'lead': 'We review a workflow step by step and automate the parts governed by fixed rules. When a task involves reading, sorting or extracting information from text, AI can be used as a clearly defined step. The solution connects to the systems you already use.',
+                'lead': 'We review a workflow step by step and automate the parts governed by fixed rules. When a task involves reading, sorting or extracting information from text, AI can be used as a step. The solution connects to the systems you already use.',
                 'benefits_title': 'What automation changes',
                 'process_title': 'From workflow to solution',
                 'benefits': [
