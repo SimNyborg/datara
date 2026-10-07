@@ -234,7 +234,7 @@ SERVICE_PAGES = {
                 'benefits': [
                     {'title': 'Mindre manuel håndtering', 'text': 'Indtastning og kontrol kan udføres automatisk, mens faglige vurderinger fortsat ligger hos medarbejderne.'},
                     {'title': 'Færre fejl', 'text': 'Faste regler og kontroller mindsker fejl ved kopiering og indtastning.'},
-                    {'title': 'Større datamængder', 'text': 'Den samme arbejdsgang kan behandle flere filer eller registreringer, uden at hvert trin skal gentages manuelt.'},
+                    {'title': 'Større datamængder', 'text': 'Den samme arbejdsgang kan behandle flere filer eller registreringer, uden at hvert trin skal gentages manuelt. Processen kan derfor skaleres, uden at arbejdet tager længere tid.'},
                 ],
                 'steps': [
                     {'title': 'Afgræns arbejdsgangen', 'text': 'Vi følger opgaven fra start til slut og udpeger de trin, der følger faste regler.'},
@@ -263,7 +263,7 @@ SERVICE_PAGES = {
                 'benefits': [
                     {'title': 'Less manual handling', 'text': 'Data entry and checks can run automatically, while professional judgements remain with your staff.'},
                     {'title': 'Fewer errors', 'text': 'Fixed rules and checks reduce errors in copying and data entry.'},
-                    {'title': 'Larger data volumes', 'text': 'The same workflow can process more files or records without each step being repeated manually.'},
+                    {'title': 'Larger data volumes', 'text': 'The same workflow can process more files or records without each step being repeated manually. The process can therefore scale without the work taking longer.'},
                 ],
                 'steps': [
                     {'title': 'Define the workflow', 'text': 'We follow the task from start to finish and identify the steps governed by fixed rules.'},
