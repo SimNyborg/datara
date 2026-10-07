@@ -19,11 +19,11 @@ function ledig(){(window.requestIdleCallback||function(f){return setTimeout(f,50
 function efterLoad(){var f=document.fonts&&document.fonts.ready;(f||Promise.resolve()).then(ledig,ledig)}
 if(document.readyState==='complete')efterLoad();else addEventListener('load',efterLoad,{once:true});
 setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMContentLoaded',rolig,{once:true});else rolig()},4000)})();</script>
-    <title>Automating paper questionnaires | Datara</title>
-    <meta name="description" content="8,000 paper forms became a finished dataset with more than 90% less manual data entry.">
+    <title>Automating paper forms with AI | Datara</title>
+    <meta name="description" content="A waste company collected 8,000 paper forms. With an AI workflow, the data entry itself fell from roughly 80 hours to under seven.">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Automating paper questionnaires | Datara">
-    <meta property="og:description" content="8,000 paper forms became a finished dataset with more than 90% less manual data entry.">
+    <meta property="og:title" content="Automating paper forms with AI | Datara">
+    <meta property="og:description" content="A waste company collected 8,000 paper forms. With an AI workflow, the data entry itself fell from roughly 80 hours to under seven.">
     <meta property="og:image" content="https://datara.dk/static/brugerunders%C3%B8gelse%20forside.jpg">
     <link rel="canonical" href="https://datara.dk/en/projekter/automatisering">
     <link rel="alternate" hreflang="da" href="https://datara.dk/projekter/automatisering">
@@ -149,7 +149,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                 <div class="project-intro-inner">
                     <div class="project-intro-copy">
                         <h1>From paper form to finished dataset</h1>
-                        <p class="project-lead">The survey produced 8,000 paper responses – and around 80 hours of manual data entry. We kept the collection method and automated the rest.</p>
+                        <p class="project-lead">A waste company received 8,000 completed paper forms from a user survey at several recycling sites. We kept the paper and built an AI workflow that cut the data entry by more than 90 per cent.</p>
                         
                     </div>
                     <figure class="project-hero-figure">
@@ -174,9 +174,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                             <div class="project-story-section-copy">
                                 <h2 id="section-1">Paper worked well</h2>
                                 
-                                <p>A waste company ran a user survey across more than ten recycling sites and collected 8,000 forms in total. Paper forms worked well: They were easy to hand out, worked outdoors and produced a strong response.</p>
-                                
-                                <p>The problem came afterwards. Every answer had to be entered into Excel, tick by tick and comment by comment. At about one hour per 100 forms, all 8,000 amounted to roughly 80 hours of manual data entry.</p>
+                                <p>The paper forms were easy to hand out and produced plenty of responses. But afterwards every tick and every handwritten comment had to be typed into Excel. At about one hour per 100 forms, the 8,000 forms came to roughly 80 hours of manual data entry.</p>
                                 
                             </div>
                             
@@ -186,9 +184,11 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                         <section class="project-story-section"
                                  aria-labelledby="section-2">
                             <div class="project-story-section-copy">
-                                <h2 id="section-2">The forms were read automatically</h2>
+                                <h2 id="section-2">AI read the forms</h2>
                                 
-                                <p>We built a program for the scanned forms. It locates the marked boxes, reads the handwritten comments and puts the responses into a structured Excel file.</p>
+                                <p>An AI workflow is a process with fixed steps in which AI handles one of them. Here, that step was the reading. An AI model read the ticks and the handwritten comments on the scanned forms, and a program gathered the answers in an Excel workbook with one row per form.</p>
+                                
+                                <p>An AI model can misread. So the program flagged the forms where more than one box was ticked for the same question, or where the reading failed. We reviewed those and corrected unclear ticks and comments before the data was used.</p>
                                 
                             </div>
                             
@@ -200,9 +200,9 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                             <div class="project-story-section-copy">
                                 <h2 id="section-3">80 hours were cut to under seven</h2>
                                 
-                                <p>The software could process 100 forms in about five minutes. Across all 8,000 forms, it cut the data-entry work from roughly 80 hours to under seven – a saving of more than 90%.</p>
+                                <p>The program could process 100 forms in about five minutes. Across all 8,000 forms, the data entry itself fell from roughly 80 hours to under seven.</p>
                                 
-                                <p>With the data ready, we analysed the responses and produced a report for each recycling site, using clear charts and a comparison with the previous survey.</p>
+                                <p>Once the data was in place, we analysed the responses and wrote the report, with results for each recycling site and a comparison with the previous survey.</p>
                                 
                             </div>
                             
@@ -254,7 +254,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                          loading="lazy"
                          decoding="async">
                     
-                    <figcaption>The software found marked boxes and handwritten comments on each form.</figcaption>
+                    <figcaption>An AI model read the ticks and handwritten comments on each form.</figcaption>
                     
                 </figure>
             </div>
@@ -269,7 +269,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                          loading="lazy"
                          decoding="async">
                     
-                    <figcaption>The responses were gathered in a structured Excel workbook.</figcaption>
+                    <figcaption>The answers were gathered in an Excel workbook with one row per form.</figcaption>
                     
                 </figure>
             </div>

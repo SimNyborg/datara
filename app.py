@@ -235,30 +235,30 @@ PROJECTS = {
         'image_height': 1205,
         'content': {
             'da': {
-                'seo_title': 'Automatisering af papirspørgeskemaer | Datara',
-                'meta_description': '8.000 papirskemaer blev til et færdigt datasæt med mere end 90 procent mindre tastearbejde.',
+                'seo_title': 'Automatisering af papirskemaer med AI | Datara',
+                'meta_description': 'Et affaldsselskab fik 8.000 papirskemaer ind. Med et AI-workflow faldt selve tastearbejdet fra cirka 80 timer til under syv.',
                 'title': 'Fra papirskema til færdigt datasæt',
-                'lead': 'Undersøgelsen gav 8.000 papirbesvarelser – og omkring 80 timers tastearbejde. Vi beholdt indsamlingsmetoden og automatiserede resten.',
+                'lead': 'Et affaldsselskab fik 8.000 udfyldte papirskemaer ind fra en brugerundersøgelse på flere genbrugspladser. Vi beholdt papiret og byggede et AI-workflow, der sparede mere end 90 procent af tastearbejdet.',
                 'image_alt': 'Brugerundersøgelse med papirskemaer på en genbrugsplads',
                 'sections': [
                     {
                         'title': 'Papiret fungerede fint',
                         'paragraphs': [
-                            'Et affaldsselskab gennemførte en brugerundersøgelse på mere end ti genbrugspladser og samlede i alt 8.000 skemaer ind. Papirskemaerne fungerede godt: De var nemme at dele ud, kunne bruges udendørs og gav mange svar.',
-                            'Udfordringen kom bagefter: Hvert kryds og hver håndskrevet kommentar skulle tastes i Excel. Det tog omkring en time for 100 skemaer, så 8.000 skemaer svarede til cirka 80 timers manuelt tastearbejde.',
+                            'Papirskemaerne var nemme at dele ud og gav mange svar. Men bagefter skulle hvert kryds og hver håndskrevet kommentar tastes ind i Excel. Med omkring en time pr. 100 skemaer svarede de 8.000 skemaer til cirka 80 timers manuelt tastearbejde.',
                         ],
                     },
                     {
-                        'title': 'Skemaerne blev læst automatisk',
+                        'title': 'AI læste skemaerne',
                         'paragraphs': [
-                            'Vi byggede et program, der arbejder med de indscannede skemaer. Det finder markeringerne, aflæser de håndskrevne kommentarer og samler svarene i et struktureret Excel-ark.',
+                            'Et AI-workflow er en arbejdsgang med faste trin, hvor AI klarer ét af trinene. Her var det aflæsningen. En AI-model læste krydserne og de håndskrevne kommentarer på de indscannede skemaer, og et program samlede svarene i et Excel-ark med én række pr. skema.',
+                            'En AI-model kan læse forkert. Derfor markerede programmet de skemaer, hvor der var sat mere end ét kryds ved samme spørgsmål, eller hvor aflæsningen slog fejl. Dem gennemgik vi, og vi rettede utydelige krydser og kommentarer, før data blev brugt.',
                         ],
                     },
                     {
                         'title': '80 timer blev til under syv',
                         'paragraphs': [
-                            'Programmet kunne behandle 100 skemaer på cirka fem minutter. For 8.000 skemaer reducerede det selve tastearbejdet fra cirka 80 timer til under syv – en tidsbesparelse på mere end 90 procent.',
-                            'Da dataene var på plads, analyserede vi svarene og lavede en rapport for hver genbrugsplads med klare grafer og en sammenligning med den forrige undersøgelse.',
+                            'Programmet kunne behandle 100 skemaer på cirka fem minutter. For alle 8.000 skemaer faldt selve tastearbejdet fra cirka 80 timer til under syv.',
+                            'Da data var på plads, analyserede vi svarene og skrev rapporten med resultater for hver genbrugsplads og en sammenligning med den forrige undersøgelse.',
                         ],
                     },
                 ],
@@ -275,14 +275,14 @@ PROJECTS = {
                     {
                         'filename': 'spørgeskema.jpg',
                         'alt': 'Et udfyldt spørgeskema fra brugerundersøgelsen',
-                        'caption': 'Programmet fandt markeringer og håndskrevne kommentarer på hvert skema.',
+                        'caption': 'En AI-model læste krydserne og de håndskrevne kommentarer på hvert skema.',
                         'width': 1421,
                         'height': 2049,
                     },
                     {
                         'filename': 'Excel brugerundersøgelse output.png',
                         'alt': 'Svar fra brugerundersøgelsen samlet i et Excel-ark',
-                        'caption': 'Svarene blev samlet i et struktureret Excel-ark.',
+                        'caption': 'Svarene blev samlet i et Excel-ark med én række pr. skema.',
                         'width': 2843,
                         'height': 1470,
                     },
@@ -295,34 +295,34 @@ PROJECTS = {
                     },
                 ],
                 'cta_title': 'Tager en gentagen opgave for lang tid?',
-                'cta_text': 'Vi ser gerne på arbejdsgangen og vurderer, hvad der faktisk kan automatiseres.',
+                'cta_text': 'Vi ser gerne på arbejdsgangen og vurderer, hvilke trin der kan automatiseres, og om AI kan klare nogle af dem.',
                 'cta_label': 'Fortæl os om opgaven',
             },
             'en': {
-                'seo_title': 'Automating paper questionnaires | Datara',
-                'meta_description': '8,000 paper forms became a finished dataset with more than 90% less manual data entry.',
+                'seo_title': 'Automating paper forms with AI | Datara',
+                'meta_description': 'A waste company collected 8,000 paper forms. With an AI workflow, the data entry itself fell from roughly 80 hours to under seven.',
                 'title': 'From paper form to finished dataset',
-                'lead': 'The survey produced 8,000 paper responses – and around 80 hours of manual data entry. We kept the collection method and automated the rest.',
+                'lead': 'A waste company received 8,000 completed paper forms from a user survey at several recycling sites. We kept the paper and built an AI workflow that cut the data entry by more than 90 per cent.',
                 'image_alt': 'Paper-based user survey at a recycling site',
                 'sections': [
                     {
                         'title': 'Paper worked well',
                         'paragraphs': [
-                            'A waste company ran a user survey across more than ten recycling sites and collected 8,000 forms in total. Paper forms worked well: They were easy to hand out, worked outdoors and produced a strong response.',
-                            'The problem came afterwards. Every answer had to be entered into Excel, tick by tick and comment by comment. At about one hour per 100 forms, all 8,000 amounted to roughly 80 hours of manual data entry.',
+                            'The paper forms were easy to hand out and produced plenty of responses. But afterwards every tick and every handwritten comment had to be typed into Excel. At about one hour per 100 forms, the 8,000 forms came to roughly 80 hours of manual data entry.',
                         ],
                     },
                     {
-                        'title': 'The forms were read automatically',
+                        'title': 'AI read the forms',
                         'paragraphs': [
-                            'We built a program for the scanned forms. It locates the marked boxes, reads the handwritten comments and puts the responses into a structured Excel file.',
+                            'An AI workflow is a process with fixed steps in which AI handles one of them. Here, that step was the reading. An AI model read the ticks and the handwritten comments on the scanned forms, and a program gathered the answers in an Excel workbook with one row per form.',
+                            'An AI model can misread. So the program flagged the forms where more than one box was ticked for the same question, or where the reading failed. We reviewed those and corrected unclear ticks and comments before the data was used.',
                         ],
                     },
                     {
                         'title': '80 hours were cut to under seven',
                         'paragraphs': [
-                            'The software could process 100 forms in about five minutes. Across all 8,000 forms, it cut the data-entry work from roughly 80 hours to under seven – a saving of more than 90%.',
-                            'With the data ready, we analysed the responses and produced a report for each recycling site, using clear charts and a comparison with the previous survey.',
+                            'The program could process 100 forms in about five minutes. Across all 8,000 forms, the data entry itself fell from roughly 80 hours to under seven.',
+                            'Once the data was in place, we analysed the responses and wrote the report, with results for each recycling site and a comparison with the previous survey.',
                         ],
                     },
                 ],
@@ -339,14 +339,14 @@ PROJECTS = {
                     {
                         'filename': 'spørgeskema.jpg',
                         'alt': 'A completed questionnaire from the user survey',
-                        'caption': 'The software found marked boxes and handwritten comments on each form.',
+                        'caption': 'An AI model read the ticks and handwritten comments on each form.',
                         'width': 1421,
                         'height': 2049,
                     },
                     {
                         'filename': 'Excel brugerundersøgelse output.png',
                         'alt': 'User survey responses collected in an Excel workbook',
-                        'caption': 'The responses were gathered in a structured Excel workbook.',
+                        'caption': 'The answers were gathered in an Excel workbook with one row per form.',
                         'width': 2843,
                         'height': 1470,
                     },
@@ -359,7 +359,7 @@ PROJECTS = {
                     },
                 ],
                 'cta_title': 'Is a repetitive task taking too long?',
-                'cta_text': 'We can review the workflow and tell you what is worth automating.',
+                'cta_text': 'We can review the workflow and assess which steps can be automated and whether AI can handle some of them.',
                 'cta_label': 'Tell us about the task',
             },
         },

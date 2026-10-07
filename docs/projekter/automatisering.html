@@ -19,11 +19,11 @@ function ledig(){(window.requestIdleCallback||function(f){return setTimeout(f,50
 function efterLoad(){var f=document.fonts&&document.fonts.ready;(f||Promise.resolve()).then(ledig,ledig)}
 if(document.readyState==='complete')efterLoad();else addEventListener('load',efterLoad,{once:true});
 setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMContentLoaded',rolig,{once:true});else rolig()},4000)})();</script>
-    <title>Automatisering af papirspørgeskemaer | Datara</title>
-    <meta name="description" content="8.000 papirskemaer blev til et færdigt datasæt med mere end 90 procent mindre tastearbejde.">
+    <title>Automatisering af papirskemaer med AI | Datara</title>
+    <meta name="description" content="Et affaldsselskab fik 8.000 papirskemaer ind. Med et AI-workflow faldt selve tastearbejdet fra cirka 80 timer til under syv.">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="Automatisering af papirspørgeskemaer | Datara">
-    <meta property="og:description" content="8.000 papirskemaer blev til et færdigt datasæt med mere end 90 procent mindre tastearbejde.">
+    <meta property="og:title" content="Automatisering af papirskemaer med AI | Datara">
+    <meta property="og:description" content="Et affaldsselskab fik 8.000 papirskemaer ind. Med et AI-workflow faldt selve tastearbejdet fra cirka 80 timer til under syv.">
     <meta property="og:image" content="https://datara.dk/static/brugerunders%C3%B8gelse%20forside.jpg">
     <link rel="canonical" href="https://datara.dk/projekter/automatisering">
     <link rel="alternate" hreflang="da" href="https://datara.dk/projekter/automatisering">
@@ -149,7 +149,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                 <div class="project-intro-inner">
                     <div class="project-intro-copy">
                         <h1>Fra papirskema til færdigt datasæt</h1>
-                        <p class="project-lead">Undersøgelsen gav 8.000 papirbesvarelser – og omkring 80 timers tastearbejde. Vi beholdt indsamlingsmetoden og automatiserede resten.</p>
+                        <p class="project-lead">Et affaldsselskab fik 8.000 udfyldte papirskemaer ind fra en brugerundersøgelse på flere genbrugspladser. Vi beholdt papiret og byggede et AI-workflow, der sparede mere end 90 procent af tastearbejdet.</p>
                         
                     </div>
                     <figure class="project-hero-figure">
@@ -174,9 +174,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                             <div class="project-story-section-copy">
                                 <h2 id="section-1">Papiret fungerede fint</h2>
                                 
-                                <p>Et affaldsselskab gennemførte en brugerundersøgelse på mere end ti genbrugspladser og samlede i alt 8.000 skemaer ind. Papirskemaerne fungerede godt: De var nemme at dele ud, kunne bruges udendørs og gav mange svar.</p>
-                                
-                                <p>Udfordringen kom bagefter: Hvert kryds og hver håndskrevet kommentar skulle tastes i Excel. Det tog omkring en time for 100 skemaer, så 8.000 skemaer svarede til cirka 80 timers manuelt tastearbejde.</p>
+                                <p>Papirskemaerne var nemme at dele ud og gav mange svar. Men bagefter skulle hvert kryds og hver håndskrevet kommentar tastes ind i Excel. Med omkring en time pr. 100 skemaer svarede de 8.000 skemaer til cirka 80 timers manuelt tastearbejde.</p>
                                 
                             </div>
                             
@@ -186,9 +184,11 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                         <section class="project-story-section"
                                  aria-labelledby="section-2">
                             <div class="project-story-section-copy">
-                                <h2 id="section-2">Skemaerne blev læst automatisk</h2>
+                                <h2 id="section-2">AI læste skemaerne</h2>
                                 
-                                <p>Vi byggede et program, der arbejder med de indscannede skemaer. Det finder markeringerne, aflæser de håndskrevne kommentarer og samler svarene i et struktureret Excel-ark.</p>
+                                <p>Et AI-workflow er en arbejdsgang med faste trin, hvor AI klarer ét af trinene. Her var det aflæsningen. En AI-model læste krydserne og de håndskrevne kommentarer på de indscannede skemaer, og et program samlede svarene i et Excel-ark med én række pr. skema.</p>
+                                
+                                <p>En AI-model kan læse forkert. Derfor markerede programmet de skemaer, hvor der var sat mere end ét kryds ved samme spørgsmål, eller hvor aflæsningen slog fejl. Dem gennemgik vi, og vi rettede utydelige krydser og kommentarer, før data blev brugt.</p>
                                 
                             </div>
                             
@@ -200,9 +200,9 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                             <div class="project-story-section-copy">
                                 <h2 id="section-3">80 timer blev til under syv</h2>
                                 
-                                <p>Programmet kunne behandle 100 skemaer på cirka fem minutter. For 8.000 skemaer reducerede det selve tastearbejdet fra cirka 80 timer til under syv – en tidsbesparelse på mere end 90 procent.</p>
+                                <p>Programmet kunne behandle 100 skemaer på cirka fem minutter. For alle 8.000 skemaer faldt selve tastearbejdet fra cirka 80 timer til under syv.</p>
                                 
-                                <p>Da dataene var på plads, analyserede vi svarene og lavede en rapport for hver genbrugsplads med klare grafer og en sammenligning med den forrige undersøgelse.</p>
+                                <p>Da data var på plads, analyserede vi svarene og skrev rapporten med resultater for hver genbrugsplads og en sammenligning med den forrige undersøgelse.</p>
                                 
                             </div>
                             
@@ -254,7 +254,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                          loading="lazy"
                          decoding="async">
                     
-                    <figcaption>Programmet fandt markeringer og håndskrevne kommentarer på hvert skema.</figcaption>
+                    <figcaption>En AI-model læste krydserne og de håndskrevne kommentarer på hvert skema.</figcaption>
                     
                 </figure>
             </div>
@@ -269,7 +269,7 @@ setTimeout(function(){if(document.readyState==='loading')addEventListener('DOMCo
                          loading="lazy"
                          decoding="async">
                     
-                    <figcaption>Svarene blev samlet i et struktureret Excel-ark.</figcaption>
+                    <figcaption>Svarene blev samlet i et Excel-ark med én række pr. skema.</figcaption>
                     
                 </figure>
             </div>
