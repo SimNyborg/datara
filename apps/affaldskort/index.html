@@ -3,14 +3,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Affaldskort: debatten om affald i Danmark | Datara</title>
-<meta name="description" content="Interaktivt kort over 81.234 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta name="description" content="Interaktivt kort over 80.401 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <link rel="canonical" href="https://datara.dk/affaldskort/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Affaldskort: debatten om affald i Danmark">
-<meta property="og:description" content="Interaktivt kort over 81.234 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
+<meta property="og:description" content="Interaktivt kort over 80.401 dokumenter fra debatten om affald i Danmark: temaer, aktører, netværk og tone over tid.">
 <meta property="og:image" content="https://datara.dk/static/affaldskort-debatkort.jpg">
 <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+<style>/* 07-10-2026: informationstegn ved kortets beskrivelse */.ak-info-btn{display:inline-flex;align-items:center;justify-content:center;width:1.35em;height:1.35em;margin-left:4px;padding:0;border-radius:50%;border:1.5px solid var(--muted,#777);background:transparent;color:var(--muted,#555);font:italic 600 .85em Georgia,serif;cursor:pointer;vertical-align:.1em}.ak-info-btn:hover,.ak-info-btn[aria-expanded=true]{border-color:var(--accent,#1d6b55);color:var(--accent,#1d6b55)}.ak-info-btn:focus-visible{outline:2px solid var(--accent,#1d6b55);outline-offset:2px}.ak-info-box{margin-top:10px;max-width:62ch;padding:12px 16px;border:1px solid var(--line,#dfe4df);border-radius:10px;background:var(--surface,#fff);font-size:14px;line-height:1.55}.ak-info-box b{display:block;margin-bottom:2px}.ak-info-box p{margin:6px 0 0}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -227,7 +228,7 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 @media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
 </style>
 
-<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 3. oktober 2026</span></div></div>
+<div class="datara-bar"><div class="wrap"><a class="brand" href="../">Datara</a><span class="sep">/</span><a href="../projekter/affaldsdebatten">Om projektet</a><span class="right">Opdateret 17. oktober 2026</span></div></div>
 <header class="mast">
   <div class="wrap">
     <div>
@@ -289,11 +290,12 @@ canvas#net{width:100%;height:640px;display:block;border:1px solid var(--line);bo
 </section>
 
 <section class="tab" id="tab-debatkort" hidden>
-  <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. Søg og filtrér i panelet til højre, og vælg periode med de to håndtag nederst til venstre. Kortet viser fra start 2020 og frem, og tallene i panelet følger den valgte periode. Klik på et punkt for at åbne kilden.</p></div>
+  <header><div><h2>Debatkort</h2><p>Hvert punkt er ét dokument (artikel, pressemeddelelse, debatindlæg, høringssvar, folketingssag). Punkter ligger tæt på dokumenter med lignende indhold. <button type="button" class="ak-info-btn" id="dk-info-btn" aria-expanded="false" aria-controls="dk-info-box" aria-label="Sådan læser du kortet">i</button> Søg og filtrér i panelet til højre, og vælg periode med de to håndtag nederst til venstre. Kortet viser fra start 2020 og frem, og tallene i panelet følger den valgte periode. Klik på et punkt for at åbne kilden.</p>
+<div class="ak-info-box" id="dk-info-box" role="region" aria-label="Sådan læser du kortet" hidden><b>Sådan læser du kortet</b><p>Hvert punkt er et dokument fra den offentlige debat om affald. Placeringen er beregnet ud fra dokumentets tekst med algoritmen UMAP, så dokumenter om samme emne ligger tæt og danner øer. Farven viser temaet, og klyngerne er navngivet efter, hvad dokumenterne i dem handler om. Klik på et punkt for at åbne kilden.</p></div></div>
     <a class="chip" id="kort-full" href="debatkort.html" target="_blank" rel="noopener">Åbn i fuld skærm ↗</a></header>
   <div class="kortvalg" id="kortvalg" role="group" aria-label="Vælg kort">
-    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 81.234 dokumenter fra før 2000 til i dag</span></button>
-    <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>44.201 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
+    <button type="button" data-kort="hele" aria-pressed="true"><b>Hele debatten</b><span>Alle 80.401 dokumenter fra før 2000 til i dag</span></button>
+    <button type="button" data-kort="fokus" aria-pressed="false"><b>Fokus</b><span>43.535 dokumenter fra 2017 til i dag, målrettet kommuner og affaldsselskaber</span></button>
   </div>
   <div class="frame"><iframe id="kort-frame" data-src="debatkort.html" title="Debatkort, hele debatten"></iframe><a class="fallback" id="kort-fallback" href="debatkort.html" target="_blank" rel="noopener">Vises kortet ikke? Åbn det her ↗</a></div>
 </section>
@@ -465,6 +467,7 @@ const byId = {}; A.forEach(a => byId[a.id] = a);
 const TL = (S && S.actor_type_labels) || {}; const IL = (S && S.item_type_labels) || {};
 const daMonth = m => { if(!m || !/^\d{4}-\d\d/.test(m)) return 'Uden kendt dato'; const [y,mo] = m.split('-'); return ['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+mo-1] + ' ' + y; };
 const dateDa = d => { if(!d) return ''; const [y,m,dd] = d.split('-'); return `${+dd}. ${['jan','feb','mar','apr','maj','jun','jul','aug','sep','okt','nov','dec'][+m-1]} ${y}`; };
+const dateLong = d => { if(!d) return ''; const [y,m,dd] = d.split('-'); return `${+dd}. ${['januar','februar','marts','april','maj','juni','juli','august','september','oktober','november','december'][+m-1]} ${y}`; };
 
 /* ---------- tabs ---------- */
 const tabs = document.getElementById('tabs');
@@ -541,7 +544,8 @@ const years = {}; D.forEach(d => { const y = (d.date||'').slice(0,4); if(y) year
 const yrs = Object.keys(years).sort();
 const last90 = D.filter(d => d.date && (new Date(S.generated_at) - new Date(d.date)) < 90*864e5).length;
 document.getElementById('kpis').innerHTML = [
-  {v:fmt(SM.n_docs), l:'dokumenter på debatkortet', d:`${(SM.date_min||'') < '2000' ? 'før 2000' : dateDa(SM.date_min)} til ${dateDa(SM.date_max)}`},   // 02-10-2026: tidsaksen starter i 2000
+  // 17-10-2026: som undertitlen på kortene ('senest opdateret 17. oktober 2026') i stedet for perioden 'før 2000 til ...'
+  {v:fmt(SM.n_docs), l:'dokumenter på debatkortet', d:`senest opdateret ${dateLong((S.generated_at||'').slice(0,10))}`},
   {v:fmt(S.n_actors), l:'aktører i registret', d:'politikere, organisationer, virksomheder m.fl.'},
   {v:fmt(Object.keys(SM.by_theme||{}).length), l:'temaer', d:`${fmt((S.debate_map&&S.debate_map.n_clusters)||null)} klynger på debatkortet`},
   {v:fmt(last90), l:'dokumenter seneste 90 dage', d:`${fmt(new Set(D.map(d => d.source).filter(Boolean)).size)} kilder på kortet`},
@@ -651,7 +655,7 @@ document.getElementById('howto').innerHTML = md(`
 
 **Farver** kan skiftes i kortets panel til dokumenttype (artikel, debatindlæg, pressemeddelelse, høringssvar, folketingsdokument, lovgivning, rapport), tema eller afsendertype. Filtre gør alt andet gråt, så du kan følge fx én aktør eller ét tema gennem tiden.
 
-**Søg og filtrér** i panelet til højre på debatkortet, og vælg periode med de to håndtag nederst til venstre. Fra start vises 2020 og frem. Dokumenter uden kendt dato kan slås fra under håndtagene. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
+**Søg og filtrér** i panelet til højre på debatkortet, og vælg periode med de to håndtag nederst til venstre. Fra start vises 2020 og frem. Dokumenter uden kendt dato er altid med. Nye dokumenter lægges ind på det eksisterende kort uden at flytte de gamle, så kortet kan sammenlignes fra uge til uge.
 `);
 
 /* ---------- actors table ---------- */
@@ -2294,4 +2298,6 @@ function md(src){
 show(initial);
 })();
 </script>
+
+<script>/* 07-10-2026: informationstegn ved kortets beskrivelse. 16-10-2026: kort tekst som på kortet (build_map.INFO_HTML); lukkes med endnu et klik, et klik uden for boksen og Escape */(function(){var b=document.getElementById('dk-info-btn'),x=document.getElementById('dk-info-box');if(!b||!x)return;function set(o){x.hidden=!o;b.setAttribute('aria-expanded',String(o));}b.addEventListener('click',function(e){e.stopPropagation();set(x.hidden);});document.addEventListener('click',function(e){if(!x.hidden&&!x.contains(e.target)&&e.target!==b)set(false);});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!x.hidden){set(false);b.focus();}});})();</script>
 </html>
